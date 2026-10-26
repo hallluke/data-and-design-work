@@ -1,0 +1,32 @@
+name: Test waste data pipeline
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'reference/**'
+      - '.github/workflows/test-data.yml'
+      - 'requirements.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run regression and production tests
+        run: python -m unittest discover -s tests -v
+      - name: Build validated JSON (not published)
+        run: python scripts/build_data.py --csv reference/collections-source.csv --output build/data
+      - name: Upload build for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: waste-json-test-build
+          path: build/data/*.json
+          retention-days: 7
