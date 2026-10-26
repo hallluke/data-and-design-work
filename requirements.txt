@@ -1,1 +1,3 @@
-# Standard-library Python only; no third-party packages required for offline stage.
+# Needed only for the Google Sheets source (not the CSV-only build).
+google-auth>=2.30,<3
+requests>=2.31,<3

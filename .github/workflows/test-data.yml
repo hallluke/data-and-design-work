@@ -1,6 +1,15 @@
 name: Test waste data pipeline
 on:
   workflow_dispatch:
+    inputs:
+      source:
+        description: 'Data source (Google Sheets uses private read-only credentials)'
+        required: true
+        default: csv
+        type: choice
+        options:
+          - csv
+          - sheets
   push:
     paths:
       - 'scripts/**'
@@ -15,18 +24,41 @@ permissions:
 jobs:
   test-and-build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write # Required to request short-lived Google OIDC credentials
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Install Sheets authentication dependencies
+        if: github.event_name == 'workflow_dispatch' && inputs.source == 'sheets'
+        run: python -m pip install -r requirements.txt
       - name: Run regression and production tests
         run: python -m unittest discover -s tests -v
-      - name: Build validated JSON (not published)
+      - name: Authenticate to Google Cloud (read-only sheet access)
+        if: github.event_name == 'workflow_dispatch' && inputs.source == 'sheets'
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          create_credentials_file: true
+      - name: Fetch private Collections tab
+        if: github.event_name == 'workflow_dispatch' && inputs.source == 'sheets'
+        env:
+          GOOGLE_SHEET_ID: ${{ vars.GOOGLE_SHEET_ID }}
+        run: python scripts/fetch_sheet.py --output build/source/collections.csv
+      - name: Build validated JSON from Google Sheets (not published)
+        if: github.event_name == 'workflow_dispatch' && inputs.source == 'sheets'
+        run: python scripts/build_data.py --csv build/source/collections.csv --output build/data
+      - name: Build validated JSON from historical CSV (not published)
+        if: github.event_name != 'workflow_dispatch' || inputs.source != 'sheets'
         run: python scripts/build_data.py --csv reference/collections-source.csv --output build/data
       - name: Upload build for inspection
         uses: actions/upload-artifact@v6
         with:
           name: waste-json-test-build
           path: build/data/*.json
+          if-no-files-found: error
           retention-days: 7
