@@ -1,4 +1,4 @@
-import { formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
+import { showChartError, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
 function createMonthlyWasteChart({ container, data, detail, root = document }) {
   const tip = container.querySelector(".tooltip");

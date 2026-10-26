@@ -81,4 +81,4 @@ function bindChartEvent(listeners, target, event, handler) {
 }
 
 
-export { MULTI_COLUMN_MEDIA, formatWeight, formatMonth, monthInitial, positionChartTooltip, showChartError, validateWasteData, atlasPalette, bindChartEvent };
+export { MULTI_COLUMN_MEDIA, formatWeight, formatMonth, monthInitial, positionChartTooltip, showChartError, validateWasteData, atlasPalette, ATLAS_COLOURS, bindChartEvent };

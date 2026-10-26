@@ -1,4 +1,4 @@
-import { formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
+import { showChartError, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
 
 function createYearComparisonChart({ container, data, detail, comparison, root = document }) {
   const tip = container.querySelector(".tooltip");

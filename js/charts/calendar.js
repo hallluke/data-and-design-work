@@ -1,4 +1,4 @@
-import { bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
+import { ATLAS_COLOURS, bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
 
 function createRecordingCalendar({container, rows, root = document}) {
   const listeners = [];
