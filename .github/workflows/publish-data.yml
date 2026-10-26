@@ -2,6 +2,9 @@ name: Publish waste data (manual)
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '32 23 * * *'
+      timezone: 'Europe/London'
 
 permissions:
   contents: read
