@@ -1,0 +1,741 @@
+/* 01 — DESIGN TOKENS & SITE STYLES
+   Shared layout classes are independent of Figure 01.
+   To extract later, move this block into styles.css unchanged. */
+:root {
+  --paper: #f8f7f4;
+  --ink: #272727;
+  --muted: #66645f;
+  --line: #d5d2cc;
+  --pale: #e9e7e2;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Source Serif 4",Georgia,serif;
+}
+.page {
+  max-width: 1150px;
+  margin: auto;
+  padding: 40px clamp(18px,4.5vw,60px) 65px;
+}
+.sans,.eyebrow,.meta,.num,.unit,.controls,.caption,details,.foot,.tooltip {
+  font-family: "Source Sans 3",Arial,Helvetica,sans-serif;
+}
+.mast {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 17px;
+  margin-bottom: 28px;
+  gap: 15px;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(28px,3.5vw,43px);
+  font-weight: 400;
+  letter-spacing: -.035em;
+  line-height: 1;
+  margin: 8px 0 0;
+}
+.meta {
+  text-align: right;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.atlas-row {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 28px;
+  margin-bottom: 32px;
+  align-items: stretch;
+}
+.module {
+  min-width: 0;
+  position: relative;
+}
+.wide {
+  grid-column: span 2;
+}
+.narrow {
+  grid-column: span 1;
+}
+.module-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+.heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.num,.unit {
+  font-size: 10px;
+  color: var(--muted);
+}
+h2 {
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -.02em;
+  margin: 0;
+}
+.unit {
+  white-space: nowrap;
+}
+.controls {
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 33px;
+}
+.control-row+.control-row {
+  border-top: 0;
+}
+.control-row label,.control-label {
+  color: var(--muted);
+  flex: 1;
+  min-width: 85px;
+}
+.choices {
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.choices button,select {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.choices button:disabled {
+  cursor: not-allowed;
+  color: #85837f;
+  border-color: #d3d0ca;
+  background: repeating-linear-gradient(135deg,#e5e3de 0,#e5e3de 3px,#d3d0ca 3px,#d3d0ca 4px);
+}
+.choices button:disabled:hover {
+  border-color: #d3d0ca;
+}
+.choices button[aria-pressed=true] {
+  background: #454545;
+  color: white;
+  border-color: #454545;
+}
+select {
+  max-width: 180px;
+  width: auto;
+  min-width: 115px;
+}
+button:hover,select:hover {
+  border-color: #777;
+}
+button:focus-visible,select:focus-visible,summary:focus-visible,.chart svg rect:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 3px;
+}
+.chart {
+  min-height: 235px;
+  position: relative;
+}
+.chart svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.chart svg text {
+  font-family: "Source Sans 3",Arial,Helvetica,sans-serif;
+}
+.caption {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 8px 0 0;
+}
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  background: #292929;
+  color: #fff;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  box-shadow: 0 2px 9px #0002;
+  max-width: 340px;
+  min-width: 175px;
+}
+.tip-total {
+  font-weight: 600;
+}
+.tooltip[hidden] {
+  display: none;
+}
+
+
+
+.details-row {
+  grid-column: 1/-1;
+}
+.details-layout {
+  display: grid;
+  grid-template-columns: max-content minmax(0,1fr);
+  gap: 28px;
+  align-items: start;
+}
+.details-layout .table-scroll {
+  grid-column: 1;
+  grid-row: 1;
+}
+.details-layout .method-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+.details-row details {
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  margin-top: -9px;
+  padding-top: 5px;
+}
+summary {
+  cursor: pointer;
+  width: max-content;
+  padding: 7px 0;
+}
+details p {
+  line-height: 1.6;
+  max-width: 75ch;
+}
+.table-scroll {
+  overflow: auto;
+  max-height: 205px;
+  margin: 9px 0 14px;
+}
+table {
+  border-collapse: collapse;
+  width: auto;
+  max-width: 100%;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+th,td {
+  padding: 5px 20px 5px 0;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  text-align: left;
+}
+th {
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+}
+.numeric {
+  text-align: right;
+}
+.foot {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--ink);
+  padding-top: 12px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.error {
+  font: 12px/1.5 "Source Sans 3",Arial,sans-serif;
+  color: #6c3535;
+  padding: 15px 0;
+}
+.legend {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  font: 10px "Source Sans 3",Arial,sans-serif;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.swatch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  background: #444;
+  vertical-align: middle;
+}
+.swatch.provisional {
+  background: #bcbab5;
+}
+.filter-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(155px,220px);
+  gap: 16px 20px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+.filter-layout .controls {
+  margin: 0;
+  width: max-content;
+  max-width: 100%;
+}
+.filter-layout .control-row {
+  justify-content: start;
+  gap: 10px;
+  display: grid;
+  grid-template-columns: 112px 168px;
+}
+.filter-layout .control-label,.filter-layout .control-row>label {
+  flex: none;
+  min-width: 0;
+}
+.filter-layout .choices {
+  justify-content: flex-start;
+  width: 168px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 3px;
+}
+.filter-layout .legend {
+  margin: 7px 0 0;
+  display: grid;
+  justify-content: flex-start;
+  align-content: start;
+  gap: 10px 12px;
+  line-height: 1.45;
+  justify-self: end;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  width: 100%;
+  font-size: 11px;
+}
+.filter-layout .legend span {
+  white-space: normal;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+select:disabled {
+  cursor: not-allowed;
+  color: #85837f;
+  background: repeating-linear-gradient(135deg,#e5e3de 0,#e5e3de 3px,#d3d0ca 3px,#d3d0ca 4px);
+}
+.filter-layout .choices button {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+.filter-layout select {
+  width: 168px;
+  min-width: 0;
+  max-width: none;
+}
+.filter-layout .legend .swatch {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+}
+.tip-table {
+  border-collapse: collapse;
+  width: auto;
+  max-width: none;
+  margin: 6px 0 2px;
+  color: #fff;
+  font: 11px/1.45 "Source Sans 3",Arial,Helvetica,sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.tip-table th,.tip-table td {
+  border: 0;
+  border-bottom: 1px solid #ffffff29;
+  background: transparent;
+  padding: 3px 9px 3px 0;
+  color: #fff;
+  font-weight: 400;
+  position: static;
+  white-space: nowrap;
+}
+.tip-table thead th {
+  font-size: 10px;
+  color: #dedede;
+  border-bottom: 1px solid #ffffff66;
+}
+.tip-table th:first-child,.tip-table td:first-child {
+  text-align: left;
+}
+.tip-table th:not(:first-child),.tip-table td:not(:first-child) {
+  text-align: right;
+  padding-left: 10px;
+}
+.tip-table tfoot td {
+  font-weight: 600;
+  border-top: 1px solid #ffffff77;
+  border-bottom: 0;
+}
+
+/* 04 — RESPONSIVE RULES (cascade order preserved) */
+@media (max-width:750px) {
+.details-layout {
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+.details-layout .table-scroll,.details-layout .method-copy {
+  grid-column: 1;
+  grid-row: auto;
+}
+.atlas-row {
+  gap: 18px;
+}
+.control-row {
+  align-items: start;
+  flex-direction: column;
+  padding: 6px 0;
+  gap: 5px;
+}
+.choices {
+  justify-content: flex-start;
+}
+
+}
+@media (max-width:780px) {
+.page {
+  padding-top: 24px;
+}
+.atlas-row {
+  display: block;
+}
+.module {
+  margin-bottom: 28px;
+}
+
+.control-row {
+  flex-direction: row;
+  align-items: center;
+}
+.choices {
+  justify-content: flex-end;
+}
+.foot {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+}
+@media (prefers-reduced-motion:reduce) {
+* {
+  scroll-behavior: auto !important;
+}
+}
+@media (max-width:850px) {
+.filter-layout {
+  grid-template-columns: 1fr;
+  gap: 9px;
+}
+.filter-layout .control-row {
+  flex-direction: row;
+  align-items: center;
+}
+.filter-layout .legend {
+  margin-top: 2px;
+  justify-self: start;
+  grid-template-columns: repeat(2,max-content);
+  width: auto;
+  gap: 8px 18px;
+}
+}
+@media (max-width:430px) {
+.filter-layout .control-label,.filter-layout .control-row>label {
+  flex-basis: 96px;
+  min-width: 96px;
+}
+.filter-layout .control-row {
+  grid-template-columns: 100px minmax(0,168px);
+}
+.filter-layout .choices,.filter-layout select {
+  width: 100%;
+}
+}
+
+/* 05 — FIGURE 02 — controls share the Figure 01 button/select components. */
+.comparison-controls { margin-bottom: 9px; }
+.comparison-controls .control-row { gap: 7px; min-height: 33px; }
+.comparison-controls .control-label,.comparison-controls label { min-width: 72px; }
+.comparison-controls .choices { flex-wrap: nowrap; width: 168px; }
+.comparison-controls .choices button { flex: 1; padding: 5px 7px; }
+.comparison-controls select { width: 168px; min-width: 168px; max-width: 168px; }
+.comparison-chart { min-height: 250px; }
+.comparison-chart svg { display: block; }
+.comparison-chart .compare-series { transition: opacity .12s ease; }
+.comparison-chart .compare-hit { cursor: crosshair; }
+.comparison-chart .compare-hit:focus-visible { outline: none; stroke: #555; stroke-width: 2px; }
+.comparison-key { font-size: 10px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
+.comparison-key .line-sample { display: inline-block; width: 18px; border-top: 2px dashed #777; vertical-align: middle; margin-right: 5px; }
+.comparison-module .tooltip { min-width: 170px; max-width: 270px; }
+.comparison-module .tip-table { margin-top: 5px; }
+@media(max-width:430px) {
+  .comparison-controls .choices,.comparison-controls select { width: 148px; min-width: 148px; max-width: 148px; }
+}
+
+/* Figure 02 tooltip overlays the right-hand label gutter, not the slopes. */
+.comparison-module .tooltip { position: fixed; z-index: 100; pointer-events: none; max-width: min(340px, calc(100vw - 12px)); }
+.comparison-module .tip-table td:last-child { text-align: right; }
+.comparison-module .tip-range { color: #d6d6d6; font-size: 10px; }
+/* Tablet: do not let the category selector exceed its column. */
+@media (min-width: 781px) and (max-width: 900px) {
+  .comparison-controls .control-row { min-width: 0; }
+  .comparison-controls select { width: min(168px, 100%); min-width: 0; max-width: 100%; }
+  .comparison-controls label, .comparison-controls .control-label { min-width: 0; }
+}
+/* Mobile: preserve the same compact vertical rhythm as desktop. */
+@media (max-width: 750px) { .control-row { padding-top: 0; padding-bottom: 0; } }
+
+/* 06 — SHARED ACCESSIBLE DISCLOSURES */
+.disclosure-row { margin-top: -16px; }
+
+.disclosure-toggle { display: inline-flex; align-items: center; gap: 5px; justify-self: start; border: 0; border-radius: 0; padding: 7px 0; margin: 0; background: transparent; color: var(--muted); font: 12px "Source Sans 3",Arial,sans-serif; cursor: pointer; text-align: left; }
+.disclosure-toggle:nth-child(2) { justify-self: end; }
+.disclosure-toggle:hover { color: var(--ink); }
+.disclosure-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.disclosure-chevron { display: inline-block; width: 10px; font-size: 11px; transition: transform .12s ease; }
+.disclosure-toggle[aria-expanded="true"] .disclosure-chevron { transform: rotate(90deg); }
+.disclosure-panel { padding: 0 0 2px; }
+.disclosure-panel[hidden] { display: none; }
+.disclosure-panel .details-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: 28px; align-items: start; }
+.disclosure-panel .method-copy { grid-column: 1; grid-row: 1; min-width: 0; font: 12px/1.6 "Source Sans 3",Arial,sans-serif; color: var(--muted); }
+.disclosure-panel .method-copy p { margin: 7px 0; max-width: none; }
+.disclosure-panel .table-scroll { grid-column: 2; grid-row: 1; min-width: 0; margin: 7px 0; max-height: 205px; }
+@media (max-width: 750px) {
+  .disclosure-panel .details-layout { grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: 14px; }
+  
+}
+@media (max-width: 780px) {
+  .disclosure-row { margin-top: -12px; }
+  
+  .disclosure-toggle { font-size: 11px; }
+  .disclosure-panel .details-layout { grid-template-columns: 1fr; gap: 3px; }
+  .disclosure-panel .method-copy, .disclosure-panel .table-scroll { grid-column: 1; grid-row: auto; }
+}
+/* Compact disclosure tables: keep columns near their intrinsic content width. */
+.disclosure-panel table { width: max-content; max-width: none; }
+/* Equal disclosure trigger slots avoid squeezing Figure 02 into a 1/3 column. */
+@media (max-width: 850px) {
+  
+  .disclosure-toggle { white-space: nowrap; }
+}
+@media (max-width: 780px) {
+  
+  .disclosure-toggle { font-size: 10px; letter-spacing: -.15px; }
+  .disclosure-chevron { width: 8px; }
+}
+@media (max-width: 355px) {
+  .disclosure-toggle { white-space: normal; }
+}
+
+/* Prevent Figure 02 controls colliding with the Measurement label at tablet widths. */
+@media (min-width: 781px) and (max-width: 1050px) {
+  .comparison-controls .control-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,148px); gap: 5px; min-width: 0; }
+  .comparison-controls .choices, .comparison-controls select { width: 100%; min-width: 0; max-width: 100%; }
+  .comparison-controls .choices button { padding-inline: 4px; }
+}
+
+/* v15: chart and disclosure elements share one grid, allowing responsive ordering. */
+.chart-disclosure-grid { row-gap: 0; }
+.chart-disclosure-grid > .module { margin-bottom: 0; }
+.disclosure-trigger { min-width: 0; border-top: 1px solid var(--line); }
+.disclosure-trigger-1 { grid-column: 1 / span 2; grid-row: 2; }
+.disclosure-trigger-2 { grid-column: 3; grid-row: 2; text-align: right; }
+.disclosure-trigger-2 .disclosure-toggle { justify-self: end; }
+.chart-disclosure-grid > .disclosure-panel { grid-column: 1 / -1; grid-row: 3; padding: 0 0 2px; }
+.chart-disclosure-grid > .disclosure-panel[hidden] { display: none; }
+.chart-disclosure-grid > .module:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
+.chart-disclosure-grid > .module:nth-child(2) { grid-column: 3; grid-row: 1; }
+.disclosure-panel .method-copy p { margin-top: 7px; }
+/* Maintain the same 20px right cell padding even on narrow screens. */
+.disclosure-panel table th, .disclosure-panel table td { padding-right: 20px; }
+@media (max-width: 780px) {
+  .chart-disclosure-grid { display: grid; grid-template-columns: minmax(0,1fr); row-gap: 0; }
+  .chart-disclosure-grid > .module:nth-child(1) { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+  .disclosure-trigger-1 { grid-column: 1; grid-row: 2; }
+  .chart-disclosure-grid > .disclosure-panel-1 { grid-column: 1; grid-row: 3; }
+  .chart-disclosure-grid > .module:nth-child(2) { grid-column: 1; grid-row: 4; margin-top: 24px; margin-bottom: 0; }
+  .disclosure-trigger-2 { grid-column: 1; grid-row: 5; text-align: left; }
+  .disclosure-trigger-2 .disclosure-toggle { justify-self: start; }
+  .chart-disclosure-grid > .disclosure-panel-2 { grid-column: 1; grid-row: 6; }
+}
+
+/* 07 — MASTHEAD INTRODUCTION:  one continuous paragraph balanced across newspaper-style columns. */
+.intro {
+  column-count: 3;
+  column-gap: 28px;
+  column-fill: balance;
+  margin: -5px 0 33px;
+  color: var(--muted);
+  font: 12px/1.55 "Source Sans 3", Arial, sans-serif;
+}
+.intro p { margin: 0; }
+/* Match the first methodology text baseline to the table header baseline. */
+/* Header and methodology use the same font metrics and text baseline.
+   Both containers begin 7px down; the 5px inset matches the th top padding. */
+.disclosure-panel .method-copy { padding-top: 5px; }
+.disclosure-panel .method-copy p,
+.disclosure-panel .method-copy p:first-child { margin-top: 0; }
+@media (max-width: 780px) {
+  .intro { column-count: 1; margin-bottom: 27px; }
+}
+
+/* Small baseline correction without changing table typography. */
+.disclosure-panel .table-scroll { margin-top: 1px; }
+.mast .meta .recycling-icon { display:inline-block; vertical-align:-4px; margin-left:3px; }
+
+/* Figure 03: reuse the established selector and disclosure styling. */
+.recycling-controls { margin-bottom: 12px; }
+.recycling-controls .control-row { min-height: 33px; gap: 7px; }
+.recycling-controls label { min-width: 72px; }
+.recycling-controls select { width: 168px; min-width: 168px; max-width: 168px; }
+.recycling-chart { min-height: 250px; display: flex; justify-content: center; align-items: center; }
+.recycling-chart svg { width: min(100%, 260px); height: auto; overflow: visible; }
+.recycling-chart .rate-value { fill: var(--ink); font-size: 30px; font-weight: 400; letter-spacing: -.045em; }
+.recycling-chart .rate-caption { fill: var(--muted); font-size: 11px; }
+.recycling-chart .arc-recycled { fill: #454545; }
+.recycling-chart .arc-general { fill: #d0ceca; }
+
+
+
+@media (max-width: 780px) {
+ .recycling-controls select { width: 168px; min-width: 0; max-width: 100%; }
+ 
+}
+
+/* Figure 03: numeric data and headings use the shared right-alignment convention. */
+#recycling-table th:not(:first-child), #recycling-table td:not(:first-child) { text-align: right; }
+
+/* Figure 04: fixed weekday gutter and horizontally scrollable continuous calendar. */
+.calendar-controls { display:flex; flex-wrap:wrap; gap: 4px 20px; padding-top:10px; }
+.calendar-controls .control-row { flex-direction:row; align-items:center; gap:9px; }
+.calendar-controls select { max-width:190px; }
+.calendar-key { display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:10px; color:var(--muted); margin:9px 0 5px; }
+.calendar-key .swatch { display:inline-block; width:13px; height:13px; border:1px solid #d8d6d2; }
+.calendar-key .key-gap { width:8px; }
+.calendar-layout { display:grid; grid-template-columns:37px minmax(0,1fr); align-items:start; min-width:0; }
+.calendar-weekdays { display:grid; grid-template-rows: 29px repeat(7, 17px); font-size:11px; color:var(--muted); line-height:17px; }
+.calendar-weekdays span { white-space:nowrap; }
+.calendar-scroll { overflow-x:auto; overflow-y:hidden; min-width:0; padding-bottom:7px; scrollbar-width:thin; }
+.calendar-scroll:focus-visible { outline:2px solid #454545; outline-offset:2px; }
+.calendar-plot { width:max-content; }
+.calendar-plot svg { display:block; max-width:none; height:auto; font-family:"Source Sans 3",Arial,sans-serif; }
+.calendar-disclosure-wrap { margin-top:-1px; margin-bottom:28px; border-top:1px solid var(--line); }
+.calendar-disclosure-wrap .disclosure-trigger { border-top:0; }
+#calendar-table th:last-child, #calendar-table td:last-child { text-align:right; }
+@media (max-width:780px) { .calendar-controls .control-row { flex-direction:row; } }
+
+/* v27: shared grid/disclosure structure for the second chart pair. */
+.chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1 / span 2; grid-row:1; }
+.chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:3; grid-row:1; }
+.chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1 / span 2; grid-row:2; }
+.chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:3; grid-row:2; text-align:right; }
+.chart-disclosure-grid-secondary .disclosure-trigger-4 .disclosure-toggle { justify-self:end; }
+.chart-disclosure-grid-secondary > .disclosure-panel { grid-column:1 / -1; grid-row:3; }
+.calendar-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; min-height:91px; }
+.calendar-controls { flex-direction:column; flex-wrap:nowrap; gap:5px; }
+.calendar-key { margin:12px 0 0; justify-content:flex-end; max-width:250px; }
+.calendar-weekdays { grid-template-rows:32px repeat(7, 18px); font:10px/18px "Source Sans 3",Arial,sans-serif; }
+.calendar-weekdays span { font:inherit; }
+.calendar-layout { grid-template-columns:42px minmax(0,1fr); }
+.calendar-scroll { position:relative; }
+.calendar-plot svg { font:10px "Source Sans 3",Arial,sans-serif; }
+.calendar-plot svg text { fill:var(--muted); font:10px "Source Sans 3",Arial,sans-serif; }
+.calendar-tooltip { position:fixed; z-index:100; pointer-events:none; max-width:min(310px,calc(100vw - 12px)); }
+@media (max-width:780px) {
+ .chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1; grid-row:1; margin-bottom:0; }
+ .chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1; grid-row:2; }
+ .chart-disclosure-grid-secondary > #recycling-disclosure { grid-column:1; grid-row:3; }
+ .chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:1; grid-row:4; margin-top:24px; margin-bottom:0; }
+ .chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:1; grid-row:5; text-align:left; }
+ .chart-disclosure-grid-secondary .disclosure-trigger-4 .disclosure-toggle { justify-self:start; }
+ .chart-disclosure-grid-secondary > #calendar-disclosure { grid-column:1; grid-row:6; }
+ .calendar-top { flex-wrap:wrap; }
+ .calendar-key { justify-content:flex-start; margin:0 0 8px; }
+}
+
+/* v28 targeted corrections; existing shared chart CSS remains untouched. */
+.chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1; }
+.chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:2 / span 2; }
+.chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1; }
+.chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:2 / span 2; }
+@media (max-width:780px) {
+  .chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:1; }
+  .chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:1; }
+}
+/* v29: Figure 04 controls inherit the established Figure 03 control dimensions. */
+.calendar-controls { padding-top:0; gap:0; }
+.calendar-controls .control-row { gap:7px; min-height:33px; justify-content:space-between; }
+.calendar-controls .control-row label { min-width:72px; }
+.calendar-controls select { width:168px; min-width:168px; max-width:168px; }
+.calendar-key .swatch { width:9px; height:9px; border:0; margin-right:0; flex:0 0 9px; }
+@media (max-width:780px) {
+ .calendar-controls select { min-width:0; max-width:100%; }
+}
+
+/* v30 — targeted masthead, hierarchy, calendar key and footer refinements */
+.mast { border-bottom-width:2px; }
+.mast-left { min-width:0; }
+.mast .meta { display:flex; align-items:center; gap:12px; flex:0 0 auto; }
+.mast .meta-stack { display:flex; flex-direction:column; align-items:flex-end; line-height:1.65; white-space:nowrap; }
+.mast .meta .recycling-icon { width:23px; height:23px; margin:0; vertical-align:middle; }
+.module-header h2 { font-size:20px; }
+.intro p + p { margin-top:9px; }
+.calendar-key { gap:8px; }
+.calendar-key .swatch { width:13px; height:13px; flex-basis:13px; }
+.calendar-key .key-gap { width:12px; }
+.foot { border-top-width:2px; line-height:1.65; }
+.foot-right { text-align:right; }
+.foot { font-size:11px; }
+.foot-left { text-transform:uppercase; }
+.foot a { color:inherit; text-decoration:underline; text-underline-offset:2px; }
+@media (max-width:780px) { .mast .meta { gap:7px; } .mast .meta .recycling-icon { width:21px; height:21px; } .eyebrow { letter-spacing:.06em; } }
+
+/* v33 — stable opening column and two-column explanatory text. */
+.intro {
+  display:grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,2fr);
+  column-count:auto;
+  align-items:start;
+}
+.intro-opening, .intro-explanation { min-width:0; }
+.intro-explanation { column-count:2; column-gap:28px; column-fill:balance; }
+.intro-explanation p { margin:0; }
+/* Reduce the vertical separation between chart rows and above the footer. */
+.atlas-row { margin-bottom:22px; }
+@media (max-width: 780px) {
+  .intro { display:block; }
+  .intro-explanation { column-count:1; margin-top:12px; }
+}
+
+/* v40 — centre both full-width footer sections in the unified narrow-screen layout. */
+@media (max-width:780px) {
+  .foot { flex-direction:column; align-items:stretch; gap:10px; }
+  .foot-left, .foot-right { width:100%; text-align:center; }
+}

@@ -1,0 +1,236 @@
+import { formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
+
+function createYearComparisonChart({ container, data, detail, comparison, root = document }) {
+  const tip = container.querySelector(".tooltip");
+  const categorySelect = root.getElementById("comparison-categories");
+  const basisButtons = [...root.querySelectorAll("[data-compare-basis]")];
+  const table = root.getElementById("comparison-table");
+
+  const method = root.getElementById("comparison-method");
+
+  const period = root.getElementById("comparison-period");
+  const state = { basis: "imputed", categories: "main" };
+  const materials = ["Residual waste", "Food waste", "Glass", "Cardboard", "Tin", "Plastic", "Paper", "Soft plastics", "Batteries"];
+  const dry = ["Glass", "Cardboard", "Tin", "Plastic", "Paper"];
+  const projection = comparison.projectedAdditionalKg;
+  const cutoff = comparison.metadata.comparisonCompleteThrough;
+  const [endYear, endMonth] = cutoff.split("-").map(Number);
+  const years = [endYear - 1, endYear];
+  let observer;
+  const listeners = [];
+  const fmt = value => value.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const sign = value => (value > 0 ? "+" : "") + fmt(value);
+  const labelMonth = new Date(Date.UTC(2000, endMonth - 1, 1)).toLocaleDateString("en-GB", {month:"short", timeZone:"UTC"});
+  const selected = () => state.categories === "residual" ? ["Residual waste"] : state.categories === "main" ? data.groups : state.categories === "dry" ? dry :
+    materials.filter(material => state.basis === "recorded" || material !== "Batteries");
+
+  // Group totals come from the same monthly records used in Figure 01.
+  // Residual's 2026 imputed total includes the known portion of August;
+  // only the 45 unobserved days receive an additional projection.
+  function sumRows(rows, group, year) {
+    return rows.reduce((sum, row) => sum + (row.group === group &&
+      row.month >= year + "-01" && row.month <= year + "-" + String(endMonth).padStart(2, "0") ? row.kg : 0), 0);
+  }
+  function rowsForBasis() {
+    const base = data[state.basis];
+    const detailed = detail[state.basis].map(row => ({ ...row, group: row.type }));
+    return { base, detailed };
+  }
+  function values() {
+    const {base, detailed} = rowsForBasis();
+    return selected().map(name => {
+      const rows = dry.includes(name) ? detailed : base;
+      const earlier = sumRows(rows, name, years[0]);
+      const observed = sumRows(rows, name, years[1]);
+      const projected = state.basis === "imputed" && name === "Residual waste";
+      const current = observed + (projected ? projection.central : 0);
+      return {name, earlier, current, observed, projected,
+        low: observed + (projected ? projection.low : 0),
+        high: observed + (projected ? projection.high : 0)};
+    });
+  }
+  function tooltipHTML(row) {
+    const change = row.current - row.earlier;
+    const pct = value => row.earlier ? (value / row.earlier * 100).toFixed(1) + "%" : "n/a";
+    const range = (low,high,unit,formatter=fmt) =>
+      `<span class="tip-range">(${formatter(low)}–${formatter(high)}${unit})</span>`;
+    const currentRange = row.projected ? range(row.low,row.high," kg") : "";
+    const diffRange = row.projected ? range(row.low-row.earlier,row.high-row.earlier," kg",sign) : "";
+    const pctRange = row.projected ? range(row.low-row.earlier,row.high-row.earlier,"",pct) : "";
+    return `<strong>${row.name}</strong><table class="tip-table"><tbody>` +
+      `<tr><td>${years[0]}</td><td>${fmt(row.earlier)} kg</td></tr>` +
+      `<tr><td>${years[1]}</td><td>${fmt(row.current)} kg ${currentRange}</td></tr>` +
+      `<tr><td>Difference</td><td>${sign(change)} kg ${diffRange}</td></tr>` +
+      `<tr><td>Change</td><td>${pct(change)} ${pctRange}</td></tr>` +
+      `</tbody></table>`;
+  }
+  function renderTable(rows) {
+    const head = table.tHead, body = table.tBodies[0];
+    head.replaceChildren(); body.replaceChildren();
+    const hr = document.createElement("tr");
+    ["Category", years[0] + " kg", years[1] + " kg", "Δ kg", "Δ %", "Status"].forEach(t => {
+      const th = document.createElement("th"); th.textContent = t;
+      if ([1, 2, 3, 4].includes(hr.cells.length)) th.className = "numeric";
+      hr.append(th);
+    });
+    head.append(hr);
+    rows.forEach(row => {
+      const tr = document.createElement("tr");
+      const diff = row.current - row.earlier;
+      [row.name, fmt(row.earlier), fmt(row.current), sign(diff),
+        row.earlier ? (diff / row.earlier * 100).toFixed(1) + "%" : "n/a",
+        row.projected ? "Projected (" + fmt(row.low) + "–" + fmt(row.high) + " kg)" :
+        state.basis === "recorded" ? "Recorded" : "Complete"].forEach((v, i) => {
+          const td = document.createElement("td"); td.textContent = v;
+          if (i >= 1 && i <= 4) td.className = "numeric";
+          tr.append(td);
+        });
+      body.append(tr);
+    });
+  }
+  function render() {
+    const rows = values();
+    // Align the plot baselines using actual chart positions, without changing control layout.
+    const width = Math.max(255, Math.round(container.clientWidth));
+    const monthlyChart = root.getElementById("monthly-chart");
+    const isWide = window.matchMedia(MULTI_COLUMN_MEDIA).matches;
+    const controlOffset = isWide && monthlyChart
+      ? Math.round(monthlyChart.getBoundingClientRect().top - container.getBoundingClientRect().top) : 0;
+    const height = Math.max(250, 250 + controlOffset);
+    const top = 21, bottom = 43, left = 30, right = 9;
+    const residualOnly = state.categories === "residual";
+    const extrema = rows.flatMap(d => [d.earlier, d.current, d.low, d.high]);
+    const rawMin = Math.min(...extrema), rawMax = Math.max(...extrema);
+    const spread = Math.max(.2, rawMax - rawMin);
+    const yDomain = [0, Math.max(1, residualOnly ? rawMax + spread*.23 : rawMax*1.12)];
+    const yScale = d3.scaleLinear().domain(yDomain).range([height-bottom,top]);
+    // Plot owns the scale. Reserve the right-hand third for direct labels.
+    // Year labels sit below the endpoints; horizontal rules stop at those endpoints.
+    const xDomain = [years[0]-.35, years[1]+.75];
+    const labelX = years[1]+.095;
+    const labelGap = 13.5;
+    // Start labels at their real 2026 heights. Resolve collisions only where
+    // necessary, then keep the stack within the available plotting height.
+    const ordered = rows.slice().sort((a,b)=>yScale(a.current)-yScale(b.current));
+    const desired = ordered.map(row => yScale(row.current));
+    const positions = desired.slice();
+    for (let i=1; i<positions.length; i++)
+      positions[i] = Math.max(positions[i],positions[i-1]+labelGap);
+    const limit = height-bottom-3;
+    if (positions.at(-1)>limit) {
+      positions[positions.length-1]=limit;
+      for (let i=positions.length-2; i>=0; i--)
+        positions[i]=Math.min(positions[i],positions[i+1]-labelGap);
+    }
+    if (positions[0]<top+3) {
+      positions[0]=top+3;
+      for (let i=1; i<positions.length; i++)
+        positions[i]=Math.max(positions[i],positions[i-1]+labelGap);
+    }
+    // Shift labels toward their own endpoints whenever a gap permits it.
+    for (let i=positions.length-2; i>=0; i--)
+      positions[i]=Math.min(positions[i+1]-labelGap,Math.max(desired[i],positions[i]));
+    const labelY = new Map(ordered.map((row,i)=>[row.name,positions[i]]));
+    const labelKg = name => yScale.invert(labelY.get(name));
+    const marks = [];
+    const fan = rows.filter(row=>row.projected).flatMap(row=>[
+      {year:years[0],lo:row.earlier,hi:row.earlier},
+      {year:years[1],lo:row.low,hi:row.high}
+    ]);
+    if (fan.length) marks.push(Plot.areaY(fan, {x:"year",y1:"lo",y2:"hi",fill:"#888",fillOpacity:.24}));
+    // Every line, endpoint, leader and label is an Observable Plot mark.
+    // Separate line marks make it possible to highlight the active series.
+    rows.forEach((row,i)=>{
+      const series=[{year:years[0],kg:row.earlier},{year:years[1],kg:row.current}];
+      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"#5c5b59",strokeWidth:2.2,
+        strokeDasharray:row.projected?"5 3":undefined,className:`compare-series compare-series-${i}`}));
+      marks.push(Plot.dot(series,{x:"year",y:"kg",r:2.8,fill:"#4b4b4b",className:`compare-series compare-series-${i}`}));
+      marks.push(Plot.link([{x1:years[1],y1:row.current,x2:labelX-.025,y2:labelKg(row.name)}],{
+        x1:"x1",y1:"y1",x2:"x2",y2:"y2",stroke:"#999",strokeWidth:.75,
+        className:`compare-series compare-series-${i}`}));
+      marks.push(Plot.text([{x:labelX,y:labelKg(row.name),name:row.name}],{
+        x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:"#454545",
+        className:`compare-series compare-series-${i}`}));
+      // Invisible broad Plot stroke detects crossings anywhere along the line.
+      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"transparent",strokeWidth:16,
+        className:`compare-hit compare-hit-${i}`}));
+    });
+    // Explicit Plot rules limit horizontal guides to the two year positions,
+    // unlike a full-width axis grid. Tick labels remain readable in kg.
+    const tickValues = d3.ticks(yDomain[0],yDomain[1],4);
+    const guides = tickValues.map(kg=>({kg,x1:years[0],x2:years[1]}));
+    marks.unshift(Plot.ruleY(guides,{y:"kg",x1:"x1",x2:"x2",stroke:"#c8c5bf",strokeOpacity:.65}));
+    marks.push(Plot.text(guides,{x:years[0],y:"kg",text:d=>Number(d.kg.toFixed(1)).toString(),
+      textAnchor:"end",dx:-7,fontSize:10,fill:"#66645f"}));
+    marks.push(Plot.axisX({anchor:"bottom",ticks:years,tickFormat:String,
+      tickSize:0,tickPadding:8,label:null}));
+    const svg = Plot.plot({width,height,marginLeft:left,marginRight:right,marginTop:top,marginBottom:bottom,
+      style:{background:"transparent",fontFamily:"Source Sans 3, Arial, sans-serif",fontSize:"10px",color:"#66645f"},
+      x:{domain:xDomain,axis:null,label:null},
+      y:{domain:yDomain,axis:null,grid:false,ticks:4,label:null,tickSize:0},
+      marks});
+    svg.setAttribute("role","img");
+    svg.setAttribute("aria-label","Year-on-year " + state.basis + " waste by " + state.categories +
+      " categories, January through " + labelMonth + ". Values in the expandable table.");
+    const activate = (index,event)=>{
+      svg.querySelectorAll(".compare-series").forEach(el=>{
+        const active=el.classList.contains(`compare-series-${index}`);
+        el.style.opacity=active?"1":".22";
+        if (el.tagName.toLowerCase()==="path" && active && !el.classList.contains("compare-hit"))
+          el.style.stroke="#171717";
+      });
+      tip.innerHTML=tooltipHTML(rows[index]);tip.hidden=false;
+      // Fixed-position overlay begins at the 2026 endpoint, covering labels
+      // rather than plotted lines. Clamp inside the viewport on small screens.
+      const box=svg.getBoundingClientRect();
+      const yearFraction=(years[1]-xDomain[0])/(xDomain[1]-xDomain[0]);
+      const x=box.left+left+(box.width-left-right)*yearFraction+8;
+      const maxX=Math.max(6,window.innerWidth-tip.offsetWidth-6);
+      tip.style.left=Math.max(6,Math.min(x,maxX))+"px";
+      const desiredTop=box.top+Math.min(40,Math.max(0,box.height-tip.offsetHeight)/2);
+      tip.style.top=Math.max(6,Math.min(desiredTop,window.innerHeight-tip.offsetHeight-6))+"px";
+    };
+    const deactivate=()=>{
+      svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
+      tip.hidden=true;
+    };
+    rows.forEach((row,i)=>{
+      const hit=svg.querySelector(`.compare-hit-${i}`);
+      if(!hit)return;
+      hit.setAttribute("tabindex","0");
+      hit.setAttribute("role","button");
+      hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
+      hit.addEventListener("pointerenter",event=>activate(i,event));
+      hit.addEventListener("pointermove",event=>activate(i,event));
+      hit.addEventListener("pointerleave",deactivate);
+      hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+      hit.addEventListener("blur",deactivate);
+    });
+    container.querySelector("svg")?.remove();container.insertBefore(svg,tip);
+    container.style.minHeight=height+"px";
+    // Reuse the shared disabled-button styling and force a meaningful mode.
+    const recordedButton=basisButtons.find(button=>button.dataset.compareBasis==="recorded");
+    recordedButton.disabled=residualOnly;
+    period.textContent="Jan—"+labelMonth;
+    method.innerHTML = "Both years cover January through Sept. The cut-off is the latest fully covered month for regularly collected materials (excluding residual waste and batteries). Imputed weights are distributed across collection intervals as in Figure 01. For residual waste, the days after the last recorded weight are extrapolated using the pooled historical daily rate from the recording intervals. The low/high range uses the minimum and maximum observed interval rates. This is a sensitivity range, <strong>not</strong> a calibrated prediction interval or probability statement. Recorded mode sums weights by collection date without projection; batteries appear there only.";
+    renderTable(rows);
+    basisButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.compareBasis===state.basis)));
+  }
+  function rerender() {
+    try { if(!window.Plot || !window.d3) throw Error("D3 or Observable Plot did not load.");
+      render();container.querySelector(".error")?.remove();
+    } catch(error) {showChartError(container,error);}
+  }
+  const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
+  basisButtons.forEach(button=>on(button,"click",()=>{if(button.disabled)return;state.basis=button.dataset.compareBasis;rerender();}));
+  on(categorySelect,"change",()=>{state.categories=categorySelect.value;if(state.categories==="residual")state.basis="imputed";rerender();});
+  if("ResizeObserver" in window) {observer=new ResizeObserver(()=>{if(window.Plot)rerender();});observer.observe(container);}
+  return {render:rerender,destroy(){observer?.disconnect();listeners.forEach(remove=>remove());container.querySelector("svg")?.remove();tip.hidden=true;}};
+}
+
+/* ============================================================
+   APPLICATION INITIALISATION
+   To add a chart: create a module function, then initialise it here.
+   ============================================================ */
+
+export { createYearComparisonChart };
