@@ -43,7 +43,7 @@
     {
       "month": "2025-01",
       "group": "Dry recycling",
-      "kg": 4.21081
+      "kg": 4.21080952
     },
     {
       "month": "2025-01",
@@ -63,7 +63,7 @@
     {
       "month": "2025-02",
       "group": "Dry recycling",
-      "kg": 5.3909
+      "kg": 5.39090476
     },
     {
       "month": "2025-02",
@@ -83,97 +83,97 @@
     {
       "month": "2025-03",
       "group": "Dry recycling",
-      "kg": 5.85129
+      "kg": 5.85128571
     },
     {
       "month": "2025-03",
       "group": "Soft plastics",
-      "kg": 0.45643
+      "kg": 0.45642857
     },
     {
       "month": "2025-04",
       "group": "Residual waste",
-      "kg": 1.16176
+      "kg": 1.16175676
     },
     {
       "month": "2025-04",
       "group": "Food waste",
-      "kg": 3.24641
+      "kg": 3.24641429
     },
     {
       "month": "2025-04",
       "group": "Dry recycling",
-      "kg": 4.95229
+      "kg": 4.95228571
     },
     {
       "month": "2025-04",
       "group": "Soft plastics",
-      "kg": 0.38663
+      "kg": 0.38663265
     },
     {
       "month": "2025-05",
       "group": "Residual waste",
-      "kg": 1.42432
+      "kg": 1.42432432
     },
     {
       "month": "2025-05",
       "group": "Food waste",
-      "kg": 2.89516
+      "kg": 2.89516071
     },
     {
       "month": "2025-05",
       "group": "Dry recycling",
-      "kg": 4.55723
+      "kg": 4.55722857
     },
     {
       "month": "2025-05",
       "group": "Soft plastics",
-      "kg": 0.39952
+      "kg": 0.39952041
     },
     {
       "month": "2025-06",
       "group": "Residual waste",
-      "kg": 1.28031
+      "kg": 1.28030506
     },
     {
       "month": "2025-06",
       "group": "Food waste",
-      "kg": 1.45384
+      "kg": 1.45383929
     },
     {
       "month": "2025-06",
       "group": "Dry recycling",
-      "kg": 3.61949
+      "kg": 3.61948571
     },
     {
       "month": "2025-06",
       "group": "Soft plastics",
-      "kg": 0.34601
+      "kg": 0.34601159
     },
     {
       "month": "2025-07",
       "group": "Residual waste",
-      "kg": 1.1203
+      "kg": 1.12029703
     },
     {
       "month": "2025-07",
       "group": "Food waste",
-      "kg": 2.65529
+      "kg": 2.65528571
     },
     {
       "month": "2025-07",
       "group": "Dry recycling",
-      "kg": 4.71491
+      "kg": 4.7149118
     },
     {
       "month": "2025-07",
       "group": "Soft plastics",
-      "kg": 0.21963
+      "kg": 0.21962712
     },
     {
       "month": "2025-08",
       "group": "Residual waste",
-      "kg": 1.1203
+      "kg": 1.12029703
     },
     {
       "month": "2025-08",
@@ -183,32 +183,32 @@
     {
       "month": "2025-08",
       "group": "Dry recycling",
-      "kg": 3.18039
+      "kg": 3.18039296
     },
     {
       "month": "2025-08",
       "group": "Soft plastics",
-      "kg": 0.28423
+      "kg": 0.28423421
     },
     {
       "month": "2025-09",
       "group": "Residual waste",
-      "kg": 1.0687
+      "kg": 1.06869722
     },
     {
       "month": "2025-09",
       "group": "Food waste",
-      "kg": 4.12986
+      "kg": 4.12985714
     },
     {
       "month": "2025-09",
       "group": "Dry recycling",
-      "kg": 4.14923
+      "kg": 4.14923095
     },
     {
       "month": "2025-09",
       "group": "Soft plastics",
-      "kg": 0.38278
+      "kg": 0.3827776
     },
     {
       "month": "2025-10",
@@ -218,37 +218,37 @@
     {
       "month": "2025-10",
       "group": "Food waste",
-      "kg": 2.71486
+      "kg": 2.71485714
     },
     {
       "month": "2025-10",
       "group": "Dry recycling",
-      "kg": 3.85389
+      "kg": 3.85389286
     },
     {
       "month": "2025-10",
       "group": "Soft plastics",
-      "kg": 0.39234
+      "kg": 0.39233929
     },
     {
       "month": "2025-11",
       "group": "Residual waste",
-      "kg": 0.62032
+      "kg": 0.62032258
     },
     {
       "month": "2025-11",
       "group": "Food waste",
-      "kg": 3.95943
+      "kg": 3.95942857
     },
     {
       "month": "2025-11",
       "group": "Dry recycling",
-      "kg": 5.56757
+      "kg": 5.56757143
     },
     {
       "month": "2025-11",
       "group": "Soft plastics",
-      "kg": 0.43579
+      "kg": 0.43578571
     },
     {
       "month": "2025-12",
@@ -258,7 +258,7 @@
     {
       "month": "2025-12",
       "group": "Food waste",
-      "kg": 3.98886
+      "kg": 3.98885714
     },
     {
       "month": "2025-12",
@@ -268,12 +268,12 @@
     {
       "month": "2025-12",
       "group": "Soft plastics",
-      "kg": 0.30164
+      "kg": 0.30164286
     },
     {
       "month": "2026-01",
       "group": "Residual waste",
-      "kg": 0.6058
+      "kg": 0.60580153
     },
     {
       "month": "2026-01",
@@ -283,17 +283,17 @@
     {
       "month": "2026-01",
       "group": "Dry recycling",
-      "kg": 5.34448
+      "kg": 5.34447619
     },
     {
       "month": "2026-01",
       "group": "Soft plastics",
-      "kg": 0.16519
+      "kg": 0.1651875
     },
     {
       "month": "2026-02",
       "group": "Residual waste",
-      "kg": 0.54718
+      "kg": 0.54717557
     },
     {
       "month": "2026-02",
@@ -303,17 +303,17 @@
     {
       "month": "2026-02",
       "group": "Dry recycling",
-      "kg": 3.70991
+      "kg": 3.70990842
     },
     {
       "month": "2026-02",
       "group": "Soft plastics",
-      "kg": 0.34731
+      "kg": 0.3473125
     },
     {
       "month": "2026-03",
       "group": "Residual waste",
-      "kg": 0.6058
+      "kg": 0.60580153
     },
     {
       "month": "2026-03",
@@ -323,7 +323,7 @@
     {
       "month": "2026-03",
       "group": "Dry recycling",
-      "kg": 3.88978
+      "kg": 3.88978462
     },
     {
       "month": "2026-03",
@@ -333,57 +333,57 @@
     {
       "month": "2026-04",
       "group": "Residual waste",
-      "kg": 0.58626
+      "kg": 0.58625954
     },
     {
       "month": "2026-04",
       "group": "Food waste",
-      "kg": 3.38403
+      "kg": 3.38402632
     },
     {
       "month": "2026-04",
       "group": "Dry recycling",
-      "kg": 3.81995
+      "kg": 3.81995198
     },
     {
       "month": "2026-04",
       "group": "Soft plastics",
-      "kg": 0.34132
+      "kg": 0.34131795
     },
     {
       "month": "2026-05",
       "group": "Residual waste",
-      "kg": 0.92919
+      "kg": 0.92918864
     },
     {
       "month": "2026-05",
       "group": "Food waste",
-      "kg": 3.35519
+      "kg": 3.35518797
     },
     {
       "month": "2026-05",
       "group": "Dry recycling",
-      "kg": 5.61476
+      "kg": 5.61475758
     },
     {
       "month": "2026-05",
       "group": "Soft plastics",
-      "kg": 0.31128
+      "kg": 0.31128205
     },
     {
       "month": "2026-06",
       "group": "Residual waste",
-      "kg": 1.07134
+      "kg": 1.07134021
     },
     {
       "month": "2026-06",
       "group": "Food waste",
-      "kg": 3.34357
+      "kg": 3.34357143
     },
     {
       "month": "2026-06",
       "group": "Dry recycling",
-      "kg": 4.6115
+      "kg": 4.61150216
     },
     {
       "month": "2026-06",
@@ -393,17 +393,17 @@
     {
       "month": "2026-07",
       "group": "Residual waste",
-      "kg": 1.10705
+      "kg": 1.10705155
     },
     {
       "month": "2026-07",
       "group": "Food waste",
-      "kg": 2.59856
+      "kg": 2.59856044
     },
     {
       "month": "2026-07",
       "group": "Dry recycling",
-      "kg": 5.28306
+      "kg": 5.28306349
     },
     {
       "month": "2026-07",
@@ -413,22 +413,22 @@
     {
       "month": "2026-08",
       "group": "Residual waste",
-      "kg": 0.57138
+      "kg": 0.57138144
     },
     {
       "month": "2026-08",
       "group": "Food waste",
-      "kg": 5.86828
+      "kg": 5.86827885
     },
     {
       "month": "2026-08",
       "group": "Dry recycling",
-      "kg": 4.22224
+      "kg": 4.22223737
     },
     {
       "month": "2026-08",
       "group": "Soft plastics",
-      "kg": 0.44683
+      "kg": 0.44683333
     },
     {
       "month": "2026-09",
@@ -438,17 +438,17 @@
     {
       "month": "2026-09",
       "group": "Food waste",
-      "kg": 4.47716
+      "kg": 4.47716071
     },
     {
       "month": "2026-09",
       "group": "Dry recycling",
-      "kg": 3.3996
+      "kg": 3.3996039
     },
     {
       "month": "2026-09",
       "group": "Soft plastics",
-      "kg": 0.28524
+      "kg": 0.2852381
     },
     {
       "month": "2026-10",
@@ -458,17 +458,17 @@
     {
       "month": "2026-10",
       "group": "Food waste",
-      "kg": 1.13571
+      "kg": 1.13571429
     },
     {
       "month": "2026-10",
       "group": "Dry recycling",
-      "kg": 1.13771
+      "kg": 1.13771429
     },
     {
       "month": "2026-10",
       "group": "Soft plastics",
-      "kg": 0.12343
+      "kg": 0.12342857
     }
   ],
   "recorded": [
