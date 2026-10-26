@@ -1,0 +1,76 @@
+name: Publish waste data (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: waste-data-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install Sheets dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run automated tests
+        run: python -m unittest discover -s tests -v
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          create_credentials_file: true
+      - name: Read private Collections sheet
+        env:
+          GOOGLE_SHEET_ID: ${{ vars.GOOGLE_SHEET_ID }}
+        run: python scripts/fetch_sheet.py --output build/source/collections.csv
+      - name: Build and validate JSON in staging
+        run: python scripts/build_data.py --csv build/source/collections.csv --output build/data
+      - name: Confirm exactly four generated files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          folder = Path('build/data')
+          expected = {'collections.json', 'monthly.json', 'detail.json', 'comparison.json'}
+          actual = {p.name for p in folder.iterdir()}
+          assert actual == expected, f'Unexpected output files: {actual ^ expected}'
+          for name in expected:
+              json.loads((folder / name).read_text(encoding='utf-8'))
+          print('Four validated JSON files ready for publication')
+          PY
+      - name: Copy only validated JSON into website data
+        run: |
+          mkdir -p data
+          for name in collections monthly detail comparison; do
+            cp "build/data/$name.json" "data/$name.json"
+          done
+      - name: Commit and push JSON changes only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add -- data/collections.json data/monthly.json data/detail.json data/comparison.json
+          if git diff --cached --quiet; then
+            echo "No changes to published JSON; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --cached --stat
+          git commit -m "Update household waste data from Google Sheets"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
