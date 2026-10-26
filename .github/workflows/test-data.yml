@@ -16,8 +16,8 @@ jobs:
   test-and-build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Run regression and production tests
@@ -25,7 +25,7 @@ jobs:
       - name: Build validated JSON (not published)
         run: python scripts/build_data.py --csv reference/collections-source.csv --output build/data
       - name: Upload build for inspection
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: waste-json-test-build
           path: build/data/*.json
