@@ -1,0 +1,1106 @@
+{
+  "imputed": [
+    {
+      "month": "2025-01",
+      "type": "Glass",
+      "kg": 1.59619048
+    },
+    {
+      "month": "2025-01",
+      "type": "Cardboard",
+      "kg": 1.14842857
+    },
+    {
+      "month": "2025-01",
+      "type": "Tin",
+      "kg": 0.6012381
+    },
+    {
+      "month": "2025-01",
+      "type": "Plastic",
+      "kg": 0.74780952
+    },
+    {
+      "month": "2025-01",
+      "type": "Paper",
+      "kg": 0.11714286
+    },
+    {
+      "month": "2025-02",
+      "type": "Glass",
+      "kg": 2.90338095
+    },
+    {
+      "month": "2025-02",
+      "type": "Cardboard",
+      "kg": 1.21264286
+    },
+    {
+      "month": "2025-02",
+      "type": "Tin",
+      "kg": 0.56247619
+    },
+    {
+      "month": "2025-02",
+      "type": "Plastic",
+      "kg": 0.59890476
+    },
+    {
+      "month": "2025-02",
+      "type": "Paper",
+      "kg": 0.1135
+    },
+    {
+      "month": "2025-03",
+      "type": "Glass",
+      "kg": 3.32242857
+    },
+    {
+      "month": "2025-03",
+      "type": "Cardboard",
+      "kg": 0.98592857
+    },
+    {
+      "month": "2025-03",
+      "type": "Tin",
+      "kg": 0.86028571
+    },
+    {
+      "month": "2025-03",
+      "type": "Plastic",
+      "kg": 0.53328571
+    },
+    {
+      "month": "2025-03",
+      "type": "Paper",
+      "kg": 0.14935714
+    },
+    {
+      "month": "2025-04",
+      "type": "Glass",
+      "kg": 1.82538095
+    },
+    {
+      "month": "2025-04",
+      "type": "Cardboard",
+      "kg": 1.52414286
+    },
+    {
+      "month": "2025-04",
+      "type": "Tin",
+      "kg": 0.8307619
+    },
+    {
+      "month": "2025-04",
+      "type": "Plastic",
+      "kg": 0.50185714
+    },
+    {
+      "month": "2025-04",
+      "type": "Paper",
+      "kg": 0.27014286
+    },
+    {
+      "month": "2025-05",
+      "type": "Glass",
+      "kg": 1.65381905
+    },
+    {
+      "month": "2025-05",
+      "type": "Cardboard",
+      "kg": 1.64191429
+    },
+    {
+      "month": "2025-05",
+      "type": "Tin",
+      "kg": 0.48649524
+    },
+    {
+      "month": "2025-05",
+      "type": "Plastic",
+      "kg": 0.5178
+    },
+    {
+      "month": "2025-05",
+      "type": "Paper",
+      "kg": 0.2572
+    },
+    {
+      "month": "2025-06",
+      "type": "Glass",
+      "kg": 1.1758
+    },
+    {
+      "month": "2025-06",
+      "type": "Cardboard",
+      "kg": 1.17669286
+    },
+    {
+      "month": "2025-06",
+      "type": "Tin",
+      "kg": 0.52024286
+    },
+    {
+      "month": "2025-06",
+      "type": "Plastic",
+      "kg": 0.44709286
+    },
+    {
+      "month": "2025-06",
+      "type": "Paper",
+      "kg": 0.29965714
+    },
+    {
+      "month": "2025-07",
+      "type": "Glass",
+      "kg": 1.90605714
+    },
+    {
+      "month": "2025-07",
+      "type": "Cardboard",
+      "kg": 1.35870714
+    },
+    {
+      "month": "2025-07",
+      "type": "Tin",
+      "kg": 0.69232609
+    },
+    {
+      "month": "2025-07",
+      "type": "Plastic",
+      "kg": 0.58633571
+    },
+    {
+      "month": "2025-07",
+      "type": "Paper",
+      "kg": 0.17148571
+    },
+    {
+      "month": "2025-08",
+      "type": "Glass",
+      "kg": 0.51725714
+    },
+    {
+      "month": "2025-08",
+      "type": "Cardboard",
+      "kg": 1.47205714
+    },
+    {
+      "month": "2025-08",
+      "type": "Tin",
+      "kg": 0.51350725
+    },
+    {
+      "month": "2025-08",
+      "type": "Plastic",
+      "kg": 0.46588571
+    },
+    {
+      "month": "2025-08",
+      "type": "Paper",
+      "kg": 0.21168571
+    },
+    {
+      "month": "2025-09",
+      "type": "Glass",
+      "kg": 1.5229
+    },
+    {
+      "month": "2025-09",
+      "type": "Cardboard",
+      "kg": 0.9497
+    },
+    {
+      "month": "2025-09",
+      "type": "Tin",
+      "kg": 0.73352381
+    },
+    {
+      "month": "2025-09",
+      "type": "Plastic",
+      "kg": 0.88181429
+    },
+    {
+      "month": "2025-09",
+      "type": "Paper",
+      "kg": 0.06129286
+    },
+    {
+      "month": "2025-10",
+      "type": "Glass",
+      "kg": 0.85635714
+    },
+    {
+      "month": "2025-10",
+      "type": "Cardboard",
+      "kg": 1.26307143
+    },
+    {
+      "month": "2025-10",
+      "type": "Tin",
+      "kg": 0.538
+    },
+    {
+      "month": "2025-10",
+      "type": "Plastic",
+      "kg": 0.8795
+    },
+    {
+      "month": "2025-10",
+      "type": "Paper",
+      "kg": 0.31696429
+    },
+    {
+      "month": "2025-11",
+      "type": "Glass",
+      "kg": 2.35585714
+    },
+    {
+      "month": "2025-11",
+      "type": "Cardboard",
+      "kg": 1.33535714
+    },
+    {
+      "month": "2025-11",
+      "type": "Tin",
+      "kg": 0.70485714
+    },
+    {
+      "month": "2025-11",
+      "type": "Plastic",
+      "kg": 0.78992857
+    },
+    {
+      "month": "2025-11",
+      "type": "Paper",
+      "kg": 0.38157143
+    },
+    {
+      "month": "2025-12",
+      "type": "Glass",
+      "kg": 2.33757143
+    },
+    {
+      "month": "2025-12",
+      "type": "Cardboard",
+      "kg": 1.23435714
+    },
+    {
+      "month": "2025-12",
+      "type": "Tin",
+      "kg": 0.82228571
+    },
+    {
+      "month": "2025-12",
+      "type": "Plastic",
+      "kg": 0.50478571
+    },
+    {
+      "month": "2025-12",
+      "type": "Paper",
+      "kg": 0.387
+    },
+    {
+      "month": "2026-01",
+      "type": "Glass",
+      "kg": 1.79814286
+    },
+    {
+      "month": "2026-01",
+      "type": "Cardboard",
+      "kg": 1.467
+    },
+    {
+      "month": "2026-01",
+      "type": "Tin",
+      "kg": 0.84371429
+    },
+    {
+      "month": "2026-01",
+      "type": "Plastic",
+      "kg": 0.5117619
+    },
+    {
+      "month": "2026-01",
+      "type": "Paper",
+      "kg": 0.72385714
+    },
+    {
+      "month": "2026-02",
+      "type": "Glass",
+      "kg": 1.43985714
+    },
+    {
+      "month": "2026-02",
+      "type": "Cardboard",
+      "kg": 0.71707692
+    },
+    {
+      "month": "2026-02",
+      "type": "Tin",
+      "kg": 0.71697802
+    },
+    {
+      "month": "2026-02",
+      "type": "Plastic",
+      "kg": 0.70485348
+    },
+    {
+      "month": "2026-02",
+      "type": "Paper",
+      "kg": 0.13114286
+    },
+    {
+      "month": "2026-03",
+      "type": "Glass",
+      "kg": 2.0212
+    },
+    {
+      "month": "2026-03",
+      "type": "Cardboard",
+      "kg": 0.54607692
+    },
+    {
+      "month": "2026-03",
+      "type": "Tin",
+      "kg": 0.58709231
+    },
+    {
+      "month": "2026-03",
+      "type": "Plastic",
+      "kg": 0.58661538
+    },
+    {
+      "month": "2026-03",
+      "type": "Paper",
+      "kg": 0.1488
+    },
+    {
+      "month": "2026-04",
+      "type": "Glass",
+      "kg": 1.94525455
+    },
+    {
+      "month": "2026-04",
+      "type": "Cardboard",
+      "kg": 0.58517949
+    },
+    {
+      "month": "2026-04",
+      "type": "Tin",
+      "kg": 0.56670023
+    },
+    {
+      "month": "2026-04",
+      "type": "Plastic",
+      "kg": 0.57682984
+    },
+    {
+      "month": "2026-04",
+      "type": "Paper",
+      "kg": 0.14598788
+    },
+    {
+      "month": "2026-05",
+      "type": "Glass",
+      "kg": 1.68809091
+    },
+    {
+      "month": "2026-05",
+      "type": "Cardboard",
+      "kg": 2.30433333
+    },
+    {
+      "month": "2026-05",
+      "type": "Tin",
+      "kg": 0.5420303
+    },
+    {
+      "month": "2026-05",
+      "type": "Plastic",
+      "kg": 0.86987879
+    },
+    {
+      "month": "2026-05",
+      "type": "Paper",
+      "kg": 0.21042424
+    },
+    {
+      "month": "2026-06",
+      "type": "Glass",
+      "kg": 0.72350216
+    },
+    {
+      "month": "2026-06",
+      "type": "Cardboard",
+      "kg": 1.83271429
+    },
+    {
+      "month": "2026-06",
+      "type": "Tin",
+      "kg": 0.73824675
+    },
+    {
+      "month": "2026-06",
+      "type": "Plastic",
+      "kg": 0.80634632
+    },
+    {
+      "month": "2026-06",
+      "type": "Paper",
+      "kg": 0.51069264
+    },
+    {
+      "month": "2026-07",
+      "type": "Glass",
+      "kg": 2.03550794
+    },
+    {
+      "month": "2026-07",
+      "type": "Cardboard",
+      "kg": 2.07621164
+    },
+    {
+      "month": "2026-07",
+      "type": "Tin",
+      "kg": 0.50520106
+    },
+    {
+      "month": "2026-07",
+      "type": "Plastic",
+      "kg": 0.53056614
+    },
+    {
+      "month": "2026-07",
+      "type": "Paper",
+      "kg": 0.13557672
+    },
+    {
+      "month": "2026-08",
+      "type": "Glass",
+      "kg": 1.60708081
+    },
+    {
+      "month": "2026-08",
+      "type": "Cardboard",
+      "kg": 1.55522559
+    },
+    {
+      "month": "2026-08",
+      "type": "Tin",
+      "kg": 0.35471886
+    },
+    {
+      "month": "2026-08",
+      "type": "Plastic",
+      "kg": 0.52251178
+    },
+    {
+      "month": "2026-08",
+      "type": "Paper",
+      "kg": 0.18270034
+    },
+    {
+      "month": "2026-09",
+      "type": "Glass",
+      "kg": 1.20750649
+    },
+    {
+      "month": "2026-09",
+      "type": "Cardboard",
+      "kg": 0.3998961
+    },
+    {
+      "month": "2026-09",
+      "type": "Tin",
+      "kg": 0.60488961
+    },
+    {
+      "month": "2026-09",
+      "type": "Plastic",
+      "kg": 0.38606494
+    },
+    {
+      "month": "2026-09",
+      "type": "Paper",
+      "kg": 0.80124675
+    },
+    {
+      "month": "2026-10",
+      "type": "Glass",
+      "kg": 0.49885714
+    },
+    {
+      "month": "2026-10",
+      "type": "Cardboard",
+      "kg": 0.24628571
+    },
+    {
+      "month": "2026-10",
+      "type": "Tin",
+      "kg": 0.22742857
+    },
+    {
+      "month": "2026-10",
+      "type": "Plastic",
+      "kg": 0.14457143
+    },
+    {
+      "month": "2026-10",
+      "type": "Paper",
+      "kg": 0.02057143
+    }
+  ],
+  "recorded": [
+    {
+      "month": "2025-01",
+      "type": "Glass",
+      "kg": 1.312
+    },
+    {
+      "month": "2025-01",
+      "type": "Cardboard",
+      "kg": 0.945
+    },
+    {
+      "month": "2025-01",
+      "type": "Tin",
+      "kg": 0.514
+    },
+    {
+      "month": "2025-01",
+      "type": "Plastic",
+      "kg": 0.652
+    },
+    {
+      "month": "2025-01",
+      "type": "Paper",
+      "kg": 0.108
+    },
+    {
+      "month": "2025-02",
+      "type": "Glass",
+      "kg": 1.492
+    },
+    {
+      "month": "2025-02",
+      "type": "Cardboard",
+      "kg": 1.068
+    },
+    {
+      "month": "2025-02",
+      "type": "Tin",
+      "kg": 0.458
+    },
+    {
+      "month": "2025-02",
+      "type": "Plastic",
+      "kg": 0.503
+    },
+    {
+      "month": "2025-02",
+      "type": "Paper",
+      "kg": 0.048
+    },
+    {
+      "month": "2025-03",
+      "type": "Glass",
+      "kg": 3.01
+    },
+    {
+      "month": "2025-03",
+      "type": "Cardboard",
+      "kg": 0.75
+    },
+    {
+      "month": "2025-03",
+      "type": "Tin",
+      "kg": 0.644
+    },
+    {
+      "month": "2025-03",
+      "type": "Plastic",
+      "kg": 0.505
+    },
+    {
+      "month": "2025-03",
+      "type": "Paper",
+      "kg": 0.124
+    },
+    {
+      "month": "2025-04",
+      "type": "Glass",
+      "kg": 3.703
+    },
+    {
+      "month": "2025-04",
+      "type": "Cardboard",
+      "kg": 1.981
+    },
+    {
+      "month": "2025-04",
+      "type": "Tin",
+      "kg": 1.21
+    },
+    {
+      "month": "2025-04",
+      "type": "Plastic",
+      "kg": 0.685
+    },
+    {
+      "month": "2025-04",
+      "type": "Paper",
+      "kg": 0.357
+    },
+    {
+      "month": "2025-05",
+      "type": "Glass",
+      "kg": 1.369
+    },
+    {
+      "month": "2025-05",
+      "type": "Cardboard",
+      "kg": 1.335
+    },
+    {
+      "month": "2025-05",
+      "type": "Tin",
+      "kg": 0.302
+    },
+    {
+      "month": "2025-05",
+      "type": "Plastic",
+      "kg": 0.387
+    },
+    {
+      "month": "2025-05",
+      "type": "Paper",
+      "kg": 0.138
+    },
+    {
+      "month": "2025-06",
+      "type": "Glass",
+      "kg": 1.211
+    },
+    {
+      "month": "2025-06",
+      "type": "Cardboard",
+      "kg": 1.266
+    },
+    {
+      "month": "2025-06",
+      "type": "Tin",
+      "kg": 0.622
+    },
+    {
+      "month": "2025-06",
+      "type": "Plastic",
+      "kg": 0.489
+    },
+    {
+      "month": "2025-06",
+      "type": "Paper",
+      "kg": 0.386
+    },
+    {
+      "month": "2025-07",
+      "type": "Glass",
+      "kg": 2.236
+    },
+    {
+      "month": "2025-07",
+      "type": "Cardboard",
+      "kg": 1.561
+    },
+    {
+      "month": "2025-07",
+      "type": "Tin",
+      "kg": 0.751
+    },
+    {
+      "month": "2025-07",
+      "type": "Plastic",
+      "kg": 0.667
+    },
+    {
+      "month": "2025-07",
+      "type": "Paper",
+      "kg": 0.197
+    },
+    {
+      "month": "2025-08",
+      "type": "Glass",
+      "kg": 0
+    },
+    {
+      "month": "2025-08",
+      "type": "Cardboard",
+      "kg": 0
+    },
+    {
+      "month": "2025-08",
+      "type": "Tin",
+      "kg": 0.405
+    },
+    {
+      "month": "2025-08",
+      "type": "Plastic",
+      "kg": 0
+    },
+    {
+      "month": "2025-08",
+      "type": "Paper",
+      "kg": 0
+    },
+    {
+      "month": "2025-09",
+      "type": "Glass",
+      "kg": 2.068
+    },
+    {
+      "month": "2025-09",
+      "type": "Cardboard",
+      "kg": 2.523
+    },
+    {
+      "month": "2025-09",
+      "type": "Tin",
+      "kg": 0.882
+    },
+    {
+      "month": "2025-09",
+      "type": "Plastic",
+      "kg": 1.368
+    },
+    {
+      "month": "2025-09",
+      "type": "Paper",
+      "kg": 0.29
+    },
+    {
+      "month": "2025-10",
+      "type": "Glass",
+      "kg": 0.622
+    },
+    {
+      "month": "2025-10",
+      "type": "Cardboard",
+      "kg": 1.154
+    },
+    {
+      "month": "2025-10",
+      "type": "Tin",
+      "kg": 0.36
+    },
+    {
+      "month": "2025-10",
+      "type": "Plastic",
+      "kg": 0.694
+    },
+    {
+      "month": "2025-10",
+      "type": "Paper",
+      "kg": 0.097
+    },
+    {
+      "month": "2025-11",
+      "type": "Glass",
+      "kg": 1.695
+    },
+    {
+      "month": "2025-11",
+      "type": "Cardboard",
+      "kg": 0.467
+    },
+    {
+      "month": "2025-11",
+      "type": "Tin",
+      "kg": 0.528
+    },
+    {
+      "month": "2025-11",
+      "type": "Plastic",
+      "kg": 0.6
+    },
+    {
+      "month": "2025-11",
+      "type": "Paper",
+      "kg": 0.462
+    },
+    {
+      "month": "2025-12",
+      "type": "Glass",
+      "kg": 3.255
+    },
+    {
+      "month": "2025-12",
+      "type": "Cardboard",
+      "kg": 2.253
+    },
+    {
+      "month": "2025-12",
+      "type": "Tin",
+      "kg": 1.19
+    },
+    {
+      "month": "2025-12",
+      "type": "Plastic",
+      "kg": 0.905
+    },
+    {
+      "month": "2025-12",
+      "type": "Paper",
+      "kg": 0.53
+    },
+    {
+      "month": "2026-01",
+      "type": "Glass",
+      "kg": 1.238
+    },
+    {
+      "month": "2026-01",
+      "type": "Cardboard",
+      "kg": 1.086
+    },
+    {
+      "month": "2026-01",
+      "type": "Tin",
+      "kg": 0.693
+    },
+    {
+      "month": "2026-01",
+      "type": "Plastic",
+      "kg": 0.407
+    },
+    {
+      "month": "2026-01",
+      "type": "Paper",
+      "kg": 0.69
+    },
+    {
+      "month": "2026-02",
+      "type": "Glass",
+      "kg": 1.674
+    },
+    {
+      "month": "2026-02",
+      "type": "Cardboard",
+      "kg": 1.01
+    },
+    {
+      "month": "2026-02",
+      "type": "Tin",
+      "kg": 0.773
+    },
+    {
+      "month": "2026-02",
+      "type": "Plastic",
+      "kg": 0.715
+    },
+    {
+      "month": "2026-02",
+      "type": "Paper",
+      "kg": 0.141
+    },
+    {
+      "month": "2026-03",
+      "type": "Glass",
+      "kg": 0
+    },
+    {
+      "month": "2026-03",
+      "type": "Cardboard",
+      "kg": 0
+    },
+    {
+      "month": "2026-03",
+      "type": "Tin",
+      "kg": 0
+    },
+    {
+      "month": "2026-03",
+      "type": "Plastic",
+      "kg": 0
+    },
+    {
+      "month": "2026-03",
+      "type": "Paper",
+      "kg": 0
+    },
+    {
+      "month": "2026-04",
+      "type": "Glass",
+      "kg": 4.238
+    },
+    {
+      "month": "2026-04",
+      "type": "Cardboard",
+      "kg": 1.145
+    },
+    {
+      "month": "2026-04",
+      "type": "Tin",
+      "kg": 1.231
+    },
+    {
+      "month": "2026-04",
+      "type": "Plastic",
+      "kg": 1.23
+    },
+    {
+      "month": "2026-04",
+      "type": "Paper",
+      "kg": 0.312
+    },
+    {
+      "month": "2026-05",
+      "type": "Glass",
+      "kg": 0
+    },
+    {
+      "month": "2026-05",
+      "type": "Cardboard",
+      "kg": 0
+    },
+    {
+      "month": "2026-05",
+      "type": "Tin",
+      "kg": 0
+    },
+    {
+      "month": "2026-05",
+      "type": "Plastic",
+      "kg": 0
+    },
+    {
+      "month": "2026-05",
+      "type": "Paper",
+      "kg": 0
+    },
+    {
+      "month": "2026-06",
+      "type": "Glass",
+      "kg": 2.401
+    },
+    {
+      "month": "2026-06",
+      "type": "Cardboard",
+      "kg": 4.151
+    },
+    {
+      "month": "2026-06",
+      "type": "Tin",
+      "kg": 1.279
+    },
+    {
+      "month": "2026-06",
+      "type": "Plastic",
+      "kg": 1.69
+    },
+    {
+      "month": "2026-06",
+      "type": "Paper",
+      "kg": 0.723
+    },
+    {
+      "month": "2026-07",
+      "type": "Glass",
+      "kg": 1.366
+    },
+    {
+      "month": "2026-07",
+      "type": "Cardboard",
+      "kg": 1.268
+    },
+    {
+      "month": "2026-07",
+      "type": "Tin",
+      "kg": 0.394
+    },
+    {
+      "month": "2026-07",
+      "type": "Plastic",
+      "kg": 0.3
+    },
+    {
+      "month": "2026-07",
+      "type": "Paper",
+      "kg": 0.103
+    },
+    {
+      "month": "2026-08",
+      "type": "Glass",
+      "kg": 1.803
+    },
+    {
+      "month": "2026-08",
+      "type": "Cardboard",
+      "kg": 2.132
+    },
+    {
+      "month": "2026-08",
+      "type": "Tin",
+      "kg": 0.319
+    },
+    {
+      "month": "2026-08",
+      "type": "Plastic",
+      "kg": 0.601
+    },
+    {
+      "month": "2026-08",
+      "type": "Paper",
+      "kg": 0.092
+    },
+    {
+      "month": "2026-09",
+      "type": "Glass",
+      "kg": 0.79
+    },
+    {
+      "month": "2026-09",
+      "type": "Cardboard",
+      "kg": 0.507
+    },
+    {
+      "month": "2026-09",
+      "type": "Tin",
+      "kg": 0.6
+    },
+    {
+      "month": "2026-09",
+      "type": "Plastic",
+      "kg": 0.444
+    },
+    {
+      "month": "2026-09",
+      "type": "Paper",
+      "kg": 0.914
+    },
+    {
+      "month": "2026-10",
+      "type": "Glass",
+      "kg": 1.455
+    },
+    {
+      "month": "2026-10",
+      "type": "Cardboard",
+      "kg": 0.431
+    },
+    {
+      "month": "2026-10",
+      "type": "Tin",
+      "kg": 0.398
+    },
+    {
+      "month": "2026-10",
+      "type": "Plastic",
+      "kg": 0.253
+    },
+    {
+      "month": "2026-10",
+      "type": "Paper",
+      "kg": 0.036
+    }
+  ]
+}
