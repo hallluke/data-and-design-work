@@ -91,7 +91,13 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   }
   function moveTip(event){
     if(tip.hidden)return;
-    positionFixedTooltip(tip, event, {flipBoundary: container.getBoundingClientRect().right});
+    // The calendar SVG can be wider than its horizontal scroll viewport.
+    // Use the visible chart area, not the offscreen SVG edge, for flipping.
+    const scroll=container.closest(".calendar-scroll");
+    const article=container.closest("article");
+    const scrollRight=scroll?.getBoundingClientRect().right ?? window.innerWidth;
+    const articleRight=article?.getBoundingClientRect().right ?? window.innerWidth;
+    positionFixedTooltip(tip, event, {flipBoundary: Math.min(scrollRight, articleRight, window.innerWidth - 6)});
   }
   function showTip(d){
     // Only rebuild the tooltip when the hovered date changes. Positioning is

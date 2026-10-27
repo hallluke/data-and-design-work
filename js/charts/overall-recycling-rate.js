@@ -69,7 +69,10 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
           const gap=12;
           const x=mouseX<bounds.width/2 ? mouseX+gap : mouseX-gap-width;
           tip.style.left=Math.max(3,Math.min(x,Math.max(3,bounds.width-width-3)))+"px";
-          const y=event.clientY-bounds.top-height-8;
+          // In the upper third, place the tooltip below the pointer to keep
+          // narrow upper doughnut segments visible. No animation.
+          const mouseY=event.clientY-bounds.top;
+          const y=mouseY<bounds.height/3 ? mouseY+12 : mouseY-height-8;
           tip.style.top=Math.max(0,Math.min(y,Math.max(0,bounds.height-height)))+"px";
         });
         this.addEventListener("pointerleave",()=>{hideTooltip(tip);});
