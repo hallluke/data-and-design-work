@@ -742,11 +742,11 @@ select:disabled {
 
 /* Publication stamps: bottom-left of the introduction, over existing whitespace. */
 .intro { position:relative; }
-.collection-stamps { position:absolute; left:0; bottom:0; display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; font-family:"Source Sans 3",Arial,sans-serif; }
+.collection-stamps { position:absolute; left:var(--stamps-left,0px); bottom:var(--stamps-bottom,0px); display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; font-family:"Source Sans 3",Arial,sans-serif; }
 .collection-stamps[hidden] { display:none; }
 .collection-stamp { display:inline-flex; align-items:baseline; gap:6px; white-space:nowrap; padding:3px 6px; border:1px solid var(--muted); color:var(--muted); opacity:.8; transform:rotate(var(--stamp-angle,0deg)); transform-origin:center; }
-.stamp-label { font-size:9px; letter-spacing:.055em; }
-.stamp-date { font-size:10px; font-weight:700; text-transform:uppercase; font-variant-numeric:tabular-nums; }
+.stamp-label { font-size:10px; letter-spacing:.055em; }
+.stamp-date { font-size:11px; font-weight:700; text-transform:uppercase; font-variant-numeric:tabular-nums; }
 @media (max-width:780px) {
   .collection-stamps { position:relative; left:auto; bottom:auto; margin-top:14px; margin-bottom:3px; }
 }

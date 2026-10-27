@@ -25,5 +25,8 @@ export function initFreshness(data) {
   for (const stamp of stamps.querySelectorAll(".collection-stamp")) {
     stamp.style.setProperty("--stamp-angle", `${(Math.random() * 4 - 2).toFixed(2)}deg`);
   }
+  // Small independent inward offsets, chosen anew on each page load.
+  stamps.style.setProperty("--stamps-left", `${(Math.random() * 5).toFixed(1)}px`);
+  stamps.style.setProperty("--stamps-bottom", `${(Math.random() * 5).toFixed(1)}px`);
   stamps.hidden = false;
 }
