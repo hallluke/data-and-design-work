@@ -1,54 +1,527 @@
 <!DOCTYPE html>
-
-<!--
-PERSONAL ATLAS — DEVELOPER GUIDE
-
-Single-file prototype: no build tools or local server required.
-An internet connection loads Observable Plot, D3 and Google Fonts.
-
-Sections: CSS (shared/site and responsive) → HTML (rows/modules) → embedded
-WASTE_DATA / WASTE_DETAIL → shared JavaScript → Figure 01 → Figure 02 → initAtlas().
-
-Adding a chart:
-  1. Add an <article class="module wide|narrow"> inside an .atlas-row.
-  2. Create a createYourChart({container, data}) function near Figure 01.
-  3. Initialise it in initAtlas(); use shared tooltip/formatting helpers.
-  4. Keep its data transformation and filter state inside its own function.
-
-Later split into styles.css, js/shared.js, js/charts/*.js, js/main.js
-and data/waste.json. The metadata.completeThrough field is produced by
-upstream processing, not inferred from aggregated monthly weights.
--->
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Household Waste &amp; Recycling — Data &amp; Design</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css"></head><body><main class="page"><header class="mast"><div class="mast-left"><div class="eyebrow">Data &amp; Design: Analysis · Visualisation · Information Design</div><h1>Household Waste &amp; Recycling</h1></div><div class="meta"><div class="meta-stack"><span>#001</span><span>2025—2026</span></div><img alt="" aria-hidden="true" class="recycling-icon" height="23" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXJlY3ljbGUgcHJldmlldy1pY29uIj48cGF0aCBkPSJNNyAxOUg0LjgxNWExLjgzIDEuODMgMCAwIDEtMS41Ny0uODgxIDEuNzg1IDEuNzg1IDAgMCAxLS4wMDQtMS43ODRMNy4xOTYgOS41Ii8+PHBhdGggZD0iTTExIDE5aDguMjAzYTEuODMgMS44MyAwIDAgMCAxLjU1Ni0uODkgMS43ODQgMS43ODQgMCAwIDAgMC0xLjc3NWwtMS4yMjYtMi4xMiIvPjxwYXRoIGQ9Im0xNCAxNi0zIDMgMyAzIi8+PHBhdGggZD0iTTguMjkzIDEzLjU5NiA3LjE5NiA5LjUgMy4xIDEwLjU5OCIvPjxwYXRoIGQ9Im05LjM0NCA1LjgxMSAxLjA5My0xLjg5MkExLjgzIDEuODMgMCAwIDEgMTEuOTg1IDNhMS43ODQgMS43ODQgMCAwIDEgMS41NDYuODg4bDMuOTQzIDYuODQzIi8+PHBhdGggZD0ibTEzLjM3OCA5LjYzMyA0LjA5NiAxLjA5OCAxLjA5Ny00LjA5NiIvPjwvc3ZnPg==" width="23"/></div></header><div aria-label="About this project" class="intro"><div class="intro-opening"><p>I like data. I also like recycling. So, predictably, I started weighing everything I dispose of at home. Feel free to explore the data below.</p></div><div class="intro-explanation"><p>Monthly totals can be viewed by material or combined. <em>Imputed</em> figures spread each material type’s weight across the days since the previous collection, giving a more realistic picture of when it accumulated. <em>Recorded</em> shows the weights on the dates they were collected. The year-on-year comparison uses equivalent periods in 2025 and 2026. Where recent residual waste has not yet been collected, an explicitly provisional estimate is shown. Data tables and methodology explanations are provided for each chart.</p></div></div>
-<div class="publication-band" id="publication-band" aria-label="Data publication dates" hidden><span class="publication-band-cell publication-band-heading">From the household records</span><span class="publication-band-cell"><span class="publication-label">Filed through:</span> <strong id="stamp-filed"></strong></span><span class="publication-band-cell"><span class="publication-label">Last refreshed:</span> <strong id="stamp-checked"></strong></span></div>
-<div class="atlas-row chart-disclosure-grid"><article aria-labelledby="title-monthly" class="module wide"><div class="module-header"><div class="heading"><span class="num">01</span><h2 id="title-monthly">Month by month</h2></div><span class="unit">kg / month</span></div>
-<div class="filter-layout"><div aria-label="Monthly chart filters" class="controls chart-controls">
-<div class="control-row"><span class="control-label" id="basis-label">Measurement</span><div aria-labelledby="basis-label" class="choices" role="group"><button aria-pressed="true" data-basis="imputed" type="button">Imputed</button><button aria-pressed="false" data-basis="recorded" type="button">Recorded</button></div></div>
-<div class="control-row"><span class="control-label" id="display-label">Composition</span><div aria-labelledby="display-label" class="choices" role="group"><button aria-pressed="true" data-display="total" type="button">Total</button><button aria-pressed="false" data-display="stacked" type="button">Stacked</button></div></div>
-<div class="control-row"><label for="material">Material</label><select id="material"><option value="all">All materials</option><option>Residual waste</option><option>Food waste</option><option>Dry recycling</option><option>Soft plastics</option></select></div>
-<div class="control-row"><label for="submaterial">Dry recycling type</label><select disabled="" id="submaterial"><option value="all">All dry recycling</option><option>Glass</option><option>Cardboard</option><option>Tin</option><option>Plastic</option><option>Paper</option></select></div>
-</div><div aria-label="Chart key" class="legend" id="chart-legend"></div></div>
-<div aria-live="polite" class="chart" id="monthly-chart"><div class="tooltip" hidden="" id="tip"></div></div></article>
-<article aria-labelledby="title-comparison" class="module narrow comparison-module">
-<div class="module-header"><div class="heading"><span class="num">02</span><h2 id="title-comparison">A year apart</h2></div><span class="unit" id="comparison-period">Jan—Sep</span></div>
-<div aria-label="Year-on-year comparison filters" class="comparison-controls controls chart-controls">
-<div class="control-row"><span class="control-label" id="comparison-basis-label">Measurement</span><div aria-labelledby="comparison-basis-label" class="choices" role="group"><button aria-pressed="true" data-compare-basis="imputed" type="button">Imputed</button><button aria-pressed="false" data-compare-basis="recorded" type="button">Recorded</button></div></div>
-<div class="control-row"><label for="comparison-categories">Categories</label><select id="comparison-categories"><option value="main">Main categories</option><option value="dry">Dry recycling</option><option value="all">All materials</option><option value="residual">Residual waste estimate</option></select></div>
-</div>
-<div aria-live="polite" class="chart comparison-chart" id="comparison-chart"><div class="tooltip" hidden=""></div></div>
-</article>
-<!-- Shared full-width disclosure: independent chart content, one expanded panel at a time. -->
-<div class="disclosure-trigger disclosure-trigger-1"><button aria-controls="monthly-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="monthly-disclosure" type="button"><span aria-hidden="true" class="disclosure-chevron">▸</span> 01 · Data and methodology</button></div><div aria-label="Figure 01 data and methodology" class="disclosure-panel disclosure-panel-1" hidden="" id="monthly-disclosure" role="region">
-<div class="details-layout"><div class="method-copy"><p id="method">Methodology and completeness information are populated from dataset metadata.</p></div><div class="table-scroll"><table id="data-table"><thead></thead><tbody></tbody></table></div></div>
-</div><div class="disclosure-trigger disclosure-trigger-2"><button aria-controls="comparison-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="comparison-disclosure" type="button"><span aria-hidden="true" class="disclosure-chevron">▸</span> 02 · Data and methodology</button></div><div aria-label="Figure 02 data and methodology" class="disclosure-panel disclosure-panel-2" hidden="" id="comparison-disclosure" role="region">
-<div class="details-layout"><div class="method-copy"><p id="comparison-method"></p></div><div class="table-scroll"><table id="comparison-table"><thead></thead><tbody></tbody></table></div></div>
-</div></div>
-<div class="atlas-row chart-disclosure-grid chart-disclosure-grid-secondary"><article aria-labelledby="title-materials" class="module narrow recycling-module"><div class="module-header"><div class="heading"><span class="num">03</span><h2 id="title-materials">Recycling rate</h2></div><span class="unit">% by weight</span></div><div aria-label="Recycling rate filters" class="controls chart-controls recycling-controls"><div class="control-row"><label for="recycling-year">Period</label><select id="recycling-year"><option value="all">All data</option><option value="last-6">Last 6 months</option><option value="last-12">Last 12 months</option></select></div></div><div aria-live="polite" class="chart recycling-chart" id="recycling-chart"><div class="tooltip" hidden="" id="recycling-tip"></div></div></article><article aria-labelledby="title-calendar" class="module wide calendar-module"><div class="module-header"><div class="heading"><span class="num">04</span><h2 id="title-calendar">Recording calendar</h2></div><span class="unit">kg / day</span></div><div class="calendar-top"><div aria-label="Calendar chart filters" class="controls chart-controls calendar-controls"><div class="control-row"><label for="calendar-material">Material</label><select id="calendar-material"><option value="all">All materials</option><option value="residual">Residual waste</option><option value="food">Food waste</option><option value="dry">Dry recycling</option><option value="soft">Soft plastics</option><option value="batteries">Batteries</option></select></div><div class="control-row"><label for="calendar-submaterial">Dry recycling type</label><select disabled="" id="calendar-submaterial"><option value="all">All dry recycling</option><option>Glass</option><option>Cardboard</option><option>Tin</option><option>Plastic</option><option>Paper</option></select></div></div><div aria-label="Weight intensity legend" class="calendar-key" id="calendar-key"></div></div><div class="calendar-layout"><div aria-hidden="true" class="calendar-weekdays"><div class="calendar-axis-spacer"></div><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div aria-label="Scrollable calendar, weeks left to right" class="calendar-scroll" id="calendar-scroll" tabindex="0"><div aria-live="polite" class="calendar-plot" id="calendar-chart"></div><div class="tooltip calendar-tooltip" hidden="" id="calendar-tip"></div></div></div></article><div class="disclosure-trigger disclosure-trigger-3"><button aria-controls="recycling-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="recycling-disclosure" type="button"><span aria-hidden="true" class="disclosure-chevron">▸</span> 03 · Data and methodology</button></div><div aria-label="Figure 03 data and methodology" class="disclosure-panel" hidden="" id="recycling-disclosure" role="region"><div class="details-layout"><div class="method-copy"><p>Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.</p></div><div class="table-scroll"><table id="recycling-table"><thead><tr><th scope="col">Category</th><th scope="col">Weight (kg)</th><th scope="col">Share</th></tr></thead><tbody></tbody></table></div></div></div><div class="disclosure-trigger disclosure-trigger-4"><button aria-controls="calendar-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="calendar-disclosure" type="button"><span aria-hidden="true" class="disclosure-chevron">▸</span> 04 · Data and methodology</button></div><div aria-label="Figure 04 data and methodology" class="disclosure-panel" hidden="" id="calendar-disclosure" role="region"><div class="details-layout"><div class="method-copy"><p>Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.</p></div><div class="table-scroll"><table id="calendar-table"><thead><tr><th scope="col">Measure</th><th scope="col">Value</th></tr></thead><tbody></tbody></table></div></div></div></div>
-<footer class="foot"><div class="foot-left"><div>Data &amp; Design</div><div>Household Waste &amp; Recycling · #001</div></div><div class="foot-right"><div>Charts made with <a href="https://observablehq.com/plot/" rel="noopener noreferrer" target="_blank">Observable Plot</a> &amp; <a href="https://d3js.org/" rel="noopener noreferrer" target="_blank">D3.js</a></div><div>by <a href="https://hallluke.github.io/" rel="noopener noreferrer" target="_blank">Luke Hall</a></div></div></footer></main>
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/dist/plot.umd.min.js"></script>
-<script type="module" src="js/app.js"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width,initial-scale=1" name="viewport"/>
+    <title>
+      Household Waste &amp; Recycling — Data &amp; Design
+    </title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <header class="mast">
+        <div class="mast-left">
+          <div class="eyebrow">
+            Data &amp; Design: Analysis · Visualisation · Information Design
+          </div>
+          <h1>
+            Household Waste &amp; Recycling
+          </h1>
+        </div>
+        <div class="meta">
+          <div class="meta-stack">
+            <span>
+              #001
+            </span>
+            <span>
+              2025—2026
+            </span>
+          </div>
+          <img alt="" aria-hidden="true" class="recycling-icon" height="23" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXJlY3ljbGUgcHJldmlldy1pY29uIj48cGF0aCBkPSJNNyAxOUg0LjgxNWExLjgzIDEuODMgMCAwIDEtMS41Ny0uODgxIDEuNzg1IDEuNzg1IDAgMCAxLS4wMDQtMS43ODRMNy4xOTYgOS41Ii8+PHBhdGggZD0iTTExIDE5aDguMjAzYTEuODMgMS44MyAwIDAgMCAxLjU1Ni0uODkgMS43ODQgMS43ODQgMCAwIDAgMC0xLjc3NWwtMS4yMjYtMi4xMiIvPjxwYXRoIGQ9Im0xNCAxNi0zIDMgMyAzIi8+PHBhdGggZD0iTTguMjkzIDEzLjU5NiA3LjE5NiA5LjUgMy4xIDEwLjU5OCIvPjxwYXRoIGQ9Im05LjM0NCA1LjgxMSAxLjA5My0xLjg5MkExLjgzIDEuODMgMCAwIDEgMTEuOTg1IDNhMS43ODQgMS43ODQgMCAwIDEgMS41NDYuODg4bDMuOTQzIDYuODQzIi8+PHBhdGggZD0ibTEzLjM3OCA5LjYzMyA0LjA5NiAxLjA5OCAxLjA5Ny00LjA5NiIvPjwvc3ZnPg==" width="23"/>
+        </div>
+      </header>
+      <div aria-label="About this project" class="intro">
+        <div class="intro-opening">
+          <p>
+            I like data. I also like recycling. So, predictably, I started weighing everything I dispose of at home. Feel free to explore the data below.
+          </p>
+        </div>
+        <div class="intro-explanation">
+          <p>
+            Monthly totals can be viewed by material or combined.
+            <em>
+              Imputed
+            </em>
+            figures spread each material type’s weight across the days since the previous collection, giving a more realistic picture of when it accumulated.
+            <em>
+              Recorded
+            </em>
+            shows the weights on the dates they were collected. The year-on-year comparison uses equivalent periods in 2025 and 2026. Where recent residual waste has not yet been collected, an explicitly provisional estimate is shown. Data tables and methodology explanations are provided for each chart.
+          </p>
+        </div>
+      </div>
+      <div class="publication-band" id="publication-band" aria-label="Data publication dates" hidden>
+        <span class="publication-band-cell publication-band-heading">
+          Edition notes
+        </span>
+        <span class="publication-band-cell">
+          <span class="publication-label">
+            Filed to:
+          </span>
+          <strong id="stamp-filed">
+          </strong>
+        </span>
+        <span class="publication-band-cell">
+          <span class="publication-label">
+            Last refreshed:
+          </span>
+          <strong id="stamp-checked">
+          </strong>
+        </span>
+      </div>
+      <div class="atlas-row chart-disclosure-grid">
+        <article aria-labelledby="title-monthly" class="module wide">
+          <div class="module-header">
+            <div class="heading">
+              <span class="num">
+                01
+              </span>
+              <h2 id="title-monthly">
+                Month by month
+              </h2>
+            </div>
+            <span class="unit">
+              kg / month
+            </span>
+          </div>
+          <div class="filter-layout">
+            <div aria-label="Monthly chart filters" class="controls chart-controls">
+              <div class="control-row">
+                <span class="control-label" id="basis-label">
+                  Measurement
+                </span>
+                <div aria-labelledby="basis-label" class="choices" role="group">
+                  <button aria-pressed="true" data-basis="imputed" type="button">
+                    Imputed
+                  </button>
+                  <button aria-pressed="false" data-basis="recorded" type="button">
+                    Recorded
+                  </button>
+                </div>
+              </div>
+              <div class="control-row">
+                <span class="control-label" id="display-label">
+                  Composition
+                </span>
+                <div aria-labelledby="display-label" class="choices" role="group">
+                  <button aria-pressed="true" data-display="total" type="button">
+                    Total
+                  </button>
+                  <button aria-pressed="false" data-display="stacked" type="button">
+                    Stacked
+                  </button>
+                </div>
+              </div>
+              <div class="control-row">
+                <label for="material">
+                  Material
+                </label>
+                <select id="material">
+                  <option value="all">
+                    All materials
+                  </option>
+                  <option>
+                    Residual waste
+                  </option>
+                  <option>
+                    Food waste
+                  </option>
+                  <option>
+                    Dry recycling
+                  </option>
+                  <option>
+                    Soft plastics
+                  </option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label for="submaterial">
+                  Dry recycling type
+                </label>
+                <select disabled="" id="submaterial">
+                  <option value="all">
+                    All dry recycling
+                  </option>
+                  <option>
+                    Glass
+                  </option>
+                  <option>
+                    Cardboard
+                  </option>
+                  <option>
+                    Tin
+                  </option>
+                  <option>
+                    Plastic
+                  </option>
+                  <option>
+                    Paper
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div aria-label="Chart key" class="legend" id="chart-legend">
+            </div>
+          </div>
+          <div aria-live="polite" class="chart" id="monthly-chart">
+            <div class="tooltip" hidden="" id="tip">
+            </div>
+          </div>
+        </article>
+        <article aria-labelledby="title-comparison" class="module narrow comparison-module">
+          <div class="module-header">
+            <div class="heading">
+              <span class="num">
+                02
+              </span>
+              <h2 id="title-comparison">
+                A year apart
+              </h2>
+            </div>
+            <span class="unit" id="comparison-period">
+              Jan—Sep
+            </span>
+          </div>
+          <div aria-label="Year-on-year comparison filters" class="comparison-controls controls chart-controls">
+            <div class="control-row">
+              <span class="control-label" id="comparison-basis-label">
+                Measurement
+              </span>
+              <div aria-labelledby="comparison-basis-label" class="choices" role="group">
+                <button aria-pressed="true" data-compare-basis="imputed" type="button">
+                  Imputed
+                </button>
+                <button aria-pressed="false" data-compare-basis="recorded" type="button">
+                  Recorded
+                </button>
+              </div>
+            </div>
+            <div class="control-row">
+              <label for="comparison-categories">
+                Categories
+              </label>
+              <select id="comparison-categories">
+                <option value="main">
+                  Main categories
+                </option>
+                <option value="dry">
+                  Dry recycling
+                </option>
+                <option value="all">
+                  All materials
+                </option>
+                <option value="residual">
+                  Residual waste estimate
+                </option>
+              </select>
+            </div>
+          </div>
+          <div aria-live="polite" class="chart comparison-chart" id="comparison-chart">
+            <div class="tooltip" hidden="">
+            </div>
+          </div>
+        </article>
+        <!-- Shared full-width disclosure: independent chart content, one expanded panel at a time. -->
+        <div class="disclosure-trigger disclosure-trigger-1">
+          <button aria-controls="monthly-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="monthly-disclosure" type="button">
+            <span aria-hidden="true" class="disclosure-chevron">
+              ▸
+            </span>
+            01 · Data and methodology
+          </button>
+        </div>
+        <div aria-label="Figure 01 data and methodology" class="disclosure-panel disclosure-panel-1" hidden="" id="monthly-disclosure" role="region">
+          <div class="details-layout">
+            <div class="method-copy">
+              <p id="method">
+                Methodology and completeness information are populated from dataset metadata.
+              </p>
+            </div>
+            <div class="table-scroll">
+              <table id="data-table">
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="disclosure-trigger disclosure-trigger-2">
+          <button aria-controls="comparison-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="comparison-disclosure" type="button">
+            <span aria-hidden="true" class="disclosure-chevron">
+              ▸
+            </span>
+            02 · Data and methodology
+          </button>
+        </div>
+        <div aria-label="Figure 02 data and methodology" class="disclosure-panel disclosure-panel-2" hidden="" id="comparison-disclosure" role="region">
+          <div class="details-layout">
+            <div class="method-copy">
+              <p id="comparison-method">
+              </p>
+            </div>
+            <div class="table-scroll">
+              <table id="comparison-table">
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atlas-row chart-disclosure-grid chart-disclosure-grid-secondary">
+        <article aria-labelledby="title-materials" class="module narrow recycling-module">
+          <div class="module-header">
+            <div class="heading">
+              <span class="num">
+                03
+              </span>
+              <h2 id="title-materials">
+                Recycling rate
+              </h2>
+            </div>
+            <span class="unit">
+              % by weight
+            </span>
+          </div>
+          <div aria-label="Recycling rate filters" class="controls chart-controls recycling-controls">
+            <div class="control-row">
+              <label for="recycling-year">
+                Period
+              </label>
+              <select id="recycling-year">
+                <option value="all">
+                  All data
+                </option>
+                <option value="last-6">
+                  Last 6 months
+                </option>
+                <option value="last-12">
+                  Last 12 months
+                </option>
+              </select>
+            </div>
+          </div>
+          <div aria-live="polite" class="chart recycling-chart" id="recycling-chart">
+            <div class="tooltip" hidden="" id="recycling-tip">
+            </div>
+          </div>
+        </article>
+        <article aria-labelledby="title-calendar" class="module wide calendar-module">
+          <div class="module-header">
+            <div class="heading">
+              <span class="num">
+                04
+              </span>
+              <h2 id="title-calendar">
+                Recording calendar
+              </h2>
+            </div>
+            <span class="unit">
+              kg / day
+            </span>
+          </div>
+          <div class="calendar-top">
+            <div aria-label="Calendar chart filters" class="controls chart-controls calendar-controls">
+              <div class="control-row">
+                <label for="calendar-material">
+                  Material
+                </label>
+                <select id="calendar-material">
+                  <option value="all">
+                    All materials
+                  </option>
+                  <option value="residual">
+                    Residual waste
+                  </option>
+                  <option value="food">
+                    Food waste
+                  </option>
+                  <option value="dry">
+                    Dry recycling
+                  </option>
+                  <option value="soft">
+                    Soft plastics
+                  </option>
+                  <option value="batteries">
+                    Batteries
+                  </option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label for="calendar-submaterial">
+                  Dry recycling type
+                </label>
+                <select disabled="" id="calendar-submaterial">
+                  <option value="all">
+                    All dry recycling
+                  </option>
+                  <option>
+                    Glass
+                  </option>
+                  <option>
+                    Cardboard
+                  </option>
+                  <option>
+                    Tin
+                  </option>
+                  <option>
+                    Plastic
+                  </option>
+                  <option>
+                    Paper
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div aria-label="Weight intensity legend" class="calendar-key" id="calendar-key">
+            </div>
+          </div>
+          <div class="calendar-layout">
+            <div aria-hidden="true" class="calendar-weekdays">
+              <div class="calendar-axis-spacer">
+              </div>
+              <span>
+                Mon
+              </span>
+              <span>
+                Tue
+              </span>
+              <span>
+                Wed
+              </span>
+              <span>
+                Thu
+              </span>
+              <span>
+                Fri
+              </span>
+              <span>
+                Sat
+              </span>
+              <span>
+                Sun
+              </span>
+            </div>
+            <div aria-label="Scrollable calendar, weeks left to right" class="calendar-scroll" id="calendar-scroll" tabindex="0">
+              <div aria-live="polite" class="calendar-plot" id="calendar-chart">
+              </div>
+              <div class="tooltip calendar-tooltip" hidden="" id="calendar-tip">
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="disclosure-trigger disclosure-trigger-3">
+          <button aria-controls="recycling-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="recycling-disclosure" type="button">
+            <span aria-hidden="true" class="disclosure-chevron">
+              ▸
+            </span>
+            03 · Data and methodology
+          </button>
+        </div>
+        <div aria-label="Figure 03 data and methodology" class="disclosure-panel" hidden="" id="recycling-disclosure" role="region">
+          <div class="details-layout">
+            <div class="method-copy">
+              <p>
+                Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.
+              </p>
+            </div>
+            <div class="table-scroll">
+              <table id="recycling-table">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      Category
+                    </th>
+                    <th scope="col">
+                      Weight (kg)
+                    </th>
+                    <th scope="col">
+                      Share
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="disclosure-trigger disclosure-trigger-4">
+          <button aria-controls="calendar-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="calendar-disclosure" type="button">
+            <span aria-hidden="true" class="disclosure-chevron">
+              ▸
+            </span>
+            04 · Data and methodology
+          </button>
+        </div>
+        <div aria-label="Figure 04 data and methodology" class="disclosure-panel" hidden="" id="calendar-disclosure" role="region">
+          <div class="details-layout">
+            <div class="method-copy">
+              <p>
+                Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.
+              </p>
+            </div>
+            <div class="table-scroll">
+              <table id="calendar-table">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      Measure
+                    </th>
+                    <th scope="col">
+                      Value
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="foot">
+        <div class="foot-left">
+          <div>
+            Data &amp; Design
+          </div>
+          <div>
+            Household Waste &amp; Recycling · #001
+          </div>
+        </div>
+        <div class="foot-right">
+          <div>
+            Charts made with
+            <a href="https://observablehq.com/plot/" rel="noopener noreferrer" target="_blank">
+              Observable Plot
+            </a>
+            &amp;
+            <a href="https://d3js.org/" rel="noopener noreferrer" target="_blank">
+              D3.js
+            </a>
+          </div>
+          <div>
+            by
+            <a href="https://hallluke.github.io/" rel="noopener noreferrer" target="_blank">
+              Luke Hall
+            </a>
+          </div>
+        </div>
+      </footer>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/dist/plot.umd.min.js">
+    </script>
+    <script type="module" src="js/app.js">
+    </script>
+  </body>
+</html>
