@@ -22,6 +22,13 @@ async function initAtlas() {
     return;
   }
   try { initFreshness(data); } catch (error) { console.warn("Freshness display unavailable:", error); }
+
+  // update header year based on recorded data
+  const latestYear = Math.max(
+    ...data.collections.map(row => Number(row.date.slice(0, 4)))
+    );
+  document.getElementById("latest-year").textContent = latestYear;
+
   const charts = [];
   const startChart = (containerId, create) => {
     const container = document.getElementById(containerId);

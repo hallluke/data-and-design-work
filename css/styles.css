@@ -740,12 +740,67 @@ select:disabled {
   .foot-left, .foot-right { width:100%; text-align:center; }
 }
 
-/* Publication record: one ruled, three-column strip beneath the introduction. */
-.publication-band { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:center; gap:0; margin:-12px 0 30px; padding:8px 0; background:#e5e3de; border-top:1px solid #d3d0ca; border-bottom:1px solid #d3d0ca; color:var(--ink); font:11px "Source Sans 3",Arial,sans-serif; }
-.publication-band[hidden] { display:none; }
-.publication-band-cell { min-width:0; padding:0 13px; white-space:nowrap; }
-.publication-band-cell + .publication-band-cell { border-left:1px solid #d3d0ca; }
-.publication-band-heading { font-size:10px; letter-spacing:.07em; text-transform:uppercase; font-weight:700; }
-.publication-label { color:var(--muted); }
-.publication-band strong { font-weight:700; font-variant-numeric:tabular-nums; text-transform:uppercase; }
-@media (max-width:780px) { .publication-band { grid-template-columns:1fr; gap:5px; margin:0 0 24px; padding:9px 0; } .publication-band-cell + .publication-band-cell { border-left:0; } }
+/* Publication record */
+.publication-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 0;
+  margin: -12px 0 18px;
+  padding: 7px 0;
+  background: #e5e3de;
+  color: var(--ink);
+  font: 11px "Source Sans 3", Arial, sans-serif;
+}
+
+.publication-band[hidden] {
+  display: none;
+}
+
+.publication-band-cell {
+  min-width: 0;
+  padding: 0 13px;
+  white-space: nowrap;
+}
+
+.publication-band-cell:nth-child(1) {
+  text-align: left;
+}
+
+.publication-band-cell:nth-child(2) {
+  text-align: center;
+}
+
+.publication-band-cell:nth-child(3) {
+  text-align: right;
+}
+
+.publication-band-heading {
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.publication-label {
+  color: var(--muted);
+}
+
+.publication-band strong {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+@media (max-width: 780px) {
+  .publication-band {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    margin: 0 0 18px;
+    padding: 8px 0;
+  }
+
+  .publication-band-cell {
+    text-align: left !important;
+  }
+}
