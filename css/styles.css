@@ -806,3 +806,15 @@ select:disabled {
 /* Initial chart placeholder; reused for errors by showChartError. */
 .chart-status { font: 12px/1.5 "Source Sans 3",Arial,sans-serif; color: var(--muted); padding: 15px 0; }
 .chart-status.error { color: #6c3535; }
+
+/* Shared chart shell: static heading, JS controls, status/visualisation. */
+.module > .chart-controls { min-width: 0; }
+.module > .chart-content { min-width: 0; position: relative; }
+.chart-content > .chart-status { margin: 0; }
+/* Preserve existing calendar control and legend placement inside its JS scaffold. */
+[data-chart-id="daily-material-weights"] .calendar-top { margin-bottom: 0; }
+/* Loading and error messages always begin at the chart area's top edge. */
+.overall-recycling-rate-chart:has(> .chart-status) {
+  justify-content: flex-start;
+  align-items: flex-start;
+}

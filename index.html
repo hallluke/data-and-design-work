@@ -90,16 +90,12 @@
             </div>
             <span class="unit"></span>
           </div>
-          <div class="filter-layout">
-            <div aria-label="Monthly chart filters" class="controls chart-controls">
-            </div>
-            <div aria-label="Chart key" class="legend" id="chart-legend">
-            </div>
-          </div>
-          <div aria-live="polite" class="chart" id="monthly-material-weights">
+          <div class="chart-controls controls" aria-label="Monthly chart filters"></div>
+          <div class="chart-content">
+            <div class="chart" id="monthly-material-weights" aria-live="polite">
             <p class="chart-status" role="status">Chart loading…</p>
-            <div class="tooltip" hidden="" id="tip">
-            </div>
+              <div class="tooltip" hidden id="tip"></div>
+          </div>
           </div>
         </article>
         <article data-chart-id="yearly-material-comparison" aria-labelledby="title-yearly-material-comparison" class="module narrow yearly-material-comparison-module">
@@ -114,12 +110,12 @@
             </div>
             <span class="unit" id="comparison-period"></span>
           </div>
-          <div aria-label="Year-on-year comparison filters" class="comparison-controls controls chart-controls">
-            </div>
-          <div aria-live="polite" class="chart yearly-material-comparison-chart" id="yearly-material-comparison">
+          <div class="chart-controls controls" aria-label="Year-on-year comparison filters"></div>
+          <div class="chart-content">
+            <div class="chart yearly-material-comparison-chart" id="yearly-material-comparison" aria-live="polite">
             <p class="chart-status" role="status">Chart loading…</p>
-            <div class="tooltip" hidden="">
-            </div>
+              <div class="tooltip" hidden></div>
+          </div>
           </div>
         </article>
         <!-- Shared full-width disclosure: independent chart content, one expanded panel at a time. -->
@@ -185,12 +181,12 @@
             </div>
             <span class="unit"></span>
           </div>
-          <div aria-label="Recycling rate filters" class="controls chart-controls recycling-controls">
-            </div>
-          <div aria-live="polite" class="chart overall-recycling-rate-chart" id="overall-recycling-rate">
+          <div class="chart-controls controls" aria-label="Recycling rate filters"></div>
+          <div class="chart-content">
+            <div class="chart overall-recycling-rate-chart" id="overall-recycling-rate" aria-live="polite">
             <p class="chart-status" role="status">Chart loading…</p>
-            <div class="tooltip" hidden="" id="recycling-tip">
-            </div>
+          </div>
+            <div class="tooltip" hidden id="recycling-tip"></div>
           </div>
         </article>
         <article data-chart-id="daily-material-weights" aria-labelledby="title-daily-material-weights" class="module wide daily-material-weights-module">
@@ -205,23 +201,12 @@
             </div>
             <span class="unit"></span>
           </div>
-          <div class="calendar-top">
-            <div aria-label="Calendar chart filters" class="controls chart-controls calendar-controls">
-            </div>
-            <div aria-label="Weight intensity legend" class="calendar-key" id="calendar-key">
-            </div>
-          </div>
-          <div class="calendar-layout">
-            <div aria-hidden="true" class="calendar-weekdays">
-            </div>
-            </div>
-            <div aria-label="Scrollable calendar, weeks left to right" class="calendar-scroll" id="calendar-scroll" tabindex="0">
-              <div aria-live="polite" class="calendar-plot" id="daily-material-weights">
+          <div class="chart-controls controls" aria-label="Calendar chart filters"></div>
+          <div class="chart-content">
+            <div class="chart calendar-plot" id="daily-material-weights" aria-live="polite">
             <p class="chart-status" role="status">Chart loading…</p>
-              </div>
-              <div class="tooltip calendar-tooltip" hidden="" id="calendar-tip">
-              </div>
-            </div>
+          </div>
+            <div class="tooltip calendar-tooltip" hidden id="calendar-tip"></div>
           </div>
         </article>
         <div class="disclosure-trigger disclosure-trigger-3">
@@ -232,7 +217,7 @@
             03 · Data and methodology
           </button>
         </div>
-        <div aria-label="Figure 03 data and methodology" class="disclosure-panel" hidden="" id="recycling-disclosure" role="region">
+        <div aria-label="Figure 03 data and methodology" class="disclosure-panel disclosure-panel-3" hidden="" id="recycling-disclosure" role="region">
           <div class="details-layout">
             <div class="method-copy">
               <p id="recycling-method"></p>
@@ -254,7 +239,7 @@
             04 · Data and methodology
           </button>
         </div>
-        <div aria-label="Figure 04 data and methodology" class="disclosure-panel" hidden="" id="calendar-disclosure" role="region">
+        <div aria-label="Figure 04 data and methodology" class="disclosure-panel disclosure-panel-4" hidden="" id="calendar-disclosure" role="region">
           <div class="details-layout">
             <div class="method-copy">
               <p id="calendar-method"></p>

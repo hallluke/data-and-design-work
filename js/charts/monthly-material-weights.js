@@ -1,5 +1,5 @@
-import { normalizeMonthlyGroups, setDisclosureContent } from "../chart-disclosure-content.js";
-import { populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
+import { setDisclosureContent } from "../chart-disclosure-content.js";
+import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
 import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
@@ -7,7 +7,15 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
   data = normalizeMonthlyGroups(data);
   const tip = container.querySelector(".tooltip");
   const table = root.querySelector("#data-table");
-  const legend = root.querySelector("#chart-legend");
+  const filterLayout = root.createElement("div");
+  filterLayout.className = "filter-layout";
+  const controlHost = root.querySelector('[data-chart-id="monthly-material-weights"] .chart-controls');
+  controlHost.before(filterLayout);
+  filterLayout.append(controlHost);
+  const legend = root.createElement("div");
+  legend.className = "legend";
+  legend.id = "chart-legend";
+  filterLayout.append(legend);
 
 
 

@@ -16,13 +16,38 @@ function calendarIntensityPosition(value, distinctValues) {
 function createDailyMaterialWeightsChart({container, rows, root = document}) {
   const listeners = [];
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
+  // Chart-specific layout is built here; the HTML uses the same shell as every chart.
+  const article = root.querySelector('[data-chart-id="daily-material-weights"]');
+  const controlHost = article.querySelector(".chart-controls");
+  const content = article.querySelector(".chart-content");
+  const top = root.createElement("div");
+  top.className = "calendar-top";
+  const key = root.createElement("div");
+  key.className = "calendar-key";
+  key.id = "calendar-key";
+  key.setAttribute("aria-label", "Weight intensity legend");
+  controlHost.classList.add("calendar-controls");
+  controlHost.before(top);
+  top.append(controlHost, key);
+  const layout = root.createElement("div");
+  layout.className = "calendar-layout";
+  const weekdayAxis = root.createElement("div");
+  weekdayAxis.className = "calendar-weekdays";
+  weekdayAxis.setAttribute("aria-hidden", "true");
+  const scroll = root.createElement("div");
+  scroll.className = "calendar-scroll";
+  scroll.id = "calendar-scroll";
+  scroll.tabIndex = 0;
+  scroll.setAttribute("aria-label", "Scrollable calendar, weeks left to right");
+  const tooltip = content.querySelector(".calendar-tooltip");
+  content.append(layout);
+  layout.append(weekdayAxis, scroll);
+  scroll.append(container);
   const state={material:"all"};
   const controls=setupChart({root,id:"daily-material-weights",number:"04",title:"Recording calendar",unit:"kg / day",state,
     controls:[{key:"material",type:"select",label:"Material",id:"calendar-material",populate:populateMaterialSelect}],
     onChange:()=>render()});
   // The weekday axis is chart-specific presentation, not static page markup.
-  const weekdayAxis = root.querySelector('[data-chart-id="daily-material-weights"] .calendar-weekdays');
-  if (!weekdayAxis) throw new Error("Missing calendar weekday axis");
   const weekdaySpacer = root.createElement("div");
   weekdaySpacer.className = "calendar-axis-spacer";
   const weekdayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => {
@@ -31,7 +56,6 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     return span;
   });
   weekdayAxis.replaceChildren(weekdaySpacer, ...weekdayLabels);
-  const key = root.getElementById("calendar-key");
   const tip = root.getElementById("calendar-tip");
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",
