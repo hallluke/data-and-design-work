@@ -29,15 +29,20 @@ function positionChartTooltip(tooltip, event, container, { gap = 12, edge = 3, v
   tooltip.style.top = y + "px";
 }
 
+// A single status element serves as the initial loading message and any later error.
+function clearChartStatus(container) {
+  container?.querySelector(".chart-status, .error")?.remove();
+}
 function showChartError(container, error) {
   console.error(error);
+  if (!container) return;
   container.querySelector("svg")?.remove();
-  let message = container.querySelector(".error");
+  let message = container.querySelector(".chart-status, .error");
   if (!message) {
     message = document.createElement("p");
-    message.className = "error";
     container.prepend(message);
   }
+  message.className = "chart-status error";
   message.textContent = "Chart unavailable: " + error.message;
 }
 
@@ -81,4 +86,4 @@ function bindChartEvent(listeners, target, event, handler) {
 }
 
 
-export { MULTI_COLUMN_MEDIA, formatWeight, formatMonth, monthInitial, positionChartTooltip, showChartError, validateWasteData, atlasPalette, ATLAS_COLOURS, bindChartEvent };
+export { MULTI_COLUMN_MEDIA, formatWeight, formatMonth, monthInitial, positionChartTooltip, showChartError, clearChartStatus, validateWasteData, atlasPalette, ATLAS_COLOURS, bindChartEvent };

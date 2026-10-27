@@ -1,5 +1,5 @@
 "use strict";
-import { showChartError } from "./shared.js";
+import { showChartError, clearChartStatus } from "./shared.js";
 
 // Start charts independently: a failure in one factory must not prevent the others.
 // Chart factories retain ownership of their render and destroy implementations.
@@ -15,7 +15,7 @@ function startChart(charts, containerId, create, root = document) {
       throw new TypeError(`Invalid chart lifecycle: #${containerId}`);
     }
     chart.render();
-    container.querySelector(".error")?.remove();
+    clearChartStatus(container);
     charts.push(chart);
     return true;
   } catch (error) {

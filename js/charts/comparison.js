@@ -1,5 +1,6 @@
-import { syncButtonGroup } from "../chart-controls.js";
-import { showChartError, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
+import { setDisclosureContent } from "../chart-disclosure-content.js";
+import { syncButtonGroup, setControlDisabled } from "../chart-controls.js";
+import { showChartError, clearChartStatus, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
 
 function createYearComparisonChart({ container, data, detail, comparison, root = document }) {
   const tip = container.querySelector(".tooltip");
@@ -7,7 +8,6 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
   const basisButtons = [...root.querySelectorAll("[data-compare-basis]")];
   const table = root.getElementById("comparison-table");
 
-  const method = root.getElementById("comparison-method");
 
   const period = root.getElementById("comparison-period");
   const state = { basis: "imputed", categories: "main" };
@@ -66,15 +66,11 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
       `</tbody></table>`;
   }
   function renderTable(rows) {
-    const head = table.tHead, body = table.tBodies[0];
-    head.replaceChildren(); body.replaceChildren();
-    const hr = document.createElement("tr");
-    ["Category", years[0] + " kg", years[1] + " kg", "Δ kg", "Δ %", "Status"].forEach(t => {
-      const th = document.createElement("th"); th.textContent = t;
-      if ([1, 2, 3, 4].includes(hr.cells.length)) th.className = "numeric";
-      hr.append(th);
-    });
-    head.append(hr);
+    const body = table.tBodies[0];
+    body.replaceChildren();
+    setDisclosureContent({root, methodId: "comparison-method", tableId: "comparison-table",
+      columns: ["Category", years[0] + " kg", years[1] + " kg", "Δ kg", "Δ %", "Status"]
+        .map((label, i) => ({label, numeric: i >= 1 && i <= 4}))});
     rows.forEach(row => {
       const tr = document.createElement("tr");
       const diff = row.current - row.earlier;
@@ -211,15 +207,16 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.
     const recordedButton=basisButtons.find(button=>button.dataset.compareBasis==="recorded");
-    recordedButton.disabled=residualOnly;
+    setControlDisabled(recordedButton, residualOnly);
     period.textContent="Jan—"+labelMonth;
-    method.innerHTML = "Both years cover January through Sept. The cut-off is the latest fully covered month for regularly collected materials (excluding residual waste and batteries). Imputed weights are distributed across collection intervals as in Figure 01. For residual waste, the days after the last recorded weight are extrapolated using the pooled historical daily rate from the recording intervals. The low/high range uses the minimum and maximum observed interval rates. This is a sensitivity range, <strong>not</strong> a calibrated prediction interval or probability statement. Recorded mode sums weights by collection date without projection; batteries appear there only.";
+    setDisclosureContent({root, methodId: "comparison-method", tableId: "comparison-table",
+      methodology: {html: "Both years cover January through Sept. The cut-off is the latest fully covered month for regularly collected materials (excluding residual waste and batteries). Imputed weights are distributed across collection intervals as in Figure 01. For residual waste, the days after the last recorded weight are extrapolated using the pooled historical daily rate from the recording intervals. The low/high range uses the minimum and maximum observed interval rates. This is a sensitivity range, <strong>not</strong> a calibrated prediction interval or probability statement. Recorded mode sums weights by collection date without projection; batteries appear there only."}});
     renderTable(rows);
     syncButtonGroup(basisButtons, state.basis, "compareBasis");
   }
   function rerender() {
     try { if(!window.Plot || !window.d3) throw Error("D3 or Observable Plot did not load.");
-      render();container.querySelector(".error")?.remove();
+      render();clearChartStatus(container);
     } catch(error) {showChartError(container,error);}
   }
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);

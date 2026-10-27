@@ -803,3 +803,6 @@ select:disabled {
     text-align: left !important;
   }
 }
+/* Initial chart placeholder; reused for errors by showChartError. */
+.chart-status { font: 12px/1.5 "Source Sans 3",Arial,sans-serif; color: var(--muted); padding: 15px 0; }
+.chart-status.error { color: #6c3535; }

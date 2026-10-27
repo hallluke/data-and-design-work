@@ -5,7 +5,7 @@ import { startChart } from "../js/chart-runtime.js";
 function fixture() {
   const errors = [];
   const container = {
-    querySelector(selector) { return selector === ".error" ? { remove() { errors.push("cleared"); } } : null; },
+    querySelector(selector) { return selector === ".chart-status, .error" ? { remove() { errors.push("cleared"); } } : null; },
     prepend() {},
   };
   return { container, errors, root: { getElementById: id => id === "chart" ? container : null } };
@@ -34,7 +34,7 @@ test("missing container leaves other charts unaffected", () => {
 test("a failed render does not enter the chart registry", () => {
   const { root, container } = fixture();
   let errorMessage;
-  container.querySelector = selector => selector === ".error" ? null : null;
+  container.querySelector = selector => selector === ".chart-status, .error" ? null : null;
   container.prepend = element => { errorMessage = element; };
   const originalDocument = globalThis.document;
   const originalConsole = console.error;

@@ -1,6 +1,7 @@
+import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { populateMaterialSelect } from "../materials.js";
 import { syncButtonGroup, setControlDisabled } from "../chart-controls.js";
-import { showChartError, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
+import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
 function createMonthlyWasteChart({ container, data, detail, root = document }) {
   const tip = container.querySelector(".tooltip");
@@ -9,7 +10,6 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   const materialSelect = root.querySelector("#material");
   populateMaterialSelect(materialSelect, {includeBatteries:false});
 
-  const method = root.querySelector("#method");
   const basisButtons = [...root.querySelectorAll("[data-basis]")];
   const displayButtons = [...root.querySelectorAll("[data-display]")];
   const state = { basis: "imputed", display: "total", material: "all" };
@@ -80,19 +80,11 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
 
   function renderTable(totals, chartRows, chartGroups) {
     const stacked = isStacked();
-    const thead = table.tHead;
     const tbody = table.tBodies[0];
-    thead.replaceChildren();
     tbody.replaceChildren();
     const headings = stacked ? ["Month", ...chartGroups, "Total (kg)"] : ["Month", "Weight (kg)", "Status"];
-    const headingRow = document.createElement("tr");
-    headings.forEach((heading, i) => {
-      const th = document.createElement("th");
-      th.textContent = heading;
-      if (i > 0 && !(i === headings.length - 1 && !stacked)) th.className = "numeric";
-      headingRow.append(th);
-    });
-    thead.append(headingRow);
+    setDisclosureContent({root, methodId: "method", tableId: "data-table",
+      columns: headings.map((label, i) => ({label, numeric: i > 0 && (stacked || i === 1)}))});
     for (const datum of totals) {
       const row = document.createElement("tr");
       const values = stacked
@@ -217,18 +209,19 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
     renderTable(totals, chartRows, chartGroups);
     renderLegend(chartGroups);
     updateControls();
-    method.textContent = "Recorded weights are attributed to their collection month. Imputed weights " +
+    setDisclosureContent({root, methodId: "method", tableId: "data-table",
+      methodology: "Recorded weights are attributed to their collection month. Imputed weights " +
       "are spread evenly over days since the previous collection of the same material " +
       "(first interval starts " + data.metadata.imputationStart + "). " +
       "Batteries are included only in recorded totals. Imputed months after " +
-      formatMonth(completeThrough) + " are provisional because not all streams have subsequent collections.";
+      formatMonth(completeThrough) + " are provisional because not all streams have subsequent collections."});
   }
 
   function rerender() {
     try {
       if (!window.Plot) throw Error("Observable Plot did not load. Connect to the internet and refresh.");
       render();
-      container.querySelector(".error")?.remove();
+      clearChartStatus(container);
     } catch (error) { showChartError(container, error); }
   }
 
