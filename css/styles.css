@@ -739,3 +739,38 @@ select:disabled {
   .foot { flex-direction:column; align-items:stretch; gap:10px; }
   .foot-left, .foot-right { width:100%; text-align:center; }
 }
+
+
+/* Temporary freshness display audition. Remove the picker after selecting a style. */
+.freshness-audition { margin:-12px 0 30px; }
+.freshness-preview[hidden] { display:none; }
+.freshness-preview { color:var(--ink); }
+.freshness-content { display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; }
+.freshness-kicker { text-transform:uppercase; letter-spacing:.12em; font-weight:600; }
+.freshness-picker { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:9px; margin-top:9px; font:10px "Source Sans 3",Arial,sans-serif; color:var(--muted); }
+.freshness-picker select { font-size:10px; min-width:0; max-width:100%; padding:4px 7px; }
+.freshness-preview-label { opacity:.7; }
+/* 01: newspaper dateline */
+.freshness-preview[data-style="dateline"] { border-top:2px solid var(--ink); border-bottom:1px solid var(--line); padding:10px 0; font:11px "Source Sans 3",Arial,sans-serif; }
+.freshness-preview[data-style="dateline"] .freshness-kicker { margin-right:auto; }
+.freshness-preview[data-style="dateline"] .freshness-refresh { font-weight:600; }
+/* 02: a small, imperfect-looking archival stamp */
+.freshness-preview[data-style="stamp"] { padding:9px 0; }
+.freshness-preview[data-style="stamp"] .freshness-content { display:inline-flex; flex-direction:column; align-items:center; gap:2px; padding:10px 20px; border:2px dashed #986653; color:#986653; transform:rotate(-1.5deg); font:11px "Source Sans 3",Arial,sans-serif; text-align:center; }
+.freshness-preview[data-style="stamp"] .freshness-kicker { font-size:10px; }
+.freshness-preview[data-style="stamp"] .freshness-refresh { font:600 18px "Source Serif 4",Georgia,serif; }
+.freshness-preview[data-style="stamp"] .freshness-divider { display:none; }
+/* 03: informal editorial marginalia */
+.freshness-preview[data-style="note"] { padding:10px 15px; border-left:3px solid var(--line); background:var(--pale); }
+.freshness-preview[data-style="note"] .freshness-content { flex-direction:column; align-items:flex-start; gap:2px; font:italic 13px "Source Serif 4",Georgia,serif; }
+.freshness-preview[data-style="note"] .freshness-kicker { text-transform:none; letter-spacing:0; font-size:14px; font-weight:500; }
+.freshness-preview[data-style="note"] .freshness-divider { display:none; }
+/* 04: a small colophon / ledger entry */
+.freshness-preview[data-style="colophon"] { background:var(--pale); padding:12px 16px; }
+.freshness-preview[data-style="colophon"] .freshness-content { font:11px "Source Sans 3",Arial,sans-serif; }
+.freshness-preview[data-style="colophon"] .freshness-kicker { width:100%; font-size:9px; }
+.freshness-preview[data-style="colophon"] .freshness-divider { opacity:.5; }
+@media (max-width:600px) {
+ .freshness-preview[data-style="dateline"] .freshness-kicker { width:100%; }
+ .freshness-picker { justify-content:flex-start; }
+}

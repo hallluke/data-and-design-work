@@ -1,6 +1,7 @@
 "use strict";
 import { showChartError, validateWasteData } from "./shared.js";
 import { getAtlasData } from "./data.js";
+import { initFreshness } from "./freshness.js";
 import { initDisclosures } from "./disclosures.js";
 import { createMonthlyWasteChart } from "./charts/monthly.js";
 import { createYearComparisonChart } from "./charts/comparison.js";
@@ -20,6 +21,7 @@ async function initAtlas() {
     try { initDisclosures(); } catch (disclosureError) { console.error(disclosureError); }
     return;
   }
+  try { initFreshness(data); } catch (error) { console.warn("Freshness display unavailable:", error); }
   const charts = [];
   const startChart = (containerId, create) => {
     const container = document.getElementById(containerId);
