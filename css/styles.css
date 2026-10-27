@@ -748,6 +748,8 @@ select:disabled {
   background: #e5e3de;
   color: var(--ink);
   font: 11px "Source Sans 3", Arial, sans-serif;
+  border-left: 2px solid #d3d0ca;
+  border-right: 2px solid #d3d0ca;
 }
 
 .publication-band[hidden] {
