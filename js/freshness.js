@@ -8,8 +8,8 @@ function formatDate(isoDate) {
 }
 
 export function initFreshness(data) {
-  const stamps = document.getElementById("collection-stamps");
-  if (!stamps) return;
+  const band = document.getElementById("publication-band");
+  if (!band) return;
   const refreshDate = new Date(data?.refresh?.last_refreshed ?? NaN);
   const dates = Array.isArray(data?.collections)
     ? data.collections.map(row => row.date).filter(date => typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date))
@@ -21,12 +21,5 @@ export function initFreshness(data) {
   }).format(refreshDate);
   document.getElementById("stamp-filed").textContent = latest;
   document.getElementById("stamp-checked").textContent = checked;
-  // Independent, fresh angles on each page load: from -2 to +2 degrees.
-  for (const stamp of stamps.querySelectorAll(".collection-stamp")) {
-    stamp.style.setProperty("--stamp-angle", `${(Math.random() * 4 - 2).toFixed(2)}deg`);
-  }
-  // Small independent inward offsets, chosen anew on each page load.
-  stamps.style.setProperty("--stamps-left", `${(Math.random() * 5).toFixed(1)}px`);
-  stamps.style.setProperty("--stamps-bottom", `${(Math.random() * 5).toFixed(1)}px`);
-  stamps.hidden = false;
+  band.hidden = false;
 }
