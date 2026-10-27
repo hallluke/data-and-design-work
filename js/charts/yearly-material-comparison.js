@@ -1,9 +1,10 @@
-import { groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
+import { normalizeMonthlyGroups, groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { showChartError, clearChartStatus, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
 
 function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
+  data = normalizeMonthlyGroups(data);
   const tip = container.querySelector(".tooltip");
   const table = root.getElementById("comparison-table");
 

@@ -3,6 +3,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from build_summaries import calculate,compare
+from material_config import REC_GROUPS, IMP_GROUPS
 
 class TestSummaries(unittest.TestCase):
     @classmethod
@@ -14,8 +15,14 @@ class TestSummaries(unittest.TestCase):
             ref=json.loads((ROOT/'reference'/f'{name}.json').read_text())
             for section in ['recorded','imputed']:
                 self.assertEqual(len(obj[section]),len(ref[section]))
-                for a,b in zip(obj[section],ref[section]):
-                    self.assertEqual({k:v for k,v in a.items() if k!='kg'}, {k:v for k,v in b.items() if k!='kg'})
+                for i,(a,b) in enumerate(zip(obj[section],ref[section])):
+                    # Reference fixtures preserve original display labels; compare stable group positions.
+                    actual = {k:v for k,v in a.items() if k not in ('kg','group')}
+                    expected = {k:v for k,v in b.items() if k not in ('kg','group')}
+                    self.assertEqual(actual, expected)
+                    if 'group' in a:
+                        group_order = REC_GROUPS if section == 'recorded' else IMP_GROUPS
+                        self.assertEqual(a['group'], group_order[i % len(group_order)])
                     self.assertLessEqual(abs(a['kg']-b['kg']),1e-5)
     def test_metadata(self):
         ref=json.loads((ROOT/'reference/monthly.json').read_text())

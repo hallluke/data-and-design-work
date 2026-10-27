@@ -1,9 +1,10 @@
-import { setDisclosureContent } from "../chart-disclosure-content.js";
+import { normalizeMonthlyGroups, setDisclosureContent } from "../chart-disclosure-content.js";
 import { populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
 import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
+  data = normalizeMonthlyGroups(data);
   const tip = container.querySelector(".tooltip");
   const table = root.querySelector("#data-table");
   const legend = root.querySelector("#chart-legend");

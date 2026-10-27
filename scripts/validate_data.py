@@ -3,7 +3,7 @@ import math
 from collections import Counter
 from datetime import date, timedelta
 from build_collections import MATERIALS
-from material_config import NON_IMPUTED, RESIDUAL_SOURCE
+from material_config import NON_IMPUTED, RESIDUAL_SOURCE, GROUPS_BY_ID
 from build_summaries import GROUPS, DETAIL, REC_GROUPS, IMP_GROUPS, START, months_between
 
 TOL = 1e-5
@@ -75,12 +75,13 @@ def validate_dataset(rows, monthly, detail, comparison):
         recorded_by_group[(r['date'][:7],GROUPS[r['type']])]+=r['kg']
     for r in monthly['recorded']:
         require(abs(r['kg']-recorded_by_group[(r['month'],r['group'])])<=TOL, f'Recorded group mismatch: {r["month"]} {r["group"]}')
+    mixed_label = GROUPS_BY_ID['mixedRecycling']['label']
     for section in ('recorded','imputed'):
-        dry={r['month']:r['kg'] for r in monthly[section] if r['group']=='Dry recycling'}
+        dry={r['month']:r['kg'] for r in monthly[section] if r['group']==mixed_label}
         detail_by_month=Counter()
         for r in detail[section]: detail_by_month[r['month']]+=r['kg']
         for month in months:
-            require(abs(dry[month]-detail_by_month[month])<=TOL, f'Dry recycling detail mismatch: {section} {month}')
+            require(abs(dry[month]-detail_by_month[month])<=TOL, f'{mixed_label} detail mismatch: {section} {month}')
     meta=comparison['metadata']
     require(isinstance(meta,dict) and meta.get('projectionMaterial')=='Residual waste', 'comparison: invalid projection material')
     require(meta.get('projectionDays') is not None and type(meta['projectionDays']) is int and meta['projectionDays']>=0, 'comparison: invalid projection days')

@@ -30,3 +30,19 @@ export function populateMaterialSelect(select,{includeBatteries=true}={}) {
   }));
   if (MATERIALS.some(item=>item.value===current)) select.value=current;
 }
+
+// Canonicalise older monthly datasets that contain previous display labels.
+// The pipeline emits groups in monthlyGroupOrder, so positions identify groups
+// even when the user has changed their labels since the last data refresh.
+export function normalizeMonthlyGroups(data) {
+  const groupIds = registry.monthlyGroupOrder.filter(id =>
+    registry.materials.find(item => item.id === id)?.impute !== false);
+  const oldToNew = new Map(data.groups.map((label, i) => [label, materialLabel(groupIds[i])]));
+  for (const id of registry.monthlyGroupOrder) {
+    const material = materials.get(id);
+    if (material?.impute === false) oldToNew.set(material.label, material.label);
+  }
+  const normalizeRows = rows => rows.map(row => ({...row, group: oldToNew.get(row.group) ?? row.group}));
+  return {...data, groups: data.groups.map(label => oldToNew.get(label) ?? label),
+    recorded: normalizeRows(data.recorded), imputed: normalizeRows(data.imputed)};
+}
