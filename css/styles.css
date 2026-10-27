@@ -29,9 +29,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
   padding-bottom: 17px;
-  margin-bottom: 28px;
   gap: 15px;
 }
 .eyebrow {
@@ -608,7 +607,6 @@ select:disabled {
 
 /* Small baseline correction without changing table typography. */
 .disclosure-panel .table-scroll { margin-top: 1px; }
-.mast .meta .recycling-icon { display:inline-block; vertical-align:-4px; margin-left:3px; }
 
 /* Figure 03: reuse the established selector and disclosure styling. */
 .recycling-controls { margin-bottom: 12px; }
@@ -700,11 +698,10 @@ select:disabled {
 }
 
 /* v30 — targeted masthead, hierarchy, calendar key and footer refinements */
-.mast { border-bottom-width:2px; }
 .mast-left { min-width:0; }
 .mast .meta { display:flex; align-items:center; gap:12px; flex:0 0 auto; }
 .mast .meta-stack { display:flex; flex-direction:column; align-items:flex-end; line-height:1.65; white-space:nowrap; }
-.mast .meta .recycling-icon { width:23px; height:23px; margin:0; vertical-align:middle; }
+.mast .meta .recycling-icon { width:23px; height:23px; margin:0; margin-left:3px; vertical-align:inline-block; vertical-align:-4px; }
 .module-header h2 { font-size:20px; }
 .intro p + p { margin-top:9px; }
 .calendar-key { gap:8px; }
