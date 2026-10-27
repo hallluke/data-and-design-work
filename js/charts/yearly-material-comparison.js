@@ -1,3 +1,4 @@
+import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { formatNumber, formatSignedNumber, formatPercent } from "../chart-format.js";
 import { normalizeMonthlyGroups, groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
@@ -181,7 +182,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         if (el.tagName.toLowerCase()==="path" && active && !el.classList.contains("compare-hit"))
           el.style.stroke="#171717";
       });
-      tip.innerHTML=tooltipHTML(rows[index]);tip.hidden=false;
+      showTooltip(tip, tooltipHTML(rows[index]));
       // Fixed-position overlay begins at the 2026 endpoint, covering labels
       // rather than plotted lines. Clamp inside the viewport on small screens.
       const box=svg.getBoundingClientRect();
@@ -194,7 +195,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     };
     const deactivate=()=>{
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
-      tip.hidden=true;
+      hideTooltip(tip);
     };
     rows.forEach((row,i)=>{
       const hit=svg.querySelector(`.compare-hit-${i}`);
@@ -224,7 +225,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     } catch(error) {showChartError(container,error);}
   }
   if("ResizeObserver" in window) {observer=new ResizeObserver(()=>{if(window.Plot)rerender();});observer.observe(container);}
-  return {render:rerender,destroy(){observer?.disconnect();listeners.forEach(remove=>remove());controls.destroy();container.querySelector("svg")?.remove();tip.hidden=true;}};
+  return {render:rerender,destroy(){observer?.disconnect();listeners.forEach(remove=>remove());controls.destroy();container.querySelector("svg")?.remove();hideTooltip(tip);}};
 }
 
 /* ============================================================

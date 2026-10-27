@@ -1,3 +1,4 @@
+import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
@@ -91,8 +92,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
   }
 
   function showTip(event, datum) {
-    tip.innerHTML = tooltipHTML(datum);
-    tip.hidden = false;
+    showTooltip(tip, tooltipHTML(datum));
     positionChartTooltip(tip, event, container);
   }
 
@@ -197,12 +197,12 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
         " kilograms" + (isStacked() ? ", breakdown available in tooltip and table" : "") +
         (state.basis === "imputed" && !datum.complete ? ", provisional" : ""));
       rect.addEventListener("pointermove", event => showTip(event, datum));
-      rect.addEventListener("pointerleave", () => { tip.hidden = true; });
+      rect.addEventListener("pointerleave", () => { hideTooltip(tip); });
       rect.addEventListener("focus", () => {
         const bounds = rect.getBoundingClientRect();
         showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);
       });
-      rect.addEventListener("blur", () => { tip.hidden = true; });
+      rect.addEventListener("blur", () => { hideTooltip(tip); });
       overlay.append(rect);
     });
     svg.append(overlay);
@@ -238,7 +238,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
       listeners.forEach(remove => remove());
       controls.destroy();
       container.querySelector("svg")?.remove();
-      tip.hidden = true;
+      hideTooltip(tip);
     }
   };
 }

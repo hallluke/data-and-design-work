@@ -1,3 +1,4 @@
+import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { formatPercent } from "../chart-format.js";
 import { materialIdFromSource } from "../materials.js";
@@ -59,18 +60,17 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
       .attr("d", arc)
       .each(function(d){
         this.addEventListener("pointermove",event=>{
-          tip.innerHTML=`<strong>${d.data.name}</strong><table class="tip-table"><thead><tr><th>Category</th><th>kg</th><th>%</th></tr></thead><tbody><tr><td>${d.data.name}</td><td>${number(d.data.value)}</td><td>${total?(100*d.data.value/total).toFixed(1):"0.0"}%</td></tr></tbody></table>`;
-          tip.hidden=false;
+          showTooltip(tip, `<strong>${d.data.name}</strong><table class="tip-table"><thead><tr><th>Category</th><th>kg</th><th>%</th></tr></thead><tbody><tr><td>${d.data.name}</td><td>${number(d.data.value)}</td><td>${total?(100*d.data.value/total).toFixed(1):"0.0"}%</td></tr></tbody></table>`);
           positionChartTooltip(tip,event,container);
         });
-        this.addEventListener("pointerleave",()=>{tip.hidden=true;});
+        this.addEventListener("pointerleave",()=>{hideTooltip(tip);});
       });
     svg.append("text").attr("class", "rate-value").attr("x", cx).attr("y", cy + 3)
       .attr("text-anchor", "middle").text(total ? `${rate.toFixed(1)}%` : "—");
     svg.append("text").attr("class", "rate-caption").attr("x", cx).attr("y", cy + 23)
       .attr("text-anchor", "middle").text("recycled");
     container.replaceChildren(svg.node());
-    tip.hidden=true;
+    hideTooltip(tip);
     const entries = [["Recycled",recycled,rate],["General waste",general,100-rate],["Total",total,100]];
     renderTableRows(table, entries.map(([label,kg,share]) =>
       [label,number(kg),formatPercent(share)]),
@@ -80,7 +80,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
   on(document,"visibilitychange", () => {
     if (!document.hidden && state.period.startsWith("last-")) render();
   });
-  return {render,destroy(){listeners.forEach(remove=>remove());controls.destroy();tip.hidden=true;}};
+  return {render,destroy(){listeners.forEach(remove=>remove());controls.destroy();hideTooltip(tip);}};
 }
 
 

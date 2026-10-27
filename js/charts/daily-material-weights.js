@@ -1,3 +1,4 @@
+import { showTooltip, hideTooltip, positionFixedTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { populateMaterialSelect, sourceMatchesSelection, materialLabel, materialIdFromSource } from "../materials.js";
@@ -85,14 +86,12 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   function matches(r) { return sourceMatchesSelection(r.type, state.material); }
   let activeTipDate = null;
   function hideTip(){
-    tip.hidden=true;
+    hideTooltip(tip);
     activeTipDate=null;
   }
   function moveTip(event){
     if(tip.hidden)return;
-    const width=tip.offsetWidth,height=tip.offsetHeight;
-    tip.style.left=Math.max(6,Math.min(event.clientX+12,window.innerWidth-width-6))+"px";
-    tip.style.top=Math.max(6,Math.min(event.clientY-height-10,window.innerHeight-height-6))+"px";
+    positionFixedTooltip(tip, event);
   }
   function showTip(d){
     // Only rebuild the tooltip when the hovered date changes. Positioning is
@@ -103,7 +102,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
       (breakdown||`<tr><td>No recorded weight</td><td>—</td></tr>`)+
       `</tbody>${d.records.length?`<tfoot><tr><td>Total</td><td>${d.kg.toFixed(2)}</td></tr></tfoot>`:""}</table>`;
     activeTipDate=d.date;
-    tip.hidden=false;
+    showTooltip(tip);
   }
   function render(){
     hideTip();
