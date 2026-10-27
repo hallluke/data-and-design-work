@@ -82,16 +82,27 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   const fmtDate = iso=>new Date(iso+"T00:00:00Z").toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
   const fmtShort = iso=>new Date(iso+"T00:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
   function matches(r) { return sourceMatchesSelection(r.type, state.material); }
-  function hideTip(){tip.hidden=true;}
-  function showTip(d,event){
+  let activeTipDate = null;
+  function hideTip(){
+    tip.hidden=true;
+    activeTipDate=null;
+  }
+  function moveTip(event){
+    if(tip.hidden)return;
+    const width=tip.offsetWidth,height=tip.offsetHeight;
+    tip.style.left=Math.max(6,Math.min(event.clientX+12,window.innerWidth-width-6))+"px";
+    tip.style.top=Math.max(6,Math.min(event.clientY-height-10,window.innerHeight-height-6))+"px";
+  }
+  function showTip(d){
+    // Only rebuild the tooltip when the hovered date changes. Positioning is
+    // handled independently by the plot-wide pointermove listener.
+    if(activeTipDate===d.date && !tip.hidden)return;
     const breakdown=d.records.map(r=>`<tr><td>${materialLabel(materialIdFromSource(r.type))}</td><td>${r.kg.toFixed(2)}</td></tr>`).join("");
     tip.innerHTML=`<strong>${fmtDate(d.date)}</strong><table class="tip-table"><thead><tr><th>Material</th><th>kg</th></tr></thead><tbody>`+
       (breakdown||`<tr><td>No recorded weight</td><td>—</td></tr>`)+
       `</tbody>${d.records.length?`<tfoot><tr><td>Total</td><td>${d.kg.toFixed(2)}</td></tr></tfoot>`:""}</table>`;
+    activeTipDate=d.date;
     tip.hidden=false;
-    const width=tip.offsetWidth,height=tip.offsetHeight;
-    tip.style.left=Math.max(6,Math.min(event.clientX+12,window.innerWidth-width-6))+"px";
-    tip.style.top=Math.max(6,Math.min(event.clientY-height-10,window.innerHeight-height-6))+"px";
   }
   function render(){
     hideTip();
@@ -124,11 +135,14 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     // the pointer leaves the plot, not when it leaves an individual cell.
     // The listener belongs to this plot and is removed when the plot is replaced.
     plot.addEventListener("pointerleave", hideTip);
+    // Track the pointer continuously, including gaps between adjacent cells.
+    // Cell listeners only change the contents when the active date changes.
+    plot.addEventListener("pointermove", moveTip);
     // Bind tooltips to native Plot cell marks; do not use SVG <title> browser popups.
     const rects=[...plot.querySelectorAll('rect')];
     if(rects.length===cells.length){
       rects.forEach((rect,i)=>{
-        rect.addEventListener("pointermove",e=>showTip(cells[i],e));
+        rect.addEventListener("pointerenter",e=>{showTip(cells[i]);moveTip(e);});
       });
     }
     key.replaceChildren();
