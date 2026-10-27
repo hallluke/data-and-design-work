@@ -1,3 +1,4 @@
+import { syncButtonGroup } from "../chart-controls.js";
 import { showChartError, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
 
 function createYearComparisonChart({ container, data, detail, comparison, root = document }) {
@@ -214,7 +215,7 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
     period.textContent="Jan—"+labelMonth;
     method.innerHTML = "Both years cover January through Sept. The cut-off is the latest fully covered month for regularly collected materials (excluding residual waste and batteries). Imputed weights are distributed across collection intervals as in Figure 01. For residual waste, the days after the last recorded weight are extrapolated using the pooled historical daily rate from the recording intervals. The low/high range uses the minimum and maximum observed interval rates. This is a sensitivity range, <strong>not</strong> a calibrated prediction interval or probability statement. Recorded mode sums weights by collection date without projection; batteries appear there only.";
     renderTable(rows);
-    basisButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.compareBasis===state.basis)));
+    syncButtonGroup(basisButtons, state.basis, "compareBasis");
   }
   function rerender() {
     try { if(!window.Plot || !window.d3) throw Error("D3 or Observable Plot did not load.");

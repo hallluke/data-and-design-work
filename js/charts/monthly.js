@@ -1,3 +1,4 @@
+import { syncButtonGroup, setControlDisabled } from "../chart-controls.js";
 import { showChartError, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
 function createMonthlyWasteChart({ container, data, detail, root = document }) {
@@ -131,13 +132,11 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
 
   function updateControls() {
     for (const button of displayButtons) {
-      button.disabled = state.material !== "all" &&
-        (state.material !== "Dry recycling" || state.submaterial !== "all");
-      button.setAttribute("aria-disabled", String(button.disabled));
-      button.setAttribute("aria-pressed", String(button.dataset.display === state.display));
+      setControlDisabled(button, state.material !== "all" &&
+        (state.material !== "Dry recycling" || state.submaterial !== "all"));
     }
-    for (const button of basisButtons)
-      button.setAttribute("aria-pressed", String(button.dataset.basis === state.basis));
+    syncButtonGroup(displayButtons, state.display, "display");
+    syncButtonGroup(basisButtons, state.basis, "basis");
     submaterialSelect.disabled = state.material !== "Dry recycling";
   }
 
