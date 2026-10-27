@@ -91,7 +91,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   }
   function moveTip(event){
     if(tip.hidden)return;
-    positionFixedTooltip(tip, event);
+    positionFixedTooltip(tip, event, {flipBoundary: container.getBoundingClientRect().right});
   }
   function showTip(d){
     // Only rebuild the tooltip when the hovered date changes. Positioning is

@@ -4,7 +4,7 @@ import { formatPercent } from "../chart-format.js";
 import { materialIdFromSource } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
-import { bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
+import { bindChartEvent, formatWeight } from "../shared.js";
 
 function createOverallRecyclingRateChart({container, rows, root = document}) {
   const listeners = [];
@@ -61,7 +61,16 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
       .each(function(d){
         this.addEventListener("pointermove",event=>{
           showTooltip(tip, `<strong>${d.data.name}</strong><table class="tip-table"><thead><tr><th>Category</th><th>kg</th><th>%</th></tr></thead><tbody><tr><td>${d.data.name}</td><td>${number(d.data.value)}</td><td>${total?(100*d.data.value/total).toFixed(1):"0.0"}%</td></tr></tbody></table>`);
-          positionChartTooltip(tip,event,container);
+          // Switch at the doughnut centreline, not only when space runs out.
+          const bounds=container.getBoundingClientRect();
+          const mouseX=event.clientX-bounds.left;
+          const width=tip.offsetWidth;
+          const height=tip.offsetHeight;
+          const gap=12;
+          const x=mouseX<bounds.width/2 ? mouseX+gap : mouseX-gap-width;
+          tip.style.left=Math.max(3,Math.min(x,Math.max(3,bounds.width-width-3)))+"px";
+          const y=event.clientY-bounds.top-height-8;
+          tip.style.top=Math.max(0,Math.min(y,Math.max(0,bounds.height-height)))+"px";
         });
         this.addEventListener("pointerleave",()=>{hideTooltip(tip);});
       });

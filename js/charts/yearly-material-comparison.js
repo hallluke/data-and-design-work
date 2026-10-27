@@ -190,7 +190,9 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       const x=box.left+left+(box.width-left-right)*yearFraction+8;
       const maxX=Math.max(6,window.innerWidth-tip.offsetWidth-6);
       tip.style.left=Math.max(6,Math.min(x,maxX))+"px";
-      const desiredTop=box.top+Math.min(40,Math.max(0,box.height-tip.offsetHeight)/2);
+      // Anchor vertically to this series' 2026 endpoint, not the moving pointer.
+      const anchorY=box.top+yScale(rows[index].current)*(box.height/height);
+      const desiredTop=anchorY-tip.offsetHeight/2;
       tip.style.top=Math.max(6,Math.min(desiredTop,window.innerHeight-tip.offsetHeight-6))+"px";
     };
     const deactivate=()=>{
