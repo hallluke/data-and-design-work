@@ -11,7 +11,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
   setDisclosureContent({root, methodId: "recycling-method", tableId: "recycling-table",
     methodology: "Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.",
     columns: ["Category", "Weight (kg)", "Share"]});
-  const tip = root.getElementById("recycling-tip");
+  const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   const years = [...new Set(rows.map(d => d.date.slice(0, 4)))].sort();
   const state={period:"all"};
   const controls=setupChart({root,id:"overall-recycling-rate",number:"03",title:"Recycling rate",unit:"% by weight",state,
@@ -67,7 +67,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
       .attr("text-anchor", "middle").text(total ? `${rate.toFixed(1)}%` : "—");
     svg.append("text").attr("class", "rate-caption").attr("x", cx).attr("y", cy + 23)
       .attr("text-anchor", "middle").text("recycled");
-    container.replaceChildren(svg.node(),tip);
+    container.replaceChildren(svg.node());
     tip.hidden=true;
     const entries = [["Recycled",recycled,rate],["General waste",general,100-rate],["Total",total,100]];
     table.replaceChildren(...entries.map(([label,kg,share]) => {

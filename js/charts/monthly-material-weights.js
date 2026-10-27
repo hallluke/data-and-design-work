@@ -5,7 +5,7 @@ import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMo
 
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
   data = normalizeMonthlyGroups(data);
-  const tip = container.querySelector(".tooltip");
+  const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   const table = root.querySelector("#data-table");
   const filterLayout = root.createElement("div");
   filterLayout.className = "filter-layout";
@@ -190,7 +190,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
     const band = (width - 45) / (data.months.length + 0.18);
     const bandCenter = i => 35 + band * (0.18 + 0.41 + i);
     container.querySelector("svg")?.remove();
-    container.insertBefore(svg, tip);
+    container.prepend(svg);
     const overlay = document.createElementNS(ns, "g");
     overlay.setAttribute("aria-label", "Monthly values");
     totals.forEach((datum, i) => {

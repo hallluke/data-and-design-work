@@ -39,7 +39,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   scroll.id = "calendar-scroll";
   scroll.tabIndex = 0;
   scroll.setAttribute("aria-label", "Scrollable calendar, weeks left to right");
-  const tooltip = content.querySelector(".calendar-tooltip");
+  const tooltip = content.querySelector(".chart-tooltip");
   content.append(layout);
   layout.append(weekdayAxis, scroll);
   scroll.append(container);
@@ -56,7 +56,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     return span;
   });
   weekdayAxis.replaceChildren(weekdaySpacer, ...weekdayLabels);
-  const tip = root.getElementById("calendar-tip");
+  const tip = tooltip;
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",
     methodology: "Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.",

@@ -485,23 +485,23 @@ select:disabled {
 .comparison-controls .choices { flex-wrap: nowrap; width: 168px; }
 .comparison-controls .choices button { flex: 1; padding: 5px 7px; }
 .comparison-controls select { width: 168px; min-width: 168px; max-width: 168px; }
-.yearly-material-comparison-chart { min-height: 250px; }
-.yearly-material-comparison-chart svg { display: block; }
-.yearly-material-comparison-chart .compare-series { transition: opacity .12s ease; }
-.yearly-material-comparison-chart .compare-hit { cursor: crosshair; }
-.yearly-material-comparison-chart .compare-hit:focus-visible { outline: none; stroke: #555; stroke-width: 2px; }
+[data-chart-id="yearly-material-comparison"] .chart { min-height: 250px; }
+[data-chart-id="yearly-material-comparison"] .chart svg { display: block; }
+[data-chart-id="yearly-material-comparison"] .chart .compare-series { transition: opacity .12s ease; }
+[data-chart-id="yearly-material-comparison"] .chart .compare-hit { cursor: crosshair; }
+[data-chart-id="yearly-material-comparison"] .chart .compare-hit:focus-visible { outline: none; stroke: #555; stroke-width: 2px; }
 .comparison-key { font-size: 10px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
 .comparison-key .line-sample { display: inline-block; width: 18px; border-top: 2px dashed #777; vertical-align: middle; margin-right: 5px; }
-.yearly-material-comparison-module .tooltip { min-width: 170px; max-width: 270px; }
-.yearly-material-comparison-module .tip-table { margin-top: 5px; }
+[data-chart-id="yearly-material-comparison"] .tooltip { min-width: 170px; max-width: 270px; }
+[data-chart-id="yearly-material-comparison"] .tip-table { margin-top: 5px; }
 @media(max-width:430px) {
   .comparison-controls .choices,.comparison-controls select { width: 148px; min-width: 148px; max-width: 148px; }
 }
 
 /* Figure 02 tooltip overlays the right-hand label gutter, not the slopes. */
-.yearly-material-comparison-module .tooltip { position: fixed; z-index: 100; pointer-events: none; max-width: min(340px, calc(100vw - 12px)); }
-.yearly-material-comparison-module .tip-table td:last-child { text-align: right; }
-.yearly-material-comparison-module .tip-range { color: #d6d6d6; font-size: 10px; }
+[data-chart-id="yearly-material-comparison"] .tooltip { position: fixed; z-index: 100; pointer-events: none; max-width: min(340px, calc(100vw - 12px)); }
+[data-chart-id="yearly-material-comparison"] .tip-table td:last-child { text-align: right; }
+[data-chart-id="yearly-material-comparison"] .tip-range { color: #d6d6d6; font-size: 10px; }
 /* Tablet: do not let the category selector exceed its column. */
 @media (min-width: 781px) and (max-width: 900px) {
   .comparison-controls .control-row { min-width: 0; }
@@ -613,12 +613,12 @@ select:disabled {
 .recycling-controls .control-row { min-height: 33px; gap: 7px; }
 .recycling-controls label { min-width: 72px; }
 .recycling-controls select { width: 168px; min-width: 168px; max-width: 168px; }
-.overall-recycling-rate-chart { min-height: 250px; display: flex; justify-content: center; align-items: center; }
-.overall-recycling-rate-chart svg { width: min(100%, 260px); height: auto; overflow: visible; }
-.overall-recycling-rate-chart .rate-value { fill: var(--ink); font-size: 30px; font-weight: 400; letter-spacing: -.045em; }
-.overall-recycling-rate-chart .rate-caption { fill: var(--muted); font-size: 11px; }
-.overall-recycling-rate-chart .arc-recycled { fill: #454545; }
-.overall-recycling-rate-chart .arc-general { fill: #d0ceca; }
+[data-chart-id="overall-recycling-rate"] .chart { min-height: 250px; display: flex; justify-content: center; align-items: center; }
+[data-chart-id="overall-recycling-rate"] .chart svg { width: min(100%, 260px); height: auto; overflow: visible; }
+[data-chart-id="overall-recycling-rate"] .chart .rate-value { fill: var(--ink); font-size: 30px; font-weight: 400; letter-spacing: -.045em; }
+[data-chart-id="overall-recycling-rate"] .chart .rate-caption { fill: var(--muted); font-size: 11px; }
+[data-chart-id="overall-recycling-rate"] .chart .arc-recycled { fill: #454545; }
+[data-chart-id="overall-recycling-rate"] .chart .arc-general { fill: #d0ceca; }
 
 
 
@@ -642,8 +642,8 @@ select:disabled {
 .calendar-weekdays span { white-space:nowrap; }
 .calendar-scroll { overflow-x:auto; overflow-y:hidden; min-width:0; padding-bottom:7px; scrollbar-width:thin; }
 .calendar-scroll:focus-visible { outline:2px solid #454545; outline-offset:2px; }
-.calendar-plot { width:max-content; }
-.calendar-plot svg { display:block; max-width:none; height:auto; font-family:"Source Sans 3",Arial,sans-serif; }
+[data-chart-id="daily-material-weights"] .chart { width:max-content; }
+[data-chart-id="daily-material-weights"] .chart svg { display:block; max-width:none; height:auto; font-family:"Source Sans 3",Arial,sans-serif; }
 .calendar-disclosure-wrap { margin-top:-1px; margin-bottom:28px; border-top:1px solid var(--line); }
 .calendar-disclosure-wrap .disclosure-trigger { border-top:0; }
 #calendar-table th:last-child, #calendar-table td:last-child { text-align:right; }
@@ -663,9 +663,9 @@ select:disabled {
 .calendar-weekdays span { font:inherit; }
 .calendar-layout { grid-template-columns:42px minmax(0,1fr); }
 .calendar-scroll { position:relative; }
-.calendar-plot svg { font:10px "Source Sans 3",Arial,sans-serif; }
-.calendar-plot svg text { fill:var(--muted); font:10px "Source Sans 3",Arial,sans-serif; }
-.calendar-tooltip { position:fixed; z-index:100; pointer-events:none; max-width:min(310px,calc(100vw - 12px)); }
+[data-chart-id="daily-material-weights"] .chart svg { font:10px "Source Sans 3",Arial,sans-serif; }
+[data-chart-id="daily-material-weights"] .chart svg text { fill:var(--muted); font:10px "Source Sans 3",Arial,sans-serif; }
+[data-chart-id="daily-material-weights"] .chart-tooltip { position:fixed; z-index:100; pointer-events:none; max-width:min(310px,calc(100vw - 12px)); }
 @media (max-width:780px) {
  .chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1; grid-row:1; margin-bottom:0; }
  .chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1; grid-row:2; }
@@ -814,7 +814,7 @@ select:disabled {
 /* Preserve existing calendar control and legend placement inside its JS scaffold. */
 [data-chart-id="daily-material-weights"] .calendar-top { margin-bottom: 0; }
 /* Loading and error messages always begin at the chart area's top edge. */
-.overall-recycling-rate-chart:has(> .chart-status) {
+[data-chart-id="overall-recycling-rate"] .chart:has(> .chart-status) {
   justify-content: flex-start;
   align-items: flex-start;
 }

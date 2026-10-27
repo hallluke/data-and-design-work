@@ -5,11 +5,11 @@ import { showChartError, clearChartStatus, formatWeight, formatMonth, monthIniti
 
 function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
   data = normalizeMonthlyGroups(data);
-  const tip = container.querySelector(".tooltip");
+  const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   const table = root.getElementById("comparison-table");
 
 
-  const period = root.getElementById("comparison-period");
+  const period = container.closest("article").querySelector(".unit");
   const state = { basis: "imputed", categories: "main" };
   const materials = individualMaterialLabels();
   const dry = groupLabels("mixedRecycling");
@@ -211,7 +211,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
       hit.addEventListener("blur",deactivate);
     });
-    container.querySelector("svg")?.remove();container.insertBefore(svg,tip);
+    container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.
 
