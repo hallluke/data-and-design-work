@@ -59,7 +59,7 @@ export default {
   "groups": [
     {
       "id": "mixedRecycling",
-      "label": "Dry recycling",
+      "label": "Recyclables",
       "children": [
         "glass",
         "cardboard",
