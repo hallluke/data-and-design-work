@@ -120,12 +120,15 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     });
     plot.setAttribute("aria-label","Recorded weight by day, Monday to Sunday, from "+fmtDate(firstISO)+" to "+fmtDate(lastISO));
     container.replaceChildren(plot);
+    // Keep the tooltip visible across gaps between cells. Hide it only when
+    // the pointer leaves the plot, not when it leaves an individual cell.
+    // The listener belongs to this plot and is removed when the plot is replaced.
+    plot.addEventListener("pointerleave", hideTip);
     // Bind tooltips to native Plot cell marks; do not use SVG <title> browser popups.
     const rects=[...plot.querySelectorAll('rect')];
     if(rects.length===cells.length){
       rects.forEach((rect,i)=>{
         rect.addEventListener("pointermove",e=>showTip(cells[i],e));
-        rect.addEventListener("pointerleave",hideTip);
       });
     }
     key.replaceChildren();
