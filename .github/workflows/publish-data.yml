@@ -63,11 +63,26 @@ jobs:
           for name in collections monthly detail comparison; do
             cp "build/data/$name.json" "data/$name.json"
           done
+      - name: Record successful data refresh
+        run: |
+          mkdir -p data
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+          Path("data/refresh.json").write_text(
+              json.dumps({"last_refreshed": timestamp}, indent=2) + "\n",
+              encoding="utf-8"
+          )
+          PY
       - name: Commit and push JSON changes only
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add -- data/collections.json data/monthly.json data/detail.json data/comparison.json
+          git add -- data/collections.json data/monthly.json data/detail.json data/comparison.json data/refresh.json
           if git diff --cached --quiet; then
             echo "No changes to published JSON; nothing to commit."
             exit 0
