@@ -1,3 +1,4 @@
+import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
@@ -8,6 +9,7 @@ import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMo
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
   data = normalizeMonthlyGroups(data);
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
+  const removeTouchDismissal = installTouchDismissal(container, tip);
   const table = root.querySelector("#data-table");
   const filterLayout = root.createElement("div");
   filterLayout.className = "filter-layout";
@@ -196,8 +198,9 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
       rect.setAttribute("aria-label", formatMonth(datum.month) + ": " + formatWeight(datum.kg) +
         " kilograms" + (isStacked() ? ", breakdown available in tooltip and table" : "") +
         (state.basis === "imputed" && !datum.complete ? ", provisional" : ""));
-      rect.addEventListener("pointermove", event => showTip(event, datum));
-      rect.addEventListener("pointerleave", () => { hideTooltip(tip); });
+      rect.addEventListener("pointermove", event => { if (!isTouchPointer(event)) showTip(event, datum); });
+      rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) showTip(event, datum); });
+      rect.addEventListener("pointerleave", event => { if (!isTouchPointer(event)) hideTooltip(tip); });
       rect.addEventListener("focus", () => {
         const bounds = rect.getBoundingClientRect();
         showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);

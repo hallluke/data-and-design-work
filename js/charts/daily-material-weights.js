@@ -1,3 +1,4 @@
+import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { showTooltip, hideTooltip, positionFixedTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
@@ -59,6 +60,75 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   });
   weekdayAxis.replaceChildren(weekdaySpacer, ...weekdayLabels);
   const tip = tooltip;
+  let selectedDate = null;
+  let keyboardDate = null;
+  let calendarCells = [];
+  let cellRects = [];
+  const removeTouchDismissal = installTouchDismissal(content, tip, {clear: () => {selectedDate=null; updateSelected();}});
+  function updateSelected() {
+    cellRects.forEach((rect,i) => {
+      const active = calendarCells[i]?.date === (keyboardDate || selectedDate);
+      rect.style.outline = active ? "2px solid #202020" : "";
+      rect.style.outlineOffset = active ? "-2px" : "";
+      rect.setAttribute("aria-selected",String(active));
+    });
+  }
+  function ensureVisible(index, mode="arrow", direction=0) {
+    const rect=cellRects[index]; if(!rect)return;
+    const area=scroll.getBoundingClientRect(), box=rect.getBoundingClientRect();
+    const available=area.width, left=area.left+available*.25, right=area.left+available*.75;
+    const target = mode==="jump" ? area.left+available/2 : direction<0 ? left : right;
+    if(mode==="edge") { scroll.scrollLeft=direction<0?0:scroll.scrollWidth-scroll.clientWidth; return; }
+    if(mode==="jump" || (direction<0 && box.left<left) || (direction>0 && box.right>right)) {
+      scroll.scrollLeft += (box.left+box.width/2)-target;
+    }
+  }
+  function navigateCalendar(event) {
+    if(event.target!==scroll)return;
+    const key=event.key;
+    const handled=["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","PageUp","PageDown","Enter"," ","Escape"];
+    if(!handled.includes(key))return;
+    if(key==="Escape") {event.preventDefault();hideTip();selectedDate=null;updateSelected();return;}
+    if(key==="Enter"||key===" ") {
+      event.preventDefault();const cell=calendarCells.find(d=>d.date===keyboardDate);
+      if(cell) {if(!tip.hidden && activeTipDate===cell.date)hideTip();else {showTip(cell);const b=cellRects[calendarCells.indexOf(cell)].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}}return;
+    }
+    if(!calendarCells.length)return;
+    const index=calendarCells.findIndex(d=>d.date===keyboardDate);
+    const current=calendarCells[Math.max(0,index)];
+    let target=current, mode="arrow",direction=0;
+    const row=current.weekday;
+    if(key==="ArrowLeft"||key==="ArrowRight") {
+      direction=key==="ArrowLeft"?-1:1;
+      if(event.metaKey||event.ctrlKey) {target=calendarCells.filter(d=>d.weekday===row).at(direction<0?0:-1);mode="edge";}
+      else target=calendarCells.find(d=>d.week===current.week+direction&&d.weekday===row);
+    } else if(key==="ArrowUp"||key==="ArrowDown") {
+      const weekday=current.weekday+(key==="ArrowUp"?-1:1);
+      target=calendarCells.find(d=>d.week===current.week&&d.weekday===weekday);
+    } else if(key==="Home"||key==="End") {
+      target=calendarCells.filter(d=>d.week===current.week).at(key==="Home"?0:-1);
+    } else if(key==="PageUp"||key==="PageDown") {
+      const d=new Date(current.date+"T00:00:00Z"), offset=key==="PageUp"?-1:1;
+      const ordinal=Math.floor((d.getUTCDate()-1)/7);
+      const monthStart=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+offset,1));
+      const firstWeekday=(monthStart.getUTCDay()+6)%7;
+      const day=1+(row-firstWeekday+7)%7+ordinal*7;
+      const lastDay=new Date(Date.UTC(monthStart.getUTCFullYear(),monthStart.getUTCMonth()+1,0)).getUTCDate();
+      const fallback=day>lastDay?day-7:day;
+      const iso=new Date(Date.UTC(monthStart.getUTCFullYear(),monthStart.getUTCMonth(),fallback)).toISOString().slice(0,10);
+      target=calendarCells.find(d=>d.date===iso);mode="jump";direction=offset;
+    }
+    event.preventDefault();
+    if(!target)return;
+    keyboardDate=target.date;selectedDate=target.date;
+    const targetIndex=calendarCells.indexOf(target);
+    updateSelected();ensureVisible(targetIndex,mode,direction);
+    scroll.setAttribute("aria-label",`Recording calendar: ${fmtDate(target.date)}, ${target.records.length?target.kg.toFixed(2)+" kilograms":"no recorded weight"}. Arrow keys navigate; Page Up and Down jump by ordinal weekday in month; Enter shows details; Escape dismisses.`);
+    if(!tip.hidden) {showTip(target);const b=cellRects[targetIndex].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}
+  }
+  on(scroll,"keydown",navigateCalendar);
+  on(scroll,"focus",()=>{if(!keyboardDate&&calendarCells.length){keyboardDate=calendarCells.at(-1).date;updateSelected();ensureVisible(calendarCells.length-1,"edge",1);}});
+
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",
     methodology: "Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.",
@@ -122,6 +192,8 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     const shade=d3.interpolateLab(ATLAS_COLOURS.light,ATLAS_COLOURS.dark);
     const intensity=value=>shade(calendarIntensityPosition(value,distinctValues));
     const cells=dates.map(d=>({...d,kg:weights.get(d.date)||0,records:grouped.get(d.date)||[]}));
+    calendarCells=cells;
+    if(!cells.some(d=>d.date===keyboardDate))keyboardDate=null;
     const monthStarts=d3.utcMonths(d3.utcMonth.floor(first),d3.utcMonth.offset(new Date(todayISO+"T00:00:00Z"),1))
       .map(d=>({d,i:d3.utcMonday.count(monday,d3.utcMonday.floor(d))}))
       .filter(({i})=>i>=0 && i<weekCount);
@@ -140,17 +212,21 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     // Keep the tooltip visible across gaps between cells. Hide it only when
     // the pointer leaves the plot, not when it leaves an individual cell.
     // The listener belongs to this plot and is removed when the plot is replaced.
-    plot.addEventListener("pointerleave", hideTip);
+    plot.addEventListener("pointerleave", e=>{if(!isTouchPointer(e))hideTip();});
     // Track the pointer continuously, including gaps between adjacent cells.
     // Cell listeners only change the contents when the active date changes.
-    plot.addEventListener("pointermove", moveTip);
+    plot.addEventListener("pointermove", e=>{if(!isTouchPointer(e))moveTip(e);});
     // Bind tooltips to native Plot cell marks; do not use SVG <title> browser popups.
     const rects=[...plot.querySelectorAll('rect')];
+    cellRects=rects.length===cells.length?rects:[];
     if(rects.length===cells.length){
       rects.forEach((rect,i)=>{
-        rect.addEventListener("pointerenter",e=>{showTip(cells[i]);moveTip(e);});
+        rect.setAttribute("aria-label",`${fmtDate(cells[i].date)}: ${cells[i].records.length?cells[i].kg.toFixed(2)+" kilograms":"no recorded weight"}`);
+        rect.addEventListener("pointerenter",e=>{if(!isTouchPointer(e)){showTip(cells[i]);moveTip(e);}});
+        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e)){selectedDate=cells[i].date;showTip(cells[i]);moveTip(e);updateSelected();}});
       });
     }
+    updateSelected();
     key.replaceChildren();
     const label=t=>{const el=document.createElement("span");el.textContent=t;key.append(el);};
     const swatch=c=>{const el=document.createElement("span");el.className="swatch";el.style.backgroundColor=c;key.append(el);};
@@ -174,7 +250,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   }
 
   on(document,"visibilitychange",()=>{if(!document.hidden)render();});
-  return {render,destroy(){listeners.forEach(remove=>remove());controls.destroy();hideTip();}};
+  return {render,destroy(){removeTouchDismissal();listeners.forEach(remove=>remove());controls.destroy();hideTip();}};
 }
 
 // Single interface for the four datasets. For now these remain embedded in this

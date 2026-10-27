@@ -1,3 +1,4 @@
+import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { formatPercent } from "../chart-format.js";
@@ -15,6 +16,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
     methodology: "Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.",
     columns: ["Category", "Weight (kg)", "Share"]});
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
+  const removeTouchDismissal = installTouchDismissal(container, tip);
   const years = [...new Set(rows.map(d => d.date.slice(0, 4)))].sort();
   const state={period:"all"};
   const controls=setupChart({root,id:"overall-recycling-rate",number:"03",title:"Recycling rate",unit:"% by weight",state,
@@ -59,7 +61,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
       .attr("class", (_, i) => i === 0 ? "arc-recycled" : "arc-general")
       .attr("d", arc)
       .each(function(d){
-        this.addEventListener("pointermove",event=>{
+        const inspect = event=>{
           showTooltip(tip, `<strong>${d.data.name}</strong><table class="tip-table"><thead><tr><th>Category</th><th>kg</th><th>%</th></tr></thead><tbody><tr><td>${d.data.name}</td><td>${number(d.data.value)}</td><td>${total?(100*d.data.value/total).toFixed(1):"0.0"}%</td></tr></tbody></table>`);
           // Switch at the doughnut centreline, not only when space runs out.
           const bounds=container.getBoundingClientRect();
@@ -74,8 +76,16 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
           const mouseY=event.clientY-bounds.top;
           const y=mouseY<bounds.height/3 ? mouseY+12 : mouseY-height-8;
           tip.style.top=Math.max(0,Math.min(y,Math.max(0,bounds.height-height)))+"px";
-        });
-        this.addEventListener("pointerleave",()=>{hideTooltip(tip);});
+        };
+        this.setAttribute("tabindex","0");
+        this.setAttribute("role","button");
+        this.setAttribute("aria-label", `${d.data.name}: ${number(d.data.value)} kilograms`);
+        this.addEventListener("pointermove",event=>{if(!isTouchPointer(event))inspect(event);});
+        this.addEventListener("pointerup",event=>{if(isTouchPointer(event))inspect(event);});
+        this.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))hideTooltip(tip);});
+        this.addEventListener("focus",()=>{const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+        this.addEventListener("blur",()=>hideTooltip(tip));
+        this.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}});
       });
     svg.append("text").attr("class", "rate-value").attr("x", cx).attr("y", cy + 3)
       .attr("text-anchor", "middle").text(total ? `${rate.toFixed(1)}%` : "—");
@@ -92,7 +102,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
   on(document,"visibilitychange", () => {
     if (!document.hidden && state.period.startsWith("last-")) render();
   });
-  return {render,destroy(){listeners.forEach(remove=>remove());controls.destroy();hideTooltip(tip);}};
+  return {render,destroy(){removeTouchDismissal();listeners.forEach(remove=>remove());controls.destroy();hideTooltip(tip);}};
 }
 
 

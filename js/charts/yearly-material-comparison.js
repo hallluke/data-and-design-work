@@ -1,3 +1,4 @@
+import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { formatNumber, formatSignedNumber, formatPercent } from "../chart-format.js";
@@ -9,6 +10,7 @@ import { showChartError, clearChartStatus, formatWeight, formatMonth, monthIniti
 function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
   data = normalizeMonthlyGroups(data);
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
+  const removeTouchDismissal = installTouchDismissal(container, tip);
   const table = root.getElementById("comparison-table");
 
 
@@ -208,9 +210,10 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.setAttribute("tabindex","0");
       hit.setAttribute("role","button");
       hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
-      hit.addEventListener("pointerenter",event=>activate(i,event));
-      hit.addEventListener("pointermove",event=>activate(i,event));
-      hit.addEventListener("pointerleave",deactivate);
+      hit.addEventListener("pointerenter",event=>{if(!isTouchPointer(event))activate(i,event);});
+      hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event))activate(i,event);});
+      hit.addEventListener("pointerup",event=>{if(isTouchPointer(event))activate(i,event);});
+      hit.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))deactivate();});
       hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
       hit.addEventListener("blur",deactivate);
     });
@@ -230,7 +233,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     } catch(error) {showChartError(container,error);}
   }
   if("ResizeObserver" in window) {observer=new ResizeObserver(()=>{if(window.Plot)rerender();});observer.observe(container);}
-  return {render:rerender,destroy(){observer?.disconnect();listeners.forEach(remove=>remove());controls.destroy();container.querySelector("svg")?.remove();hideTooltip(tip);}};
+  return {render:rerender,destroy(){removeTouchDismissal();observer?.disconnect();listeners.forEach(remove=>remove());controls.destroy();container.querySelector("svg")?.remove();hideTooltip(tip);}};
 }
 
 /* ============================================================
