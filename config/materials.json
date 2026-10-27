@@ -1,0 +1,78 @@
+{
+  "materials": [
+    {
+      "id": "residualWaste",
+      "label": "Residual waste",
+      "source": "Waste",
+      "impute": true
+    },
+    {
+      "id": "foodWaste",
+      "label": "Food waste",
+      "source": "Food Waste",
+      "impute": true
+    },
+    {
+      "id": "softPlastic",
+      "label": "Soft plastics",
+      "source": "Soft plastic",
+      "impute": true
+    },
+    {
+      "id": "batteries",
+      "label": "Batteries",
+      "source": "Batteries",
+      "impute": false
+    },
+    {
+      "id": "glass",
+      "label": "Glass",
+      "source": "Glass",
+      "impute": true
+    },
+    {
+      "id": "cardboard",
+      "label": "Cardboard",
+      "source": "Cardboard",
+      "impute": true
+    },
+    {
+      "id": "tin",
+      "label": "Tin",
+      "source": "Tin",
+      "impute": true
+    },
+    {
+      "id": "plastic",
+      "label": "Plastic",
+      "source": "Plastic",
+      "impute": true
+    },
+    {
+      "id": "paper",
+      "label": "Paper",
+      "source": "Paper",
+      "impute": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "mixedRecycling",
+      "label": "Dry recycling",
+      "children": [
+        "glass",
+        "cardboard",
+        "tin",
+        "plastic",
+        "paper"
+      ]
+    }
+  ],
+  "monthlyGroupOrder": [
+    "residualWaste",
+    "foodWaste",
+    "mixedRecycling",
+    "softPlastic",
+    "batteries"
+  ]
+}

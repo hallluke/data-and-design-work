@@ -1,5 +1,6 @@
 import { setDisclosureContent } from "../chart-disclosure-content.js";
-import { populateMaterialSelect } from "../materials.js";
+import { populateMaterialSelect, sourceMatchesSelection, materialLabel, materialIdFromSource } from "../materials.js";
+import { setupChart } from "../chart-setup.js";
 import { ATLAS_COLOURS, bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
 
 // Map recorded weights onto the five-stop visual range by distinct values,
@@ -12,18 +13,20 @@ function calendarIntensityPosition(value, distinctValues) {
   return (value - min) / (max - min);
 }
 
-function createRecordingCalendar({container, rows, root = document}) {
+function createDailyMaterialWeightsChart({container, rows, root = document}) {
   const listeners = [];
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
-  const category = root.getElementById("calendar-material");
-  populateMaterialSelect(category);
+  const state={material:"all"};
+  const controls=setupChart({root,id:"daily-material-weights",number:"04",title:"Recording calendar",unit:"kg / day",state,
+    controls:[{key:"material",type:"select",label:"Material",id:"calendar-material",populate:populateMaterialSelect}],
+    onChange:()=>render()});
   const key = root.getElementById("calendar-key");
   const tip = root.getElementById("calendar-tip");
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",
     methodology: "Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.",
     columns: ["Measure", "Value"]});
-  const dry = new Set(["Glass", "Cardboard", "Tin", "Plastic", "Paper"]);
+
   const records = rows.map(r => ({...r, day:r.date}));
   const firstISO = "2025-01-01", lastISO = d3.max(rows, r=>r.date);
   const first = new Date(firstISO+"T00:00:00Z");
@@ -43,21 +46,10 @@ function createRecordingCalendar({container, rows, root = document}) {
   }
   const fmtDate = iso=>new Date(iso+"T00:00:00Z").toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
   const fmtShort = iso=>new Date(iso+"T00:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
-  function matches(r) {
-    const selected = category.value;
-    if (selected.startsWith("dry:")) return r.type === selected.slice(4);
-    switch(selected) {
-      case "Residual waste": return r.type === "Waste";
-      case "Food waste": return r.type === "Food Waste";
-      case "Dry recycling": return dry.has(r.type);
-      case "Soft plastics": return r.type === "Soft plastic";
-      case "Batteries": return r.type === "Batteries";
-      default: return true;
-    }
-  }
+  function matches(r) { return sourceMatchesSelection(r.type, state.material); }
   function hideTip(){tip.hidden=true;}
   function showTip(d,event){
-    const breakdown=d.records.map(r=>`<tr><td>${r.type}</td><td>${r.kg.toFixed(2)}</td></tr>`).join("");
+    const breakdown=d.records.map(r=>`<tr><td>${materialLabel(materialIdFromSource(r.type))}</td><td>${r.kg.toFixed(2)}</td></tr>`).join("");
     tip.innerHTML=`<strong>${fmtDate(d.date)}</strong><table class="tip-table"><thead><tr><th>Material</th><th>kg</th></tr></thead><tbody>`+
       (breakdown||`<tr><td>No recorded weight</td><td>—</td></tr>`)+
       `</tbody>${d.records.length?`<tfoot><tr><td>Total</td><td>${d.kg.toFixed(2)}</td></tr></tfoot>`:""}</table>`;
@@ -122,9 +114,9 @@ function createRecordingCalendar({container, rows, root = document}) {
       ["Most common weekday",commonLabel]];
     table.replaceChildren(...lines.map(([name,value])=>{const tr=document.createElement("tr");for(const t of [name,value]){const td=document.createElement("td");td.textContent=t;tr.append(td);}return tr;}));
   }
-  on(category,"change",render);
+
   on(document,"visibilitychange",()=>{if(!document.hidden)render();});
-  return {render,destroy(){listeners.forEach(remove=>remove());hideTip();}};
+  return {render,destroy(){listeners.forEach(remove=>remove());controls.destroy();hideTip();}};
 }
 
 // Single interface for the four datasets. For now these remain embedded in this
@@ -133,4 +125,4 @@ function createRecordingCalendar({container, rows, root = document}) {
 // Load each independent dataset from static JSON files.
 // Relative URLs work under both localhost and a GitHub Pages project path.
 
-export { createRecordingCalendar, calendarIntensityPosition };
+export { createDailyMaterialWeightsChart, calendarIntensityPosition };

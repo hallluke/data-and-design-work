@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { calendarIntensityPosition } from "../js/charts/calendar.js";
+import { calendarIntensityPosition } from "../js/charts/daily-material-weights.js";
 
 test("one distinct weight always uses darkest shade", () => {
   assert.equal(calendarIntensityPosition(0.25, [0.25]), 1);

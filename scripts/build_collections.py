@@ -7,7 +7,7 @@ import math
 from collections import Counter
 from pathlib import Path
 
-MATERIALS = frozenset({'Batteries','Cardboard','Food Waste','Glass','Paper','Plastic','Soft plastic','Tin','Waste'})
+from material_config import SOURCE_NAMES as MATERIALS
 FIELDS = ['Date','Material','Weight (kg)']
 
 

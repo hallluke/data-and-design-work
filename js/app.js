@@ -4,10 +4,10 @@ import { startChart } from "./chart-runtime.js";
 import { getAtlasData } from "./data.js";
 import { initFreshness } from "./freshness.js";
 import { initDisclosures } from "./disclosures.js";
-import { createMonthlyWasteChart } from "./charts/monthly.js";
-import { createYearComparisonChart } from "./charts/comparison.js";
-import { createRecyclingRateChart } from "./charts/recycling.js";
-import { createRecordingCalendar } from "./charts/calendar.js";
+import { createMonthlyMaterialWeightsChart } from "./charts/monthly-material-weights.js";
+import { createYearlyMaterialComparisonChart } from "./charts/yearly-material-comparison.js";
+import { createOverallRecyclingRateChart } from "./charts/overall-recycling-rate.js";
+import { createDailyMaterialWeightsChart } from "./charts/daily-material-weights.js";
 
 let atlasCharts = [];
 async function initAtlas() {
@@ -15,7 +15,7 @@ async function initAtlas() {
   try {
     data = await getAtlasData();
   } catch (error) {
-    for (const id of ["monthly-chart", "comparison-chart", "recycling-chart", "calendar-chart"]) {
+    for (const id of ["monthly-material-weights", "yearly-material-comparison", "overall-recycling-rate", "daily-material-weights"]) {
       const container = document.getElementById(id);
       if (container) showChartError(container, error);
     }
@@ -41,10 +41,10 @@ async function initAtlas() {
   }
 
   // Raw-record charts can still work if the monthly aggregate is invalid.
-  startChart(charts, "recycling-chart", container =>
-    createRecyclingRateChart({container, rows: data.collections}));
-  startChart(charts, "calendar-chart", container =>
-    createRecordingCalendar({container, rows: data.collections}));
+  startChart(charts, "overall-recycling-rate", container =>
+    createOverallRecyclingRateChart({container, rows: data.collections}));
+  startChart(charts, "daily-material-weights", container =>
+    createDailyMaterialWeightsChart({container, rows: data.collections}));
 
   // Validate shared monthly data once, then initialise its two consumers separately.
   let monthlyDataValid = false;
@@ -52,14 +52,14 @@ async function initAtlas() {
     validateWasteData(data.monthly, data.detail);
     monthlyDataValid = true;
   } catch (error) {
-    showChartError(document.getElementById("monthly-chart"), error);
-    showChartError(document.getElementById("comparison-chart"), error);
+    showChartError(document.getElementById("monthly-material-weights"), error);
+    showChartError(document.getElementById("yearly-material-comparison"), error);
   }
   if (monthlyDataValid) {
-    startChart(charts, "monthly-chart", container =>
-      createMonthlyWasteChart({container, data: data.monthly, detail: data.detail}));
-    startChart(charts, "comparison-chart", container =>
-      createYearComparisonChart({container, data: data.monthly, detail: data.detail,
+    startChart(charts, "monthly-material-weights", container =>
+      createMonthlyMaterialWeightsChart({container, data: data.monthly, detail: data.detail}));
+    startChart(charts, "yearly-material-comparison", container =>
+      createYearlyMaterialComparisonChart({container, data: data.monthly, detail: data.detail,
         comparison: data.comparison}));
   }
   atlasCharts = charts;

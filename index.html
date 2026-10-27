@@ -78,19 +78,17 @@
         </div>
       </div>
       <div class="atlas-row chart-disclosure-grid">
-        <article aria-labelledby="title-monthly" class="module wide">
+        <article data-chart-id="monthly-material-weights" aria-labelledby="title-monthly-material-weights" class="module wide">
           <div class="module-header">
             <div class="heading">
               <span class="num">
                 01
               </span>
-              <h2 id="title-monthly">
+              <h2 id="title-monthly-material-weights">
                 Month by month
               </h2>
             </div>
-            <span class="unit">
-              kg / month
-            </span>
+            <span class="unit"></span>
           </div>
           <div class="filter-layout">
             <div aria-label="Monthly chart filters" class="controls chart-controls">
@@ -128,25 +126,23 @@
             <div aria-label="Chart key" class="legend" id="chart-legend">
             </div>
           </div>
-          <div aria-live="polite" class="chart" id="monthly-chart">
+          <div aria-live="polite" class="chart" id="monthly-material-weights">
             <p class="chart-status" role="status">Chart loading…</p>
             <div class="tooltip" hidden="" id="tip">
             </div>
           </div>
         </article>
-        <article aria-labelledby="title-comparison" class="module narrow comparison-module">
+        <article data-chart-id="yearly-material-comparison" aria-labelledby="title-yearly-material-comparison" class="module narrow yearly-material-comparison-module">
           <div class="module-header">
             <div class="heading">
               <span class="num">
                 02
               </span>
-              <h2 id="title-comparison">
+              <h2 id="title-yearly-material-comparison">
                 A year apart
               </h2>
             </div>
-            <span class="unit" id="comparison-period">
-              Jan—Sep
-            </span>
+            <span class="unit" id="comparison-period"></span>
           </div>
           <div aria-label="Year-on-year comparison filters" class="comparison-controls controls chart-controls">
             <div class="control-row">
@@ -182,7 +178,7 @@
               </select>
             </div>
           </div>
-          <div aria-live="polite" class="chart comparison-chart" id="comparison-chart">
+          <div aria-live="polite" class="chart yearly-material-comparison-chart" id="yearly-material-comparison">
             <p class="chart-status" role="status">Chart loading…</p>
             <div class="tooltip" hidden="">
             </div>
@@ -239,19 +235,17 @@
         </div>
       </div>
       <div class="atlas-row chart-disclosure-grid chart-disclosure-grid-secondary">
-        <article aria-labelledby="title-materials" class="module narrow recycling-module">
+        <article data-chart-id="overall-recycling-rate" aria-labelledby="title-overall-recycling-rate" class="module narrow overall-recycling-rate-module">
           <div class="module-header">
             <div class="heading">
               <span class="num">
                 03
               </span>
-              <h2 id="title-materials">
+              <h2 id="title-overall-recycling-rate">
                 Recycling rate
               </h2>
             </div>
-            <span class="unit">
-              % by weight
-            </span>
+            <span class="unit"></span>
           </div>
           <div aria-label="Recycling rate filters" class="controls chart-controls recycling-controls">
             <div class="control-row">
@@ -271,25 +265,23 @@
               </select>
             </div>
           </div>
-          <div aria-live="polite" class="chart recycling-chart" id="recycling-chart">
+          <div aria-live="polite" class="chart overall-recycling-rate-chart" id="overall-recycling-rate">
             <p class="chart-status" role="status">Chart loading…</p>
             <div class="tooltip" hidden="" id="recycling-tip">
             </div>
           </div>
         </article>
-        <article aria-labelledby="title-calendar" class="module wide calendar-module">
+        <article data-chart-id="daily-material-weights" aria-labelledby="title-daily-material-weights" class="module wide daily-material-weights-module">
           <div class="module-header">
             <div class="heading">
               <span class="num">
                 04
               </span>
-              <h2 id="title-calendar">
+              <h2 id="title-daily-material-weights">
                 Recording calendar
               </h2>
             </div>
-            <span class="unit">
-              kg / day
-            </span>
+            <span class="unit"></span>
           </div>
           <div class="calendar-top">
             <div aria-label="Calendar chart filters" class="controls chart-controls calendar-controls">
@@ -330,7 +322,7 @@
               </span>
             </div>
             <div aria-label="Scrollable calendar, weeks left to right" class="calendar-scroll" id="calendar-scroll" tabindex="0">
-              <div aria-live="polite" class="calendar-plot" id="calendar-chart">
+              <div aria-live="polite" class="calendar-plot" id="daily-material-weights">
             <p class="chart-status" role="status">Chart loading…</p>
               </div>
               <div class="tooltip calendar-tooltip" hidden="" id="calendar-tip">

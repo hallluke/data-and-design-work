@@ -1,19 +1,27 @@
 import { setDisclosureContent } from "../chart-disclosure-content.js";
-import { populateMaterialSelect } from "../materials.js";
-import { syncButtonGroup, setControlDisabled } from "../chart-controls.js";
+import { populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
+import { setupChart } from "../chart-setup.js";
 import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
-function createMonthlyWasteChart({ container, data, detail, root = document }) {
+function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
   const tip = container.querySelector(".tooltip");
   const table = root.querySelector("#data-table");
   const legend = root.querySelector("#chart-legend");
-  const materialSelect = root.querySelector("#material");
-  populateMaterialSelect(materialSelect, {includeBatteries:false});
 
-  const basisButtons = [...root.querySelectorAll("[data-basis]")];
-  const displayButtons = [...root.querySelectorAll("[data-display]")];
+
+
   const state = { basis: "imputed", display: "total", material: "all" };
-  const subtypes = ["Glass", "Cardboard", "Tin", "Plastic", "Paper"];
+  const controls = setupChart({root,id:"monthly-material-weights",number:"01",title:"Month by month",unit:"kg / month",state,
+    controls:[
+      {key:"basis",type:"buttons",label:"Measurement",options:[{value:"imputed",label:"Imputed"},{value:"recorded",label:"Recorded"}]},
+      {key:"display",type:"buttons",label:"Composition",options:[{value:"total",label:"Total"},{value:"stacked",label:"Stacked"}],
+        disabled:(value,s)=>value==="stacked" && s.material!=="all" && s.material!=="mixedRecycling"},
+      {key:"material",type:"select",label:"Material",id:"material",populate:select=>populateMaterialSelect(select,{includeBatteries:false})}
+    ],onChange:(key,value)=>{
+      if(key==="material" && value!=="all" && value!=="mixedRecycling") state.display="total";
+      rerender();
+    }});
+  const subtypes = groupLabels("mixedRecycling");
   const categoryPalette = atlasPalette(data.groups.length);
   const greys = Object.fromEntries(data.groups.map((name,i)=>[name,categoryPalette[i]]));
   const dryGreys = atlasPalette(subtypes.length);
@@ -22,13 +30,13 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   const listeners = [];
 
   const isStacked = () => state.display === "stacked" &&
-    (state.material === "all" || (state.material === "Dry recycling"));
+    (state.material === "all" || (state.material === "mixedRecycling"));
   const isComplete = month => month <= completeThrough;
-  const selectedGroups = () => state.material === "all" ? data.groups : [state.material];
+  const selectedGroups = () => state.material === "all" ? data.groups : [materialLabel(state.material)];
 
   function getRows() {
-    if (state.material.startsWith("dry:")) {
-      return detail[state.basis].filter(d => d.type === state.material.slice(4))
+    if (subtypes.some(label => materialIdFromLabel(label) === state.material)) {
+      return detail[state.basis].filter(d => d.type === materialLabel(state.material))
         .map(d => ({ ...d, group: d.type }));
     }
     return data[state.basis].filter(d => selectedGroups().includes(d.group) ||
@@ -44,11 +52,11 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   function tooltipHTML(datum) {
     let content = "<strong>" + formatMonth(datum.month) + "</strong>";
     if (isStacked()) {
-      const rows = (state.material === "Dry recycling"
+      const rows = (state.material === "mixedRecycling"
         ? detail[state.basis].map(d => ({ ...d, group: d.type })) : getRows())
         .filter(row => row.month === datum.month);
       const total = rows.reduce((sum, row) => sum + row.kg, 0);
-      const categories = (state.material === "Dry recycling" ? subtypes : data.groups).slice().reverse();
+      const categories = (state.material === "mixedRecycling" ? subtypes : data.groups).slice().reverse();
       content += '<table class="tip-table"><thead><tr><th>Material</th><th>kg</th><th>%</th></tr></thead><tbody>';
       for (const group of categories) {
         const weight = rows.find(row => row.group === group)?.kg || 0;
@@ -64,7 +72,7 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
         "</td><td>100.0%</td></tr></tfoot></table>";
     } else {
       const material = state.material === "all" ? "All materials" :
-        state.material.startsWith("dry:") ? state.material.slice(4) : state.material;
+        subtypes.some(label => materialIdFromLabel(label) === state.material) ? materialLabel(state.material) : materialLabel(state.material);
       content += '<table class="tip-table"><thead><tr><th>Material</th><th>kg</th></tr></thead>' +
         "<tbody><tr><td>" + material + "</td><td>" + formatWeight(datum.kg) + "</td></tr></tbody></table>";
     }
@@ -109,7 +117,7 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
     if (isStacked()) {
       items.length = 0;
       for (const group of chartGroups.slice().reverse()) {
-        const color = state.material === "Dry recycling" ? dryGreys[chartGroups.indexOf(group)] : greys[group];
+        const color = state.material === "mixedRecycling" ? dryGreys[chartGroups.indexOf(group)] : greys[group];
         items.push([group, color]);
       }
     }
@@ -123,20 +131,13 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
     }
   }
 
-  function updateControls() {
-    for (const button of displayButtons) {
-      setControlDisabled(button, state.material !== "all" &&
-        (state.material !== "Dry recycling"));
-    }
-    syncButtonGroup(displayButtons, state.display, "display");
-    syncButtonGroup(basisButtons, state.basis, "basis");
-  }
+  function updateControls() { controls.sync(); }
 
   function render() {
     const rows = getRows();
     const totals = getTotals(rows);
-    const chartGroups = state.material === "Dry recycling" ? subtypes : data.groups;
-    const chartRows = state.material === "Dry recycling"
+    const chartGroups = state.material === "mixedRecycling" ? subtypes : data.groups;
+    const chartRows = state.material === "mixedRecycling"
       ? detail[state.basis].map(d => ({ ...d, group: d.type })) : rows;
     const marks = [];
 
@@ -167,7 +168,7 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
         tickPadding: 7, tickFormat: monthInitial, label: null, padding: 0.18 },
       y: { domain: [0, maxY], grid: true, ticks: 4, label: null, tickSize: 0 },
       color: { domain: chartGroups,
-        range: chartGroups.map((group, i) => state.material === "Dry recycling" ? dryGreys[i] : greys[group]),
+        range: chartGroups.map((group, i) => state.material === "mixedRecycling" ? dryGreys[i] : greys[group]),
         legend: false },
       marks
     });
@@ -225,19 +226,6 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
     } catch (error) { showChartError(container, error); }
   }
 
-  const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
-  for (const button of [...basisButtons, ...displayButtons]) {
-    on(button, "click", () => {
-      const key = button.dataset.basis ? "basis" : "display";
-      state[key] = button.dataset[key];
-      rerender();
-    });
-  }
-  on(materialSelect, "change", event => {
-    state.material = event.target.value;
-    if (state.material !== "all" && state.material !== "Dry recycling") state.display = "total";
-    rerender();
-  });
   if ("ResizeObserver" in window) {
     observer = new ResizeObserver(() => { if (window.Plot) rerender(); });
     observer.observe(container);
@@ -248,6 +236,7 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
     destroy() {
       observer?.disconnect();
       listeners.forEach(remove => remove());
+      controls.destroy();
       container.querySelector("svg")?.remove();
       tip.hidden = true;
     }
@@ -261,4 +250,4 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
    Projection scenarios are computed upstream, not in the browser.
    ============================================================ */
 
-export { createMonthlyWasteChart };
+export { createMonthlyMaterialWeightsChart };

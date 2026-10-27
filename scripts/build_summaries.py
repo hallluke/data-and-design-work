@@ -5,10 +5,7 @@ from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 
-GROUPS={'Waste':'Residual waste','Food Waste':'Food waste','Soft plastic':'Soft plastics','Batteries':'Batteries',**{x:'Dry recycling' for x in ['Glass','Cardboard','Tin','Plastic','Paper']}}
-DETAIL=['Glass','Cardboard','Tin','Plastic','Paper']
-REC_GROUPS=['Residual waste','Food waste','Dry recycling','Soft plastics','Batteries']
-IMP_GROUPS=REC_GROUPS[:-1]
+from material_config import SOURCE_TO_GROUP as GROUPS, DETAIL, REC_GROUPS, IMP_GROUPS, NON_IMPUTED
 START=date(2025,1,1)
 
 def months_between(first,last):
@@ -25,7 +22,7 @@ def calculate(rows, start=START):
     for r in rows:
         t=r['type']; d=date.fromisoformat(r['date']); kg=r['kg']; group=GROUPS[t]
         recorded[(d.strftime('%Y-%m'),t)]+=kg
-        if t=='Batteries':continue # Excluded from interval imputation in reference dataset.
+        if t in NON_IMPUTED:continue # Excluded from interval imputation in reference dataset.
         prev=previous.get(t,start-timedelta(days=1))
         if d<=prev: raise ValueError(f'Non-increasing collection date for {t}: {d}')
         days=(d-prev).days; daily=kg/days

@@ -3,6 +3,7 @@ import math
 from collections import Counter
 from datetime import date, timedelta
 from build_collections import MATERIALS
+from material_config import NON_IMPUTED, RESIDUAL_SOURCE
 from build_summaries import GROUPS, DETAIL, REC_GROUPS, IMP_GROUPS, START, months_between
 
 TOL = 1e-5
@@ -37,12 +38,12 @@ def validate_dataset(rows, monthly, detail, comparison):
     require(monthly['groups'] == IMP_GROUPS, 'monthly.groups: unexpected groups')
     require(isinstance(monthly['metadata'], dict) and monthly['metadata'].get('imputationStart') == START.isoformat(), 'monthly: incorrect imputation start')
     latest_by_material = {t:max(date.fromisoformat(r['date']) for r in rows if r['type']==t) for t in MATERIALS if any(r['type']==t for r in rows)}
-    imputed_materials = set(MATERIALS)-{'Batteries'}
+    imputed_materials = set(MATERIALS)-NON_IMPUTED
     require(imputed_materials <= latest_by_material.keys(), 'monthly: missing imputed material')
     monthly_latest = min(latest_by_material[t] for t in imputed_materials)
     monthly_expected = (monthly_latest.replace(day=1)-timedelta(days=1)).strftime('%Y-%m')
     require(monthly['metadata'].get('completeThrough') == monthly_expected, 'monthly: incorrect completeness cutoff')
-    comparison_materials = imputed_materials-{'Waste'}
+    comparison_materials = imputed_materials-{RESIDUAL_SOURCE}
     comparison_latest = min(latest_by_material[t] for t in comparison_materials)
     comparison_expected = (comparison_latest.replace(day=1)-timedelta(days=1)).strftime('%Y-%m')
     require(comparison['metadata'].get('comparisonCompleteThrough') == comparison_expected, 'comparison: incorrect completeness cutoff')

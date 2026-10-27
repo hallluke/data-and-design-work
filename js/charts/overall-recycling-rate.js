@@ -1,22 +1,23 @@
+import { materialIdFromSource } from "../materials.js";
+import { setupChart } from "../chart-setup.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
 
-function createRecyclingRateChart({container, rows, root = document}) {
+function createOverallRecyclingRateChart({container, rows, root = document}) {
   const listeners = [];
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
-  const selector = root.getElementById("recycling-year");
+
   const table = root.querySelector("#recycling-table tbody");
   setDisclosureContent({root, methodId: "recycling-method", tableId: "recycling-table",
     methodology: "Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.",
     columns: ["Category", "Weight (kg)", "Share"]});
   const tip = root.getElementById("recycling-tip");
   const years = [...new Set(rows.map(d => d.date.slice(0, 4)))].sort();
-  for (const year of years) {
-    const option = root.createElement("option");
-    option.value = year;
-    option.textContent = year;
-    selector.append(option);
-  }
+  const state={period:"all"};
+  const controls=setupChart({root,id:"overall-recycling-rate",number:"03",title:"Recycling rate",unit:"% by weight",state,
+    controls:[{key:"period",type:"select",label:"Period",id:"recycling-year",options:[
+      {value:"all",label:"All data"},{value:"last-6",label:"Last 6 months"},{value:"last-12",label:"Last 12 months"},
+      ...years.map(year=>({value:year,label:year}))]}],onChange:()=>render()});
   const number = d3.format(".2f");
   // Compute rolling windows in the browser, not in the generated data file.
   // Local calendar dates avoid UTC/time-zone shifts around midnight.
@@ -31,7 +32,7 @@ function createRecyclingRateChart({container, rows, root = document}) {
     return new Date(first.getFullYear(), first.getMonth(), Math.min(today.getDate(), lastDay));
   }
   function render() {
-    const chosen = selector.value;
+    const chosen = state.period;
     const today = new Date();
     const todayISO = localISO(today);
     const rollingMonths = chosen === "last-6" ? 6 : chosen === "last-12" ? 12 : null;
@@ -39,7 +40,7 @@ function createRecyclingRateChart({container, rows, root = document}) {
     const subset = rollingMonths
       ? rows.filter(d => d.date >= startISO && d.date <= todayISO)
       : chosen === "all" ? rows : rows.filter(d => d.date.startsWith(chosen));
-    const general = d3.sum(subset.filter(d => ["waste", "residual waste", "general waste"].includes(d.type.toLowerCase())), d => d.kg);
+    const general = d3.sum(subset.filter(d => materialIdFromSource(d.type) === "residualWaste"), d => d.kg);
     const total = d3.sum(subset, d => d.kg);
     const recycled = total - general;
     const rate = total ? 100 * recycled / total : 0;
@@ -77,15 +78,14 @@ function createRecyclingRateChart({container, rows, root = document}) {
       return tr;
     }));
   }
-  on(selector,"change",render);
   // Refresh if the tab remains open across a local date change.
   on(document,"visibilitychange", () => {
-    if (!document.hidden && selector.value.startsWith("last-")) render();
+    if (!document.hidden && state.period.startsWith("last-")) render();
   });
-  return {render,destroy(){listeners.forEach(remove=>remove());tip.hidden=true;}};
+  return {render,destroy(){listeners.forEach(remove=>remove());controls.destroy();tip.hidden=true;}};
 }
 
 
 /* Figure 04 — continuous, recorded-date calendar heatmap. */
 
-export { createRecyclingRateChart };
+export { createOverallRecyclingRateChart };

@@ -1,18 +1,25 @@
+import { groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
+import { setupChart } from "../chart-setup.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
-import { syncButtonGroup, setControlDisabled } from "../chart-controls.js";
 import { showChartError, clearChartStatus, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
 
-function createYearComparisonChart({ container, data, detail, comparison, root = document }) {
+function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
   const tip = container.querySelector(".tooltip");
-  const categorySelect = root.getElementById("comparison-categories");
-  const basisButtons = [...root.querySelectorAll("[data-compare-basis]")];
   const table = root.getElementById("comparison-table");
 
 
   const period = root.getElementById("comparison-period");
   const state = { basis: "imputed", categories: "main" };
-  const materials = ["Residual waste", "Food waste", "Glass", "Cardboard", "Tin", "Plastic", "Paper", "Soft plastics", "Batteries"];
-  const dry = ["Glass", "Cardboard", "Tin", "Plastic", "Paper"];
+  const materials = individualMaterialLabels();
+  const dry = groupLabels("mixedRecycling");
+  const controls=setupChart({root,id:"yearly-material-comparison",number:"02",title:"A year apart",unit:"",state,
+    controls:[
+      {key:"basis",type:"buttons",label:"Measurement",options:[{value:"imputed",label:"Imputed"},{value:"recorded",label:"Recorded"}],
+        disabled:(value,s)=>value==="recorded" && s.categories==="residual"},
+      {key:"categories",type:"select",label:"Categories",id:"comparison-categories",options:[
+        {value:"main",label:"Main categories"},{value:"dry",label:materialLabel("mixedRecycling")},
+        {value:"all",label:"All materials"},{value:"residual",label:"Residual waste estimate"}]}
+    ],onChange:(key,value)=>{if(key==="categories" && value==="residual")state.basis="imputed";rerender();}});
   const projection = comparison.projectedAdditionalKg;
   const cutoff = comparison.metadata.comparisonCompleteThrough;
   const [endYear, endMonth] = cutoff.split("-").map(Number);
@@ -89,7 +96,7 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
     const rows = values();
     // Align the plot baselines using actual chart positions, without changing control layout.
     const width = Math.max(255, Math.round(container.clientWidth));
-    const monthlyChart = root.getElementById("monthly-chart");
+    const monthlyChart = root.getElementById("monthly-material-weights");
     const isWide = window.matchMedia(MULTI_COLUMN_MEDIA).matches;
     const controlOffset = isWide && monthlyChart
       ? Math.round(monthlyChart.getBoundingClientRect().top - container.getBoundingClientRect().top) : 0;
@@ -206,24 +213,20 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
     container.querySelector("svg")?.remove();container.insertBefore(svg,tip);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.
-    const recordedButton=basisButtons.find(button=>button.dataset.compareBasis==="recorded");
-    setControlDisabled(recordedButton, residualOnly);
+
     period.textContent="Jan—"+labelMonth;
     setDisclosureContent({root, methodId: "comparison-method", tableId: "comparison-table",
       methodology: {html: "Both years cover January through Sept. The cut-off is the latest fully covered month for regularly collected materials (excluding residual waste and batteries). Imputed weights are distributed across collection intervals as in Figure 01. For residual waste, the days after the last recorded weight are extrapolated using the pooled historical daily rate from the recording intervals. The low/high range uses the minimum and maximum observed interval rates. This is a sensitivity range, <strong>not</strong> a calibrated prediction interval or probability statement. Recorded mode sums weights by collection date without projection; batteries appear there only."}});
     renderTable(rows);
-    syncButtonGroup(basisButtons, state.basis, "compareBasis");
+    controls.sync();
   }
   function rerender() {
     try { if(!window.Plot || !window.d3) throw Error("D3 or Observable Plot did not load.");
       render();clearChartStatus(container);
     } catch(error) {showChartError(container,error);}
   }
-  const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
-  basisButtons.forEach(button=>on(button,"click",()=>{if(button.disabled)return;state.basis=button.dataset.compareBasis;rerender();}));
-  on(categorySelect,"change",()=>{state.categories=categorySelect.value;if(state.categories==="residual")state.basis="imputed";rerender();});
   if("ResizeObserver" in window) {observer=new ResizeObserver(()=>{if(window.Plot)rerender();});observer.observe(container);}
-  return {render:rerender,destroy(){observer?.disconnect();listeners.forEach(remove=>remove());container.querySelector("svg")?.remove();tip.hidden=true;}};
+  return {render:rerender,destroy(){observer?.disconnect();listeners.forEach(remove=>remove());controls.destroy();container.querySelector("svg")?.remove();tip.hidden=true;}};
 }
 
 /* ============================================================
@@ -231,4 +234,4 @@ function createYearComparisonChart({ container, data, detail, comparison, root =
    To add a chart: create a module function, then initialise it here.
    ============================================================ */
 
-export { createYearComparisonChart };
+export { createYearlyMaterialComparisonChart };

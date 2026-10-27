@@ -10,7 +10,7 @@ import json
 from datetime import date, timedelta
 from pathlib import Path
 
-from build_summaries import GROUPS
+from material_config import SOURCE_TO_GROUP as GROUPS, NON_IMPUTED, RESIDUAL_SOURCE
 
 
 def month_end(d):
@@ -23,13 +23,13 @@ def calculate_comparison(rows):
         by_type.setdefault(r['type'], []).append((date.fromisoformat(r['date']), float(r['kg'])))
     for typ in by_type:
         by_type[typ].sort()
-    required = [t for t, g in GROUPS.items() if g not in ('Residual waste', 'Batteries')]
+    required = [t for t, g in GROUPS.items() if t != RESIDUAL_SOURCE and t not in NON_IMPUTED]
     missing = [t for t in required if not by_type.get(t)]
     if missing:
         raise ValueError(f'Missing collections for comparison cutoff: {missing}')
     earliest_latest = min(by_type[t][-1][0] for t in required)
     cutoff = earliest_latest.replace(day=1) - timedelta(days=1)
-    waste = by_type.get('Waste', [])
+    waste = by_type.get(RESIDUAL_SOURCE, [])
     if len(waste) < 3:
         raise ValueError('Need at least three residual-waste collections to estimate historical rates')
     # Only use waste collections observed on or before the cutoff.
