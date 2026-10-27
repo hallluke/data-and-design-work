@@ -1,3 +1,5 @@
+import { renderTableRows } from "../chart-table.js";
+import { formatPercent } from "../chart-format.js";
 import { materialIdFromSource } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
@@ -70,13 +72,9 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
     container.replaceChildren(svg.node());
     tip.hidden=true;
     const entries = [["Recycled",recycled,rate],["General waste",general,100-rate],["Total",total,100]];
-    table.replaceChildren(...entries.map(([label,kg,share]) => {
-      const tr = root.createElement("tr");
-      for (const value of [label,number(kg),share.toFixed(1)+"%"]){
-        const td = root.createElement("td"); td.textContent = value; tr.append(td);
-      }
-      return tr;
-    }));
+    renderTableRows(table, entries.map(([label,kg,share]) =>
+      [label,number(kg),formatPercent(share)]),
+      ["Category", {label:"Weight (kg)", numeric:false}, "Share"], {root});
   }
   // Refresh if the tab remains open across a local date change.
   on(document,"visibilitychange", () => {

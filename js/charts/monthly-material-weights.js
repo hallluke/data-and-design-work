@@ -1,3 +1,4 @@
+import { renderTableRows } from "../chart-table.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
@@ -98,25 +99,15 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
   function renderTable(totals, chartRows, chartGroups) {
     const stacked = isStacked();
     const tbody = table.tBodies[0];
-    tbody.replaceChildren();
     const headings = stacked ? ["Month", ...chartGroups, "Total (kg)"] : ["Month", "Weight (kg)", "Status"];
-    setDisclosureContent({root, methodId: "method", tableId: "data-table",
-      columns: headings.map((label, i) => ({label, numeric: i > 0 && (stacked || i === 1)}))});
-    for (const datum of totals) {
-      const row = document.createElement("tr");
-      const values = stacked
-        ? [formatMonth(datum.month), ...chartGroups.map(group =>
-            formatWeight(chartRows.find(d => d.month === datum.month && d.group === group)?.kg || 0)), formatWeight(datum.kg)]
-        : [formatMonth(datum.month), formatWeight(datum.kg), state.basis === "recorded" ? "Recorded" :
-            datum.complete ? "Complete" : "Provisional"];
-      values.forEach((value, i) => {
-        const td = document.createElement("td");
-        td.textContent = value;
-        if (i > 0 && (stacked || i === 1)) td.className = "numeric";
-        row.append(td);
-      });
-      tbody.append(row);
-    }
+    const columns = headings.map((label, i) => ({label, numeric: i > 0 && (stacked || i === 1)}));
+    setDisclosureContent({root, methodId: "method", tableId: "data-table", columns});
+    const rows = totals.map(datum => stacked
+      ? [formatMonth(datum.month), ...chartGroups.map(group =>
+          formatWeight(chartRows.find(d => d.month === datum.month && d.group === group)?.kg || 0)), formatWeight(datum.kg)]
+      : [formatMonth(datum.month), formatWeight(datum.kg), state.basis === "recorded" ? "Recorded" :
+          datum.complete ? "Complete" : "Provisional"]);
+    renderTableRows(tbody, rows, columns, {root});
   }
 
   function renderLegend(chartGroups) {

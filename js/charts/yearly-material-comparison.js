@@ -1,3 +1,5 @@
+import { renderTableRows } from "../chart-table.js";
+import { formatNumber, formatSignedNumber, formatPercent } from "../chart-format.js";
 import { normalizeMonthlyGroups, groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
@@ -27,8 +29,8 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
   const years = [endYear - 1, endYear];
   let observer;
   const listeners = [];
-  const fmt = value => value.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const sign = value => (value > 0 ? "+" : "") + fmt(value);
+  const fmt = formatNumber;
+  const sign = formatSignedNumber;
   const labelMonth = new Date(Date.UTC(2000, endMonth - 1, 1)).toLocaleDateString("en-GB", {month:"short", timeZone:"UTC"});
   const selected = () => state.categories === "residual" ? ["Residual waste"] : state.categories === "main" ? data.groups : state.categories === "dry" ? dry :
     materials.filter(material => state.basis === "recorded" || material !== "Batteries");
@@ -75,24 +77,19 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
   }
   function renderTable(rows) {
     const body = table.tBodies[0];
-    body.replaceChildren();
-    setDisclosureContent({root, methodId: "comparison-method", tableId: "comparison-table",
-      columns: ["Category", years[0] + " kg", years[1] + " kg", "Δ kg", "Δ %", "Status"]
-        .map((label, i) => ({label, numeric: i >= 1 && i <= 4}))});
-    rows.forEach(row => {
-      const tr = document.createElement("tr");
+    const columns = ["Category", years[0] + " kg", years[1] + " kg", "Δ kg", "Δ %", "Status"]
+      .map((label, i) => ({label, numeric: i >= 1 && i <= 4}));
+    setDisclosureContent({root, methodId: "comparison-method", tableId: "comparison-table", columns});
+    const tableRows = rows.map(row => {
       const diff = row.current - row.earlier;
-      [row.name, fmt(row.earlier), fmt(row.current), sign(diff),
-        row.earlier ? (diff / row.earlier * 100).toFixed(1) + "%" : "n/a",
+      return [row.name, fmt(row.earlier), fmt(row.current), sign(diff),
+        row.earlier ? formatPercent(diff / row.earlier * 100) : "n/a",
         row.projected ? "Projected (" + fmt(row.low) + "–" + fmt(row.high) + " kg)" :
-        state.basis === "recorded" ? "Recorded" : "Complete"].forEach((v, i) => {
-          const td = document.createElement("td"); td.textContent = v;
-          if (i >= 1 && i <= 4) td.className = "numeric";
-          tr.append(td);
-        });
-      body.append(tr);
+        state.basis === "recorded" ? "Recorded" : "Complete"];
     });
+    renderTableRows(body, tableRows, columns, {root});
   }
+
   function render() {
     const rows = values();
     // Align the plot baselines using actual chart positions, without changing control layout.

@@ -1,3 +1,4 @@
+import { renderTableRows } from "../chart-table.js";
 import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { populateMaterialSelect, sourceMatchesSelection, materialLabel, materialIdFromSource } from "../materials.js";
 import { setupChart } from "../chart-setup.js";
@@ -164,7 +165,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
       ["Lowest daily weight",min.toFixed(2)+" kg"],["Highest daily weight",max.toFixed(2)+" kg"],
       ["Range",(max-min).toFixed(2)+" kg"],["Average per recorded day",mean.toFixed(2)+" kg"],
       ["Most common weekday",commonLabel]];
-    table.replaceChildren(...lines.map(([name,value])=>{const tr=document.createElement("tr");for(const t of [name,value]){const td=document.createElement("td");td.textContent=t;tr.append(td);}return tr;}));
+    renderTableRows(table, lines, ["Measure", "Value"], {root: document});
   }
 
   on(document,"visibilitychange",()=>{if(!document.hidden)render();});

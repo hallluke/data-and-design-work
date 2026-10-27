@@ -5,7 +5,7 @@
    These have no knowledge of waste data or Figure 01.
    ============================================================ */
 const MULTI_COLUMN_MEDIA = "(min-width: 581px)";
-const formatWeight = value => Number(value).toFixed(2);
+import { formatWeight } from "./chart-format.js";
 const formatMonth = value => {
   const [year, month] = value.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, 1))
