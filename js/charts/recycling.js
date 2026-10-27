@@ -1,3 +1,4 @@
+import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
 
 function createRecyclingRateChart({container, rows, root = document}) {
@@ -5,6 +6,9 @@ function createRecyclingRateChart({container, rows, root = document}) {
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
   const selector = root.getElementById("recycling-year");
   const table = root.querySelector("#recycling-table tbody");
+  setDisclosureContent({root, methodId: "recycling-method", tableId: "recycling-table",
+    methodology: "Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.",
+    columns: ["Category", "Weight (kg)", "Share"]});
   const tip = root.getElementById("recycling-tip");
   const years = [...new Set(rows.map(d => d.date.slice(0, 4)))].sort();
   for (const year of years) {

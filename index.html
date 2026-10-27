@@ -297,31 +297,6 @@
                 </label>
                 <select id="calendar-material"><option value="all">All materials</option></select>
               </div>
-              <div class="control-row">
-                <label for="calendar-submaterial">
-                  Dry recycling type
-                </label>
-                <select disabled="" id="calendar-submaterial">
-                  <option value="all">
-                    All dry recycling
-                  </option>
-                  <option>
-                    Glass
-                  </option>
-                  <option>
-                    Cardboard
-                  </option>
-                  <option>
-                    Tin
-                  </option>
-                  <option>
-                    Plastic
-                  </option>
-                  <option>
-                    Paper
-                  </option>
-                </select>
-              </div>
             </div>
             <div aria-label="Weight intensity legend" class="calendar-key" id="calendar-key">
             </div>
@@ -371,25 +346,11 @@
         <div aria-label="Figure 03 data and methodology" class="disclosure-panel" hidden="" id="recycling-disclosure" role="region">
           <div class="details-layout">
             <div class="method-copy">
-              <p>
-                Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.
-              </p>
+              <p id="recycling-method"></p>
             </div>
             <div class="table-scroll">
               <table id="recycling-table">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      Category
-                    </th>
-                    <th scope="col">
-                      Weight (kg)
-                    </th>
-                    <th scope="col">
-                      Share
-                    </th>
-                  </tr>
-                </thead>
+                <thead></thead>
                 <tbody>
                 </tbody>
               </table>
@@ -407,22 +368,11 @@
         <div aria-label="Figure 04 data and methodology" class="disclosure-panel" hidden="" id="calendar-disclosure" role="region">
           <div class="details-layout">
             <div class="method-copy">
-              <p>
-                Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.
-              </p>
+              <p id="calendar-method"></p>
             </div>
             <div class="table-scroll">
               <table id="calendar-table">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      Measure
-                    </th>
-                    <th scope="col">
-                      Value
-                    </th>
-                  </tr>
-                </thead>
+                <thead></thead>
                 <tbody>
                 </tbody>
               </table>
