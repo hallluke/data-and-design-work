@@ -92,36 +92,6 @@
           </div>
           <div class="filter-layout">
             <div aria-label="Monthly chart filters" class="controls chart-controls">
-              <div class="control-row">
-                <span class="control-label" id="basis-label">
-                  Measurement
-                </span>
-                <div aria-labelledby="basis-label" class="choices" role="group">
-                  <button aria-pressed="true" data-basis="imputed" type="button">
-                    Imputed
-                  </button>
-                  <button aria-pressed="false" data-basis="recorded" type="button">
-                    Recorded
-                  </button>
-                </div>
-              </div>
-              <div class="control-row">
-                <span class="control-label" id="display-label">
-                  Composition
-                </span>
-                <div aria-labelledby="display-label" class="choices" role="group">
-                  <button aria-pressed="true" data-display="total" type="button">
-                    Total
-                  </button>
-                  <button aria-pressed="false" data-display="stacked" type="button">
-                    Stacked
-                  </button>
-                </div>
-              </div>
-              <div class="control-row">
-                <label for="material">Material</label>
-                <select id="material"><option value="all">All materials</option></select>
-              </div>
             </div>
             <div aria-label="Chart key" class="legend" id="chart-legend">
             </div>
@@ -145,39 +115,7 @@
             <span class="unit" id="comparison-period"></span>
           </div>
           <div aria-label="Year-on-year comparison filters" class="comparison-controls controls chart-controls">
-            <div class="control-row">
-              <span class="control-label" id="comparison-basis-label">
-                Measurement
-              </span>
-              <div aria-labelledby="comparison-basis-label" class="choices" role="group">
-                <button aria-pressed="true" data-compare-basis="imputed" type="button">
-                  Imputed
-                </button>
-                <button aria-pressed="false" data-compare-basis="recorded" type="button">
-                  Recorded
-                </button>
-              </div>
             </div>
-            <div class="control-row">
-              <label for="comparison-categories">
-                Categories
-              </label>
-              <select id="comparison-categories">
-                <option value="main">
-                  Main categories
-                </option>
-                <option value="dry">
-                  Dry recycling
-                </option>
-                <option value="all">
-                  All materials
-                </option>
-                <option value="residual">
-                  Residual waste estimate
-                </option>
-              </select>
-            </div>
-          </div>
           <div aria-live="polite" class="chart yearly-material-comparison-chart" id="yearly-material-comparison">
             <p class="chart-status" role="status">Chart loading…</p>
             <div class="tooltip" hidden="">
@@ -248,23 +186,7 @@
             <span class="unit"></span>
           </div>
           <div aria-label="Recycling rate filters" class="controls chart-controls recycling-controls">
-            <div class="control-row">
-              <label for="recycling-year">
-                Period
-              </label>
-              <select id="recycling-year">
-                <option value="all">
-                  All data
-                </option>
-                <option value="last-6">
-                  Last 6 months
-                </option>
-                <option value="last-12">
-                  Last 12 months
-                </option>
-              </select>
             </div>
-          </div>
           <div aria-live="polite" class="chart overall-recycling-rate-chart" id="overall-recycling-rate">
             <p class="chart-status" role="status">Chart loading…</p>
             <div class="tooltip" hidden="" id="recycling-tip">
@@ -285,41 +207,13 @@
           </div>
           <div class="calendar-top">
             <div aria-label="Calendar chart filters" class="controls chart-controls calendar-controls">
-              <div class="control-row">
-                <label for="calendar-material">
-                  Material
-                </label>
-                <select id="calendar-material"><option value="all">All materials</option></select>
-              </div>
             </div>
             <div aria-label="Weight intensity legend" class="calendar-key" id="calendar-key">
             </div>
           </div>
           <div class="calendar-layout">
             <div aria-hidden="true" class="calendar-weekdays">
-              <div class="calendar-axis-spacer">
-              </div>
-              <span>
-                Mon
-              </span>
-              <span>
-                Tue
-              </span>
-              <span>
-                Wed
-              </span>
-              <span>
-                Thu
-              </span>
-              <span>
-                Fri
-              </span>
-              <span>
-                Sat
-              </span>
-              <span>
-                Sun
-              </span>
+            </div>
             </div>
             <div aria-label="Scrollable calendar, weeks left to right" class="calendar-scroll" id="calendar-scroll" tabindex="0">
               <div aria-live="polite" class="calendar-plot" id="daily-material-weights">

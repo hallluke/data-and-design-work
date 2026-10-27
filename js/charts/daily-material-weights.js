@@ -20,6 +20,17 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   const controls=setupChart({root,id:"daily-material-weights",number:"04",title:"Recording calendar",unit:"kg / day",state,
     controls:[{key:"material",type:"select",label:"Material",id:"calendar-material",populate:populateMaterialSelect}],
     onChange:()=>render()});
+  // The weekday axis is chart-specific presentation, not static page markup.
+  const weekdayAxis = root.querySelector('[data-chart-id="daily-material-weights"] .calendar-weekdays');
+  if (!weekdayAxis) throw new Error("Missing calendar weekday axis");
+  const weekdaySpacer = root.createElement("div");
+  weekdaySpacer.className = "calendar-axis-spacer";
+  const weekdayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => {
+    const span = root.createElement("span");
+    span.textContent = day;
+    return span;
+  });
+  weekdayAxis.replaceChildren(weekdaySpacer, ...weekdayLabels);
   const key = root.getElementById("calendar-key");
   const tip = root.getElementById("calendar-tip");
   const table = root.querySelector("#calendar-table tbody");
