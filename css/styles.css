@@ -743,7 +743,7 @@ select:disabled {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
   gap: 0;
-  margin: -12px 0 18px;
+  margin: 0 0 18px;
   padding: 7px 0;
   background: #e5e3de;
   color: var(--ink);
