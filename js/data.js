@@ -3,7 +3,8 @@ async function getAtlasData() {
     monthly: "data/monthly.json",
     detail: "data/detail.json",
     comparison: "data/comparison.json",
-    collections: "data/collections.json"
+    collections: "data/collections.json",
+    refresh: "data/refresh.json"
   };
   const entries = await Promise.all(Object.entries(sources).map(async ([key, url]) => {
     const response = await fetch(url);
