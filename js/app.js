@@ -1,5 +1,6 @@
 "use strict";
 import { showChartError, validateWasteData } from "./shared.js";
+import { startChart } from "./chart-runtime.js";
 import { getAtlasData } from "./data.js";
 import { initFreshness } from "./freshness.js";
 import { initDisclosures } from "./disclosures.js";
@@ -30,21 +31,7 @@ async function initAtlas() {
   document.getElementById("latest-year").textContent = latestYear;
 
   const charts = [];
-  const startChart = (containerId, create) => {
-    const container = document.getElementById(containerId);
-    if (!container) {
-      console.error(`Missing chart container: #${containerId}`);
-      return;
-    }
-    try {
-      const chart = create(container);
-      chart.render();
-      container.querySelector(".error")?.remove();
-      charts.push(chart);
-    } catch (error) {
-      showChartError(container, error);
-    }
-  };
+
 
   // Disclosure controls do not depend on any chart successfully rendering.
   try {
@@ -54,9 +41,9 @@ async function initAtlas() {
   }
 
   // Raw-record charts can still work if the monthly aggregate is invalid.
-  startChart("recycling-chart", container =>
+  startChart(charts, "recycling-chart", container =>
     createRecyclingRateChart({container, rows: data.collections}));
-  startChart("calendar-chart", container =>
+  startChart(charts, "calendar-chart", container =>
     createRecordingCalendar({container, rows: data.collections}));
 
   // Validate shared monthly data once, then initialise its two consumers separately.
@@ -69,9 +56,9 @@ async function initAtlas() {
     showChartError(document.getElementById("comparison-chart"), error);
   }
   if (monthlyDataValid) {
-    startChart("monthly-chart", container =>
+    startChart(charts, "monthly-chart", container =>
       createMonthlyWasteChart({container, data: data.monthly, detail: data.detail}));
-    startChart("comparison-chart", container =>
+    startChart(charts, "comparison-chart", container =>
       createYearComparisonChart({container, data: data.monthly, detail: data.detail,
         comparison: data.comparison}));
   }
