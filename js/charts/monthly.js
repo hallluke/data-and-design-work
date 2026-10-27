@@ -1,3 +1,4 @@
+import { populateMaterialSelect } from "../materials.js";
 import { syncButtonGroup, setControlDisabled } from "../chart-controls.js";
 import { showChartError, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
 
@@ -6,12 +7,12 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   const table = root.querySelector("#data-table");
   const legend = root.querySelector("#chart-legend");
   const materialSelect = root.querySelector("#material");
-  const submaterialSelect = root.querySelector("#submaterial");
+  populateMaterialSelect(materialSelect, {includeBatteries:false});
 
   const method = root.querySelector("#method");
   const basisButtons = [...root.querySelectorAll("[data-basis]")];
   const displayButtons = [...root.querySelectorAll("[data-display]")];
-  const state = { basis: "imputed", display: "total", material: "all", submaterial: "all" };
+  const state = { basis: "imputed", display: "total", material: "all" };
   const subtypes = ["Glass", "Cardboard", "Tin", "Plastic", "Paper"];
   const categoryPalette = atlasPalette(data.groups.length);
   const greys = Object.fromEntries(data.groups.map((name,i)=>[name,categoryPalette[i]]));
@@ -21,13 +22,13 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   const listeners = [];
 
   const isStacked = () => state.display === "stacked" &&
-    (state.material === "all" || (state.material === "Dry recycling" && state.submaterial === "all"));
+    (state.material === "all" || (state.material === "Dry recycling"));
   const isComplete = month => month <= completeThrough;
   const selectedGroups = () => state.material === "all" ? data.groups : [state.material];
 
   function getRows() {
-    if (state.material === "Dry recycling" && state.submaterial !== "all") {
-      return detail[state.basis].filter(d => d.type === state.submaterial)
+    if (state.material.startsWith("dry:")) {
+      return detail[state.basis].filter(d => d.type === state.material.slice(4))
         .map(d => ({ ...d, group: d.type }));
     }
     return data[state.basis].filter(d => selectedGroups().includes(d.group) ||
@@ -63,7 +64,7 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
         "</td><td>100.0%</td></tr></tfoot></table>";
     } else {
       const material = state.material === "all" ? "All materials" :
-        state.material === "Dry recycling" && state.submaterial !== "all" ? state.submaterial : state.material;
+        state.material.startsWith("dry:") ? state.material.slice(4) : state.material;
       content += '<table class="tip-table"><thead><tr><th>Material</th><th>kg</th></tr></thead>' +
         "<tbody><tr><td>" + material + "</td><td>" + formatWeight(datum.kg) + "</td></tr></tbody></table>";
     }
@@ -133,18 +134,17 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   function updateControls() {
     for (const button of displayButtons) {
       setControlDisabled(button, state.material !== "all" &&
-        (state.material !== "Dry recycling" || state.submaterial !== "all"));
+        (state.material !== "Dry recycling"));
     }
     syncButtonGroup(displayButtons, state.display, "display");
     syncButtonGroup(basisButtons, state.basis, "basis");
-    submaterialSelect.disabled = state.material !== "Dry recycling";
   }
 
   function render() {
     const rows = getRows();
     const totals = getTotals(rows);
     const chartGroups = state.material === "Dry recycling" ? subtypes : data.groups;
-    const chartRows = state.material === "Dry recycling" && state.submaterial === "all"
+    const chartRows = state.material === "Dry recycling"
       ? detail[state.basis].map(d => ({ ...d, group: d.type })) : rows;
     const marks = [];
 
@@ -243,11 +243,6 @@ function createMonthlyWasteChart({ container, data, detail, root = document }) {
   on(materialSelect, "change", event => {
     state.material = event.target.value;
     if (state.material !== "all" && state.material !== "Dry recycling") state.display = "total";
-    rerender();
-  });
-  on(submaterialSelect, "change", event => {
-    state.submaterial = event.target.value;
-    if (state.submaterial !== "all") state.display = "total";
     rerender();
   });
   if ("ResizeObserver" in window) {

@@ -1,10 +1,11 @@
+import { populateMaterialSelect } from "../materials.js";
 import { ATLAS_COLOURS, bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
 
 function createRecordingCalendar({container, rows, root = document}) {
   const listeners = [];
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
   const category = root.getElementById("calendar-material");
-  const subtype = root.getElementById("calendar-submaterial");
+  populateMaterialSelect(category);
   const key = root.getElementById("calendar-key");
   const tip = root.getElementById("calendar-tip");
   const table = root.querySelector("#calendar-table tbody");
@@ -29,12 +30,14 @@ function createRecordingCalendar({container, rows, root = document}) {
   const fmtDate = iso=>new Date(iso+"T00:00:00Z").toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
   const fmtShort = iso=>new Date(iso+"T00:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
   function matches(r) {
-    switch(category.value) {
-      case "residual": return r.type === "Waste";
-      case "food": return r.type === "Food Waste";
-      case "dry": return dry.has(r.type) && (subtype.value === "all" || subtype.value === r.type);
-      case "soft": return r.type === "Soft plastic";
-      case "batteries": return r.type === "Batteries";
+    const selected = category.value;
+    if (selected.startsWith("dry:")) return r.type === selected.slice(4);
+    switch(selected) {
+      case "Residual waste": return r.type === "Waste";
+      case "Food waste": return r.type === "Food Waste";
+      case "Dry recycling": return dry.has(r.type);
+      case "Soft plastics": return r.type === "Soft plastic";
+      case "Batteries": return r.type === "Batteries";
       default: return true;
     }
   }
@@ -51,8 +54,6 @@ function createRecordingCalendar({container, rows, root = document}) {
   }
   function render(){
     hideTip();
-    subtype.disabled=category.value!=="dry";
-    if(subtype.disabled) subtype.value="all";
     const {todayISO,weeks,dates,weekCount}=calendarDays();
     const selected=records.filter(r=>r.day<=todayISO && matches(r));
     const grouped=d3.group(selected,r=>r.day);
@@ -106,7 +107,6 @@ function createRecordingCalendar({container, rows, root = document}) {
     table.replaceChildren(...lines.map(([name,value])=>{const tr=document.createElement("tr");for(const t of [name,value]){const td=document.createElement("td");td.textContent=t;tr.append(td);}return tr;}));
   }
   on(category,"change",render);
-  on(subtype,"change",render);
   on(document,"visibilitychange",()=>{if(!document.hidden)render();});
   return {render,destroy(){listeners.forEach(remove=>remove());hideTip();}};
 }
