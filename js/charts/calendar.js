@@ -2,6 +2,16 @@ import { setDisclosureContent } from "../chart-disclosure-content.js";
 import { populateMaterialSelect } from "../materials.js";
 import { ATLAS_COLOURS, bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
 
+// Map recorded weights onto the five-stop visual range by distinct values,
+// not by the number of days with each value.
+function calendarIntensityPosition(value, distinctValues) {
+  if (!distinctValues.length) return 0;
+  if (distinctValues.length === 1) return 1;
+  const min = distinctValues[0];
+  const max = distinctValues[distinctValues.length - 1];
+  return (value - min) / (max - min);
+}
+
 function createRecordingCalendar({container, rows, root = document}) {
   const listeners = [];
   const on = (target, event, handler) => bindChartEvent(listeners, target, event, handler);
@@ -63,8 +73,10 @@ function createRecordingCalendar({container, rows, root = document}) {
     const grouped=d3.group(selected,r=>r.day);
     const weights=new Map(Array.from(grouped,([date,rs])=>[date,d3.sum(rs,r=>r.kg)]));
     const values=[...weights.values()].filter(v=>v>0);
+    const distinctValues=[...new Set(values)].sort((a,b)=>a-b);
     const min=d3.min(values)||0,max=d3.max(values)||0;
-    const intensity=d3.scaleLinear().domain([min,max>min?max:min+1]).range([ATLAS_COLOURS.light,ATLAS_COLOURS.dark]).interpolate(d3.interpolateLab);
+    const shade=d3.interpolateLab(ATLAS_COLOURS.light,ATLAS_COLOURS.dark);
+    const intensity=value=>shade(calendarIntensityPosition(value,distinctValues));
     const cells=dates.map(d=>({...d,kg:weights.get(d.date)||0,records:grouped.get(d.date)||[]}));
     const monthStarts=d3.utcMonths(d3.utcMonth.floor(first),d3.utcMonth.offset(new Date(todayISO+"T00:00:00Z"),1))
       .map(d=>({d,i:d3.utcMonday.count(monday,d3.utcMonday.floor(d))}))
@@ -95,7 +107,7 @@ function createRecordingCalendar({container, rows, root = document}) {
     label("No record");swatch(ATLAS_COLOURS.empty);
     const gap=document.createElement("span");gap.className="key-gap";key.append(gap);
     label("Min");
-    for(const t of [0,.25,.5,.75,1])swatch(intensity(min+t*(max-min)));
+    for(const t of [0,.25,.5,.75,1])swatch(shade(t));
     label("Max");
     const total=d3.sum(selected,r=>r.kg),mean=values.length?total/values.length:0;
     const weekdays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
@@ -121,4 +133,4 @@ function createRecordingCalendar({container, rows, root = document}) {
 // Load each independent dataset from static JSON files.
 // Relative URLs work under both localhost and a GitHub Pages project path.
 
-export { createRecordingCalendar };
+export { createRecordingCalendar, calendarIntensityPosition };
