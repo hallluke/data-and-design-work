@@ -905,9 +905,9 @@ select:disabled {
     min-width: 0;
     max-width: 100%;
     justify-self: stretch;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    gap: 4px;
+    gap: 12px;
     box-sizing: border-box;
   }
   [data-chart-id="monthly-material-weights"] .filter-layout .legend > span,
