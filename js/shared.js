@@ -21,8 +21,13 @@ function positionChartTooltip(tooltip, event, container, { gap = 12, edge = 3, v
   const mouseY = event.clientY - bounds.top;
   const width = tooltip.offsetWidth;
   const height = tooltip.offsetHeight;
-  let x = mouseX + gap;
-  if (x + width > bounds.width - edge) x = mouseX - gap - width;
+  // Use the same pointer-to-tooltip gap on either side. Prefer the side
+  // with enough room, rather than flipping and then silently clamping flush
+  // against the pointer on narrow touchscreens.
+  const fitsRight = mouseX + gap + width <= bounds.width - edge;
+  const fitsLeft = mouseX - gap - width >= edge;
+  let x = fitsRight ? mouseX + gap : fitsLeft ? mouseX - gap - width
+    : (bounds.width - mouseX >= mouseX ? mouseX + gap : mouseX - gap - width);
   x = Math.max(edge, Math.min(x, Math.max(edge, bounds.width - width - edge)));
   const y = Math.max(0, Math.min(mouseY - height - verticalGap, Math.max(0, bounds.height - height)));
   tooltip.style.left = x + "px";

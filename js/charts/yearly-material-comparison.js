@@ -240,6 +240,12 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       });
     };
     const activate = (index,event, {touch = false} = {})=>{
+      // While a touch selection is active, compatibility mouse events and SVG
+      // focus changes must not replace its overlay or opacity state.
+      if (!touch && touchSelection !== null) {
+        debugLog("skip:non-touch");
+        return;
+      }
       if (touch) touchSelection = index;
       svg.querySelectorAll(".compare-series").forEach(el=>{
         const active=el.classList.contains(`compare-series-${index}`);
@@ -291,11 +297,11 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.style.order = String(tabOrder.indexOf(i));
       hit.setAttribute("role","button");
       hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
-      hit.addEventListener("pointerenter",event=>{debugLog(`enter:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard)activate(i,event);});
-      hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !touchFocusGuard)activate(i,event);});
+      hit.addEventListener("pointerenter",event=>{debugLog(`enter:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)activate(i,event);});
+      hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)activate(i,event);});
 
       hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)deactivate();});
-      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard || touchSelection !== null) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
       hit.addEventListener("blur",()=>{
         debugLog(`blur:${i}`);
         if (touchSelection !== null) {
