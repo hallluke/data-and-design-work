@@ -26,7 +26,7 @@
   "groups": [
     "Residual waste",
     "Food waste",
-    "Dry recycling",
+    "Recyclables",
     "Soft plastics"
   ],
   "imputed": [
@@ -42,7 +42,7 @@
     },
     {
       "month": "2025-01",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.21080952
     },
     {
@@ -62,7 +62,7 @@
     },
     {
       "month": "2025-02",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.39090476
     },
     {
@@ -82,7 +82,7 @@
     },
     {
       "month": "2025-03",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.85128571
     },
     {
@@ -102,7 +102,7 @@
     },
     {
       "month": "2025-04",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.95228571
     },
     {
@@ -122,7 +122,7 @@
     },
     {
       "month": "2025-05",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.55722857
     },
     {
@@ -142,7 +142,7 @@
     },
     {
       "month": "2025-06",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.61948571
     },
     {
@@ -162,7 +162,7 @@
     },
     {
       "month": "2025-07",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.7149118
     },
     {
@@ -182,7 +182,7 @@
     },
     {
       "month": "2025-08",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.18039296
     },
     {
@@ -202,7 +202,7 @@
     },
     {
       "month": "2025-09",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.14923095
     },
     {
@@ -222,7 +222,7 @@
     },
     {
       "month": "2025-10",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.85389286
     },
     {
@@ -242,7 +242,7 @@
     },
     {
       "month": "2025-11",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.56757143
     },
     {
@@ -262,7 +262,7 @@
     },
     {
       "month": "2025-12",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.286
     },
     {
@@ -282,7 +282,7 @@
     },
     {
       "month": "2026-01",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.34447619
     },
     {
@@ -302,7 +302,7 @@
     },
     {
       "month": "2026-02",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.70990842
     },
     {
@@ -322,7 +322,7 @@
     },
     {
       "month": "2026-03",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.88978462
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "month": "2026-04",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.81995198
     },
     {
@@ -362,7 +362,7 @@
     },
     {
       "month": "2026-05",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.61475758
     },
     {
@@ -382,7 +382,7 @@
     },
     {
       "month": "2026-06",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.61150216
     },
     {
@@ -402,7 +402,7 @@
     },
     {
       "month": "2026-07",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.28306349
     },
     {
@@ -422,7 +422,7 @@
     },
     {
       "month": "2026-08",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.22223737
     },
     {
@@ -442,7 +442,7 @@
     },
     {
       "month": "2026-09",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.3996039
     },
     {
@@ -462,7 +462,7 @@
     },
     {
       "month": "2026-10",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 1.13771429
     },
     {
@@ -484,7 +484,7 @@
     },
     {
       "month": "2025-01",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.531
     },
     {
@@ -509,7 +509,7 @@
     },
     {
       "month": "2025-02",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.569
     },
     {
@@ -534,7 +534,7 @@
     },
     {
       "month": "2025-03",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.033
     },
     {
@@ -559,7 +559,7 @@
     },
     {
       "month": "2025-04",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 7.936
     },
     {
@@ -584,7 +584,7 @@
     },
     {
       "month": "2025-05",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.531
     },
     {
@@ -609,7 +609,7 @@
     },
     {
       "month": "2025-06",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.974
     },
     {
@@ -634,7 +634,7 @@
     },
     {
       "month": "2025-07",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 5.412
     },
     {
@@ -659,7 +659,7 @@
     },
     {
       "month": "2025-08",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 0.405
     },
     {
@@ -684,7 +684,7 @@
     },
     {
       "month": "2025-09",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 7.131
     },
     {
@@ -709,7 +709,7 @@
     },
     {
       "month": "2025-10",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 2.927
     },
     {
@@ -734,7 +734,7 @@
     },
     {
       "month": "2025-11",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.752
     },
     {
@@ -759,7 +759,7 @@
     },
     {
       "month": "2025-12",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 8.133
     },
     {
@@ -784,7 +784,7 @@
     },
     {
       "month": "2026-01",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.114
     },
     {
@@ -809,7 +809,7 @@
     },
     {
       "month": "2026-02",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.313
     },
     {
@@ -834,7 +834,7 @@
     },
     {
       "month": "2026-03",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 0
     },
     {
@@ -859,7 +859,7 @@
     },
     {
       "month": "2026-04",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 8.156
     },
     {
@@ -884,7 +884,7 @@
     },
     {
       "month": "2026-05",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 0
     },
     {
@@ -909,7 +909,7 @@
     },
     {
       "month": "2026-06",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 10.244
     },
     {
@@ -934,7 +934,7 @@
     },
     {
       "month": "2026-07",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.431
     },
     {
@@ -959,7 +959,7 @@
     },
     {
       "month": "2026-08",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 4.947
     },
     {
@@ -984,7 +984,7 @@
     },
     {
       "month": "2026-09",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 3.255
     },
     {
@@ -1009,7 +1009,7 @@
     },
     {
       "month": "2026-10",
-      "group": "Dry recycling",
+      "group": "Recyclables",
       "kg": 2.573
     },
     {
