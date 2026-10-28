@@ -208,8 +208,13 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       debugStatus.setAttribute("role", "status");
       debugStatus.style.cssText = "position:absolute;z-index:30;left:8px;bottom:8px;max-width:calc(100% - 16px);padding:5px 7px;background:#fff;color:#171717;border:1px solid #171717;font:11px/1.4 monospace;pointer-events:none;overflow-wrap:anywhere";
       debugStatus.textContent = "Slope diagnostic: waiting for activation";
-      root.style.position = root.style.position || "relative";
-      root.append(debugStatus);
+      // `root` is normally document, which has no style property.
+      // Keep diagnostics isolated from chart rendering.
+      const debugHost = container.parentElement;
+      if (debugHost) {
+        debugHost.style.position = "relative";
+        debugHost.append(debugStatus);
+      }
     }
     const selectLine = (index, showIndicator = false) => {
       selectLineCalls++;
