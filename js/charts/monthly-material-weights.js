@@ -218,16 +218,17 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
         (state.basis === "imputed" && !datum.complete ? ", provisional" : ""));
       rect.addEventListener("pointermove", event => { if (!isTouchPointer(event)) showTip(event, datum); });
       rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) { selectBar(i, datum); showTip(event, datum); } });
-      rect.addEventListener("pointerleave", event => { if (!isTouchPointer(event)) hideTooltip(tip); });
+
       rect.addEventListener("focus", () => {
         selectBar(i, datum);
         const bounds = rect.getBoundingClientRect();
-        showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);
+        showTip({ clientX: bounds.left + bounds.width / 2 + 3, clientY: bounds.top + 30 }, datum);
       });
       rect.addEventListener("blur", () => { hideTooltip(tip); clearSelection(); });
       overlay.append(rect);
     });
     svg.append(overlay);
+    svg.addEventListener("pointerleave", event => { if (!isTouchPointer(event)) hideTooltip(tip); });
 
     renderTable(totals, chartRows, chartGroups);
     renderLegend(chartGroups);

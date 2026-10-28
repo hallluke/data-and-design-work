@@ -158,7 +158,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:"#454545",
         className:`compare-series compare-series-${i}`}));
       // Invisible broad Plot stroke detects crossings anywhere along the line.
-      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"transparent",strokeWidth:26,
+      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"transparent",strokeWidth:10,
         className:`compare-hit compare-hit-${i}`}));
     });
     // Explicit Plot rules limit horizontal guides to the two year positions,
@@ -216,11 +216,25 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
       hit.addEventListener("pointerenter",event=>{if(!isTouchPointer(event))activate(i,event);});
       hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event))activate(i,event);});
-      hit.addEventListener("pointerup",event=>{if(isTouchPointer(event))activate(i,event);});
+
       hit.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))deactivate();});
       hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
       hit.addEventListener("blur",deactivate);
     });
+    // Touch chooses the closest plotted line rather than the topmost overlapping hit stroke.
+    svg.addEventListener("pointerup", event => {
+      if (!isTouchPointer(event)) return;
+      const bounds=svg.getBoundingClientRect();
+      const px=(event.clientX-bounds.left)*width/bounds.width;
+      const py=(event.clientY-bounds.top)*height/bounds.height;
+      const x0=left+(width-left-right)*(years[0]-xDomain[0])/(xDomain[1]-xDomain[0]);
+      const x1=left+(width-left-right)*(years[1]-xDomain[0])/(xDomain[1]-xDomain[0]);
+      if(px<x0-16 || px>x1+16) return;
+      const t=Math.max(0,Math.min(1,(px-x0)/(x1-x0)));
+      let nearest=-1, distance=Infinity;
+      rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
+      if(nearest>=0 && distance<=22) activate(nearest,event);
+    },true);
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
     hits.forEach(hit => hit.parentNode?.append(hit));
     container.querySelector("svg")?.remove();container.prepend(svg);

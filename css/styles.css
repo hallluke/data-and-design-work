@@ -822,7 +822,7 @@ select:disabled {
 /* Accessible selection and focus: mark geometry, not the full SVG. */
 .chart svg rect.is-selected { stroke: var(--ink, #202020); stroke-width: 2px; vector-effect: non-scaling-stroke; }
 [data-chart-id="monthly-material-weights"] svg rect.is-selected { fill: transparent; }
-[data-chart-id="overall-recycling-rate"] svg path.is-selected { stroke: var(--ink, #202020); stroke-width: 2px; }
+[data-chart-id="overall-recycling-rate"] svg path.is-selected { stroke: none; }
 [data-chart-id="overall-recycling-rate"] svg path:focus-visible { outline: 2px solid var(--ink, #202020); outline-offset: 2px; }
 [data-chart-id="daily-material-weights"] svg rect.is-selected { stroke: var(--ink, #202020); stroke-width: 2.5px; }
 .disclosure-panel .table-scroll:focus-visible { outline: 2px solid var(--ink, #202020); outline-offset: 2px; }
@@ -840,3 +840,9 @@ select:disabled {
 /* The calendar has one keyboard entry point; selection is drawn on the active cell. */
 [data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible { outline: none; }
 [data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible svg rect.is-selected { stroke-width: 3; }
+
+@media (max-width: 780px) {
+  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
+  [data-chart-id="yearly-material-comparison"] .comparison-controls select { width: 100%; min-width: 0; max-width: none; box-sizing: border-box; }
+  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices button { flex: 1 1 0; min-width: 0; }
+}

@@ -63,7 +63,8 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
       .attr("d", arc)
       .each(function(d){
         const inspect = event=>{
-          clearSelection(); this.classList.add("is-selected");
+          clearSelection();
+          if (isTouchPointer(event)) this.classList.add("is-selected");
           showTooltip(tip, `<strong>${d.data.name}</strong><table class="tip-table"><thead><tr><th>Category</th><th>kg</th><th>%</th></tr></thead><tbody><tr><td>${d.data.name}</td><td>${number(d.data.value)}</td><td>${total?(100*d.data.value/total).toFixed(1):"0.0"}%</td></tr></tbody></table>`);
           // Switch at the doughnut centreline, not only when space runs out.
           const bounds=container.getBoundingClientRect();

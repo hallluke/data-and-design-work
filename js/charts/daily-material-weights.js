@@ -86,7 +86,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(event.target!==scroll)return;
     const key=event.key;
     const handled=["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","PageUp","PageDown","Enter"," ","Escape"];
-    if(!handled.includes(key) && !(event.shiftKey && (key==="ArrowLeft" || key==="ArrowRight")))return;
+    if(!handled.includes(key) && !(event.shiftKey && (key==="ArrowLeft" || key==="ArrowRight" || key==="ArrowUp" || key==="ArrowDown")))return;
     if(key==="Escape") {event.preventDefault();hideTip();selectedDate=null;keyboardDate=null;updateSelected();return;}
     if(key==="Enter"||key===" ") {
       event.preventDefault();const cell=calendarCells.find(d=>d.date===keyboardDate);
@@ -101,6 +101,8 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
       direction=key==="ArrowLeft"?-1:1;
       if(event.metaKey||event.ctrlKey) {target=calendarCells.filter(d=>d.weekday===row).at(direction<0?0:-1);mode="edge";}
       else target=calendarCells.find(d=>d.week===current.week+direction&&d.weekday===row);
+    } else if((key==="ArrowUp"||key==="ArrowDown") && event.shiftKey) {
+      target=calendarCells.filter(d=>d.week===current.week).at(key==="ArrowUp"?0:-1);
     } else if(key==="ArrowUp"||key==="ArrowDown") {
       const weekday=current.weekday+(key==="ArrowUp"?-1:1);
       target=calendarCells.find(d=>d.week===current.week&&d.weekday===weekday);
@@ -126,7 +128,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(!tip.hidden) {showTip(target);const b=cellRects[targetIndex].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}
   }
   on(scroll,"keydown",navigateCalendar);
-  on(scroll,"focus",()=>{if(!keyboardDate&&calendarCells.length){keyboardDate=calendarCells.at(-1).date;updateSelected();ensureVisible(calendarCells.length-1,"edge",1);}});
+  on(scroll,"focus",()=>{if(!keyboardDate&&calendarCells.length && !matchMedia("(pointer: coarse)").matches){keyboardDate=calendarCells.at(-1).date;updateSelected();ensureVisible(calendarCells.length-1,"edge",1);}});
 
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",
@@ -216,13 +218,16 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     // Cell listeners only change the contents when the active date changes.
     plot.addEventListener("pointermove", e=>{if(!isTouchPointer(e))moveTip(e);});
     // Bind tooltips to native Plot cell marks; do not use SVG <title> browser popups.
+    let touchOrigin = null;
+    plot.addEventListener("pointerdown", e => { if (isTouchPointer(e)) touchOrigin={x:e.clientX,y:e.clientY}; });
+    plot.addEventListener("pointercancel", () => { touchOrigin=null; });
     const rects=[...plot.querySelectorAll('rect')];
     cellRects=rects.length===cells.length?rects:[];
     if(rects.length===cells.length){
       rects.forEach((rect,i)=>{
         rect.setAttribute("aria-label",`${fmtDate(cells[i].date)}: ${cells[i].records.length?cells[i].kg.toFixed(2)+" kilograms":"no recorded weight"}`);
         rect.addEventListener("pointerenter",e=>{if(!isTouchPointer(e)){showTip(cells[i]);moveTip(e);}});
-        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e)){keyboardDate=null;selectedDate=cells[i].date;showTip(cells[i]);moveTip(e);updateSelected();}});
+        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e) && touchOrigin && Math.hypot(e.clientX-touchOrigin.x,e.clientY-touchOrigin.y)<7){keyboardDate=null;selectedDate=cells[i].date;showTip(cells[i]);moveTip(e);updateSelected();}});
       });
     }
     updateSelected();
