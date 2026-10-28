@@ -846,3 +846,6 @@ select:disabled {
   [data-chart-id="yearly-material-comparison"] .comparison-controls select { width: 100%; min-width: 0; max-width: none; box-sizing: border-box; }
   [data-chart-id="yearly-material-comparison"] .comparison-controls .choices button { flex: 1 1 0; min-width: 0; }
 }
+
+/* Selected comparison series: touch-only indication, separate from hover styling. */
+[data-chart-id="yearly-material-comparison"] .chart .compare-hit.is-touch-selected { stroke: var(--ink, #202020); stroke-width: 3px; }

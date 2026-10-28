@@ -203,6 +203,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     };
     const deactivate=()=>{
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
+      svg.querySelectorAll(".compare-hit.is-touch-selected").forEach(hit => hit.classList.remove("is-touch-selected"));
       hideTooltip(tip);
     };
     clearSelection = deactivate;
@@ -233,7 +234,11 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       const t=Math.max(0,Math.min(1,(px-x0)/(x1-x0)));
       let nearest=-1, distance=Infinity;
       rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
-      if(nearest>=0 && distance<=22) activate(nearest,event);
+      if(nearest>=0 && distance<=22) {
+        activate(nearest,event);
+        svg.querySelectorAll(".compare-hit").forEach(hit => hit.classList.remove("is-touch-selected"));
+        svg.querySelector(`.compare-hit-${nearest}`)?.classList.add("is-touch-selected");
+      }
     },true);
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
     hits.forEach(hit => hit.parentNode?.append(hit));

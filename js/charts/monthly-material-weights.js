@@ -216,19 +216,37 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
       rect.setAttribute("aria-label", formatMonth(datum.month) + ": " + formatWeight(datum.kg) +
         " kilograms" + (isStacked() ? ", breakdown available in tooltip and table" : "") +
         (state.basis === "imputed" && !datum.complete ? ", provisional" : ""));
-      rect.addEventListener("pointermove", event => { if (!isTouchPointer(event)) showTip(event, datum); });
+      // Mouse tracking is handled by the plot-wide listener, including gaps.
+      rect.addEventListener("pointerdown", event => { if (event.pointerType === "mouse") event.preventDefault(); });
       rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) { selectBar(i, datum); showTip(event, datum); } });
 
       rect.addEventListener("focus", () => {
         selectBar(i, datum);
         const bounds = rect.getBoundingClientRect();
-        showTip({ clientX: bounds.left + bounds.width / 2 + 3, clientY: bounds.top + 30 }, datum);
+        showTip({ clientX: bounds.left + bounds.width / 2 + 6, clientY: bounds.top + 30 }, datum);
       });
       rect.addEventListener("blur", () => { hideTooltip(tip); clearSelection(); });
       overlay.append(rect);
     });
     svg.append(overlay);
-    svg.addEventListener("pointerleave", event => { if (!isTouchPointer(event)) hideTooltip(tip); });
+    // Follow the pointer through the gaps as well as over the bar hit targets.
+    // Only change the tooltip contents when the nearest month changes.
+    let hoveredMonth = -1;
+    svg.addEventListener("pointermove", event => {
+      if (isTouchPointer(event)) return;
+      const box = svg.getBoundingClientRect();
+      const x = (event.clientX - box.left) * width / box.width;
+      let nearest = 0;
+      for (let i = 1; i < totals.length; i++) {
+        if (Math.abs(x - bandCenter(i)) < Math.abs(x - bandCenter(nearest))) nearest = i;
+      }
+      if (nearest !== hoveredMonth || tip.hidden) {
+        hoveredMonth = nearest;
+        showTooltip(tip, tooltipHTML(totals[nearest]));
+      }
+      positionChartTooltip(tip, event, container);
+    });
+    svg.addEventListener("pointerleave", event => { if (!isTouchPointer(event)) { hoveredMonth = -1; hideTooltip(tip); } });
 
     renderTable(totals, chartRows, chartGroups);
     renderLegend(chartGroups);

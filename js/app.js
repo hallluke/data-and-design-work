@@ -1,6 +1,7 @@
 "use strict";
 import { showChartError, validateWasteData } from "./shared.js";
 import { startChart } from "./chart-runtime.js";
+import { syncScrollableTableFocus } from "./chart-interaction.js";
 import { getAtlasData } from "./data.js";
 import { initFreshness } from "./freshness.js";
 import { initDisclosures } from "./disclosures.js";
@@ -62,6 +63,7 @@ async function initAtlas() {
       createYearlyMaterialComparisonChart({container, data: data.monthly, detail: data.detail,
         comparison: data.comparison}));
   }
+  syncScrollableTableFocus();
   atlasCharts = charts;
 }
 window.addEventListener("load", initAtlas);

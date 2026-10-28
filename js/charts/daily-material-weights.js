@@ -128,7 +128,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(!tip.hidden) {showTip(target);const b=cellRects[targetIndex].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}
   }
   on(scroll,"keydown",navigateCalendar);
-  on(scroll,"focus",()=>{if(!keyboardDate&&calendarCells.length && !matchMedia("(pointer: coarse)").matches){keyboardDate=calendarCells.at(-1).date;updateSelected();ensureVisible(calendarCells.length-1,"edge",1);}});
+  on(scroll,"focus",()=>{if(!keyboardDate&&calendarCells.length && scroll.matches(":focus-visible")){keyboardDate=calendarCells[0].date;updateSelected();ensureVisible(0,"edge",-1);}});
 
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",

@@ -26,7 +26,7 @@ export function populateMaterialSelect(select,{includeBatteries=true}={}) {
   const current=select.value;
   select.replaceChildren(...MATERIALS.filter(item=>includeBatteries || item.value!=="batteries").map(({value,label,depth})=>{
     const option=document.createElement("option");option.value=value;
-    option.textContent=depth===0 ? label : (depth===1 ? "↳ " : "↳ ↳ ") + label;return option;
+    option.textContent=depth===0 ? label : (depth===1 ? "↳ " : "↳ → ") + label;return option;
   }));
   if (MATERIALS.some(item=>item.value===current)) select.value=current;
 }
