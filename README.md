@@ -1,20 +1,20 @@
 # Household Waste & Recycling
 
-For a while I've been weighing the waste I put out for collection at home, out of curiosity about how much I throw away and how much gets recycled, composted or recovered. I've been collecting the data since 2025, and this interactive visualisation explores the results through monthly totals, recycling rates, year-on-year comparisons and daily patterns.
+For a little while now I've been weighing everything I leave out for residential waste and recycling collection because I've been curios about how much I throw away and how much gets recycled, composted or recovered. This interactive visualisation exists to explore the collected data.
 
 [Explore the interactive visualisation](https://hallluke.github.io/data-and-design-work/)
 
 ## Making sense of the data
 
-The measurements tell me how much was collected, but not exactly when that waste was produced. It's impractical to weigh each material every day, so the charts distinguish **recorded weights** from **imputed ones** — estimates that distribute each measurement across the days since the previous record. They also distinguish complete months from provisional ones, where some measurements are still missing.
+The measurements tell me how much was collected, but not exactly when that waste was produced. It's impractical to weigh everything each day, so the charts distinguish **recorded weights** from **imputed ones** — estimates that distribute the measurement across the days since the previous record. They also distinguish complete months from provisional ones, where some measurements are still missing.
 
-Each chart includes a data table and an explanation of its methodology, making it possible to examine the figures and understand how they were calculated.
+Each chart includes a data table and an explanation of its methodology, making it possible to examine the figures, understand how they were calculated and the reasoning behind those choices.
 
 ## Making it easy to use
 
-The four charts share a consistent visual language, with related colours, terminology and controls that adapt to the available data. The design aims to keep attention on the information, using clear visual hierarchy, restrained decoration and proximity to connect values with the things they describe.
+The four charts share a consistent visual language, with related colours, terminology and controls that adapt to the available data. The design aims to keep attention on the information, using clear visual hierarchy, restrained decoration and proximity to connect values with the things they describe, alongside accessible colour contrast, legible typography and visible focus indicators.
 
-Responsive layouts adapt to desktop and mobile screens, while interactions are designed for mouse, keyboard and touch. Keyboard navigation, visible focus indicators, accessible controls and consistent selection behaviour are all part of the design, rather than separate additions.
+Responsive layouts adapt to desktop and mobile screens, while interactions are designed for mouse, keyboard and touch. Keyboard navigation, visible focus indicators, accessible controls and consistent selection behaviour are intrinsic to the design.
 
 ## How it works
 
