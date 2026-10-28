@@ -1,41 +1,58 @@
-# Household waste data pipeline — GitHub Stage 1
+# Household waste data pipeline
 
-**Safe test-only package.** Copy the contents into the root of the existing `data-and-design-work` repository. Do not replace its existing `index.html`, `css/`, `js/`, or `data/` files. This package does not contact Google Sheets and cannot publish changes to the website.
+The dashboard reads JSON from the repository's `data/` directory. Python builds and validates the data; GitHub Actions can test a build without publishing or fetch a private Google Sheet and publish validated outputs.
 
-## Included
+## Source and generated files
 
-- `scripts/build_collections.py`: strict parsing and source validation (`Date`, `Material`, `Weight (kg)`; `DD/MM/YYYY` dates)
-- `scripts/build_summaries.py`: recorded and collection-interval imputed aggregates
-- `scripts/build_comparison.py`: provisional residual-waste estimate
-- `scripts/build_data.py`: production-style entry point, output validation, and staged JSON generation
-- `tests/`: historical regression tests and production-mode tests
-- `reference/`: historical source CSV and four reference JSON files (test fixtures, not live input)
-- `.github/workflows/test-data.yml`: manually runnable workflow; also tests when pipeline files are pushed
-- `.gitignore`, `requirements.txt`: housekeeping
+- Private Google Sheets worksheet: **Collections**, columns exactly `Date`, `Material`, `Weight (kg)` (dates in `DD/MM/YYYY`).
+- `scripts/fetch_sheet.py`: uses Google Application Default Credentials and the read-only Sheets scope to fetch the `Collections` worksheet. It rejects malformed headers and incomplete rows and writes a temporary CSV.
+- `scripts/build_collections.py`: parses and validates source records.
+- `scripts/build_summaries.py`: produces recorded and collection-interval imputed monthly aggregates.
+- `scripts/build_comparison.py`: generates the provisional residual-waste comparison estimate.
+- `scripts/validate_data.py`: validates the combined dataset.
+- `scripts/build_data.py`: builds and validates four JSON files in a staging directory before replacing files in its **specified output directory**.
+- `data/collections.json`, `data/monthly.json`, `data/detail.json`, `data/comparison.json`: published datasets; `data/refresh.json`: last successful publication timestamp.
+- `reference/collections-source.csv`: historical test fixture, **not** the live sheet.
 
-## Run locally
+Material definitions are maintained in `config/materials.json`. Run `python3 scripts/sync_materials.py` to update the browser's generated `js/material-registry.js`. Python reads the configuration directly.
+
+## Local verification (does not publish)
 
 ```sh
-python3 -m unittest discover -s tests -v
+node --test tests/*.test.mjs
+python3 -m unittest discover -s tests -p 'test_*.py'
 python3 scripts/build_data.py --csv reference/collections-source.csv --output build/data
 ```
 
-The first command checks historical regression **and** production-mode behavior. The second generates four JSON files in `build/data/`. The website's `data/` directory is untouched.
+The last command generates test JSON under `build/data`; it does not modify the site's `data/` directory.
 
-## Run on GitHub
+## GitHub Actions workflows
 
-Commit these files using GitHub Desktop and push. In the GitHub repository, open **Actions → Test waste data pipeline → Run workflow → Run workflow**. After success, click the run and download the `waste-json-test-build` artifact to inspect the four JSON files. No credentials, Google Cloud project, or special repository permissions are needed.
+### `test-data.yml` — Test waste data pipeline
 
-## Known limits / before publishing new data
+Runs on manual dispatch and on pushes affecting pipeline scripts, tests, reference files, the workflow or requirements. By default it uses the historical CSV fixture. Manual dispatch also offers `sheets`, which authenticates to Google Cloud and reads the private Collections worksheet. The workflow runs Python tests, builds JSON and uploads a `waste-json-test-build` artifact for inspection (seven-day retention). **It does not commit or publish data.**
 
-1. The historical fixture verifies the October 2026 snapshot, but the build script does **not** require new data to match it.
-2. The pipeline currently assumes all nine material categories have been collected; missing material data causes a validation error, not an invented zero.
-3. The first imputation date remains 2025-01-01; this is intentional for the current dataset and should become a documented configuration if the source history changes.
-4. The year-on-year website chart is still configured around 2025/2026. Future-year display rules need separate JS work before publishing 2027 data.
-5. The provisional comparison cutoff advances based on collection coverage, but the projection's historical window and interpretation should be reviewed before unattended publication.
-6. The current source CSV is a **historical test fixture** and is committed to this repository. The later Google Sheets workflow will fetch the live private sheet, and must not commit secrets or private sheet exports.
-7. The pipeline does not yet enforce a future-date policy or all output-schema edge cases; those belong to the next comprehensive validation checkpoint.
+### `publish-data.yml` — Publish waste data (manual)
 
-## Safety
+Runs on manual dispatch and is configured with a daily scheduled trigger at **03:30 Europe/London**. GitHub Actions scheduled jobs can start later than their configured time. The workflow:
 
-The workflow uses read-only repository permissions and only uploads an ephemeral build artifact. It does **not** commit generated JSON, write to `data/`, or trigger an update to the published site.
+1. Checks out the repository and installs Python 3.12 dependencies.
+2. Runs Python tests.
+3. Authenticates through Google Cloud Workload Identity Federation; fetches the private Collections sheet into `build/source/collections.csv`.
+4. Builds and validates JSON in `build/data/`, checking that exactly four expected JSON files exist and parse successfully.
+5. Copies only those four validated files into `data/` and writes `data/refresh.json` with a UTC timestamp.
+6. Stages only the four JSON files and `refresh.json`; commits and pushes them to the triggering branch if changes exist. If no staged changes exist, no commit is created.
+
+The workflow has job-level `contents: write` permission to publish. It uses the repository's short-lived GitHub token for pushing, not a stored GitHub personal access token. The test workflow has read-only repository permission.
+
+**Required GitHub Actions variables:** `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, and `GOOGLE_SHEET_ID`. The Google Cloud service account needs read access to the relevant spreadsheet. The workflow obtains temporary credentials using OIDC; no service-account key file should be committed.
+
+## Safety and maintenance notes
+
+- Do not commit the private sheet export, cloud credentials or tokens. The fixture under `reference/` is a separate historical test dataset.
+- The pipeline expects the configured material categories and rejects missing or malformed source data rather than treating absence as zero.
+- The initial imputation date is currently 2025-01-01. Review this if the collection history changes.
+- The year-on-year chart currently compares 2025 with 2026; plan a display update before publishing a new comparison year.
+- Review the provisional comparison methodology and source coverage before relying on unattended future-year publication.
+- The monthly JSON currently uses display-label group keys for compatibility. Changes to material groups require rebuilding the derived datasets.
+- Tests and schema checks are not substitutes for browser checks of the published charts and interaction states.

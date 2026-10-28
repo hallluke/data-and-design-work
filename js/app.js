@@ -1,9 +1,7 @@
 "use strict";
-import { showChartError } from "./chart-core.js";
-import { validateWasteData } from "./data.js";
-import { startChart } from "./chart-core.js";
+import { showChartError, startChart } from "./chart-core.js";
+import { validateWasteData, getAtlasData } from "./data.js";
 import { syncScrollableTableFocus } from "./chart-interaction.js";
-import { getAtlasData } from "./data.js";
 import { initFreshness } from "./freshness.js";
 import { initDisclosures } from "./disclosures.js";
 import { createMonthlyMaterialWeightsChart } from "./charts/monthly-material-weights.js";
@@ -26,14 +24,13 @@ async function initAtlas() {
   }
   try { initFreshness(data); } catch (error) { console.warn("Freshness display unavailable:", error); }
 
-  // update header year based on recorded data
+  // Update header year based on recorded data.
   const latestYear = Math.max(
     ...data.collections.map(row => Number(row.date.slice(0, 4)))
     );
   document.getElementById("latest-year").textContent = latestYear;
 
   const charts = [];
-
 
   // Disclosure controls do not depend on any chart successfully rendering.
   try {
