@@ -1,39 +1,25 @@
 # Household Waste & Recycling
 
-**A small personal data project about how everyday information can be made useful, understandable and enjoyable to explore.**
+For a while I've been weighing the waste I put out for collection at home, out of curiosity about how much I throw away and how much gets recycled, composted or recovered. I've been collecting the data since 2025, and this interactive visualisation explores the results through monthly totals, recycling rates, year-on-year comparisons and daily patterns.
 
-I like data. I also like recycling. So I started weighing the waste and recycling I put out for collection at home. The resulting dataset isn't particularly glamorous, but that's part of the appeal: it provides an opportunity to focus on the design of the information rather than the spectacle of the subject matter.
+[Explore the interactive visualisation](https://hallluke.github.io/data-and-design-work/)
 
-[Explore the interactive dashboard](https://hallluke.github.io/data-and-design-work/)
+## Making sense of the data
 
-## From measurements to meaning
+The measurements tell me how much was collected, but not exactly when that waste was produced. It's impractical to weigh each material every day, so the charts distinguish **recorded weights** from **imputed ones** — estimates that distribute each measurement across the days since the previous record. They also distinguish complete months from provisional ones, where some measurements are still missing.
 
-The dashboard uses four complementary views: monthly weights by material, a year-on-year comparison, an overall recycling rate and a calendar of daily collection records. Each answers a slightly different question without requiring the visitor to learn a new visual language every time.
+Each chart includes a data table and an explanation of its methodology, making it possible to examine the figures and understand how they were calculated.
 
-A key design decision was to distinguish **when waste was collected** from **when it likely accumulated**. Recorded figures show weights on collection dates; imputed figures distribute them across the preceding collection interval. The comparison also identifies provisional estimates rather than presenting incomplete periods as definitive. Explanations and underlying data tables accompany the charts so that the assumptions remain visible.
+## Making it easy to use
 
-## Designing the experience
+The four charts share a consistent visual language, with related colours, terminology and controls that adapt to the available data. The design aims to keep attention on the information, using clear visual hierarchy, restrained decoration and proximity to connect values with the things they describe.
 
-The charts are deliberately relatively simple. Much of the work went into making them coherent and usable as a set:
-
-- **Consistent visual language:** shared colours, controls, legends, labels and tooltip patterns across different chart types.
-- **Different ways to explore:** mouse, keyboard and touchscreen interactions designed around the strengths of each input method, rather than assuming that hover works everywhere.
-- **Keyboard accessibility:** navigable chart elements, visible focus indicators and Escape to dismiss temporary information without losing keyboard position.
-- **Responsive presentation:** layouts, legends and tooltips adapted for narrow screens without sacrificing the information available on desktop.
-- **Progressive detail:** concise charts first, with explanatory disclosures and accessible tables for people who want to examine the figures or methodology more closely.
-
-The aim wasn't to make the most elaborate charts possible. It was to make modest charts that communicate clearly, reward exploration and behave predictably.
+Responsive layouts adapt to desktop and mobile screens, while interactions are designed for mouse, keyboard and touch. Keyboard navigation, visible focus indicators, accessible controls and consistent selection behaviour are all part of the design, rather than separate additions.
 
 ## How it works
 
-The source data is maintained in a private **Google Sheet**. A **Python** pipeline retrieves the collection records, checks and transforms them, calculates summaries and provisional estimates, and publishes validated **JSON** datasets through **GitHub Actions**.
+The records live in a private **Google Sheet**. A **Python** pipeline checks and processes the data, calculates estimates and summaries, and publishes validated **JSON** through **GitHub Actions**. The static site uses **JavaScript**, **Observable Plot** and **D3** to build the charts, with **HTML and CSS** for layout and presentation, hosted on **GitHub Pages**.
 
-The static site then loads those datasets using modular **JavaScript**. **Observable Plot** and **D3** provide the visualisations, while **HTML and CSS** handle the surrounding structure, responsive layout and presentation. The site is hosted on **GitHub Pages**, with no application server required.
+**Google Sheets → Python → JSON → JavaScript / Observable Plot / D3 → HTML & CSS**
 
-**Google Sheets → Python → validated JSON → JavaScript / Observable Plot / D3 → HTML & CSS**
-
-For the data definitions, calculations, validation and automated publishing process, see [PIPELINE.md](PIPELINE.md).
-
-## About this project
-
-This is a personal portfolio project exploring the overlap between data analysis, visualisation and information design. It brings together the less visible parts of making a dashboard — data quality, uncertainty, interaction details, accessibility and consistency — as well as the finished charts.
+More detail on the calculations and publishing process is in [PIPELINE.md](PIPELINE.md).
