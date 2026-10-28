@@ -10,7 +10,8 @@ import { showChartError, clearChartStatus, formatWeight, formatMonth, monthIniti
 function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
   data = normalizeMonthlyGroups(data);
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
-  const removeTouchDismissal = installTouchDismissal(container, tip);
+  let clearSelection = () => {};
+  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection()});
   const table = root.getElementById("comparison-table");
 
 
@@ -157,7 +158,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:"#454545",
         className:`compare-series compare-series-${i}`}));
       // Invisible broad Plot stroke detects crossings anywhere along the line.
-      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"transparent",strokeWidth:16,
+      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"transparent",strokeWidth:26,
         className:`compare-hit compare-hit-${i}`}));
     });
     // Explicit Plot rules limit horizontal guides to the two year positions,
@@ -204,10 +205,13 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
       hideTooltip(tip);
     };
+    clearSelection = deactivate;
+    const tabOrder = [...rows.keys()].sort((a,b) => rows[b].current - rows[a].current);
     rows.forEach((row,i)=>{
       const hit=svg.querySelector(`.compare-hit-${i}`);
       if(!hit)return;
       hit.setAttribute("tabindex","0");
+      hit.style.order = String(tabOrder.indexOf(i));
       hit.setAttribute("role","button");
       hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
       hit.addEventListener("pointerenter",event=>{if(!isTouchPointer(event))activate(i,event);});
@@ -217,6 +221,8 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
       hit.addEventListener("blur",deactivate);
     });
+    const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
+    hits.forEach(hit => hit.parentNode?.append(hit));
     container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.

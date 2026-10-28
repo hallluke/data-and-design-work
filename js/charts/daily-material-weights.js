@@ -64,12 +64,11 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   let keyboardDate = null;
   let calendarCells = [];
   let cellRects = [];
-  const removeTouchDismissal = installTouchDismissal(content, tip, {clear: () => {selectedDate=null; updateSelected();}});
+  const removeTouchDismissal = installTouchDismissal(content, tip, {preserveKeyboardScroll:true, clear: () => {selectedDate=null; keyboardDate=null; updateSelected();}});
   function updateSelected() {
     cellRects.forEach((rect,i) => {
-      const active = calendarCells[i]?.date === (keyboardDate || selectedDate);
-      rect.style.outline = active ? "2px solid #202020" : "";
-      rect.style.outlineOffset = active ? "-2px" : "";
+      const active = calendarCells[i]?.date === (selectedDate || keyboardDate);
+      rect.classList.toggle("is-selected", active);
       rect.setAttribute("aria-selected",String(active));
     });
   }
@@ -87,8 +86,8 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(event.target!==scroll)return;
     const key=event.key;
     const handled=["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","PageUp","PageDown","Enter"," ","Escape"];
-    if(!handled.includes(key))return;
-    if(key==="Escape") {event.preventDefault();hideTip();selectedDate=null;updateSelected();return;}
+    if(!handled.includes(key) && !(event.shiftKey && (key==="ArrowLeft" || key==="ArrowRight")))return;
+    if(key==="Escape") {event.preventDefault();hideTip();selectedDate=null;keyboardDate=null;updateSelected();return;}
     if(key==="Enter"||key===" ") {
       event.preventDefault();const cell=calendarCells.find(d=>d.date===keyboardDate);
       if(cell) {if(!tip.hidden && activeTipDate===cell.date)hideTip();else {showTip(cell);const b=cellRects[calendarCells.indexOf(cell)].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}}return;
@@ -98,7 +97,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     const current=calendarCells[Math.max(0,index)];
     let target=current, mode="arrow",direction=0;
     const row=current.weekday;
-    if(key==="ArrowLeft"||key==="ArrowRight") {
+    if((key==="ArrowLeft"||key==="ArrowRight") && !event.shiftKey) {
       direction=key==="ArrowLeft"?-1:1;
       if(event.metaKey||event.ctrlKey) {target=calendarCells.filter(d=>d.weekday===row).at(direction<0?0:-1);mode="edge";}
       else target=calendarCells.find(d=>d.week===current.week+direction&&d.weekday===row);
@@ -107,8 +106,8 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
       target=calendarCells.find(d=>d.week===current.week&&d.weekday===weekday);
     } else if(key==="Home"||key==="End") {
       target=calendarCells.filter(d=>d.week===current.week).at(key==="Home"?0:-1);
-    } else if(key==="PageUp"||key==="PageDown") {
-      const d=new Date(current.date+"T00:00:00Z"), offset=key==="PageUp"?-1:1;
+    } else if(key==="PageUp"||key==="PageDown" || (event.shiftKey && (key==="ArrowLeft"||key==="ArrowRight"))) {
+      const d=new Date(current.date+"T00:00:00Z"), offset=(key==="PageUp"||key==="ArrowLeft")?-1:1;
       const ordinal=Math.floor((d.getUTCDate()-1)/7);
       const monthStart=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+offset,1));
       const firstWeekday=(monthStart.getUTCDay()+6)%7;
@@ -223,7 +222,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
       rects.forEach((rect,i)=>{
         rect.setAttribute("aria-label",`${fmtDate(cells[i].date)}: ${cells[i].records.length?cells[i].kg.toFixed(2)+" kilograms":"no recorded weight"}`);
         rect.addEventListener("pointerenter",e=>{if(!isTouchPointer(e)){showTip(cells[i]);moveTip(e);}});
-        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e)){selectedDate=cells[i].date;showTip(cells[i]);moveTip(e);updateSelected();}});
+        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e)){keyboardDate=null;selectedDate=cells[i].date;showTip(cells[i]);moveTip(e);updateSelected();}});
       });
     }
     updateSelected();

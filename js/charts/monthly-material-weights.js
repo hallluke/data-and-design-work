@@ -9,7 +9,8 @@ import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMo
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
   data = normalizeMonthlyGroups(data);
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
-  const removeTouchDismissal = installTouchDismissal(container, tip);
+  let clearSelection = () => {};
+  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection()});
   const table = root.querySelector("#data-table");
   const filterLayout = root.createElement("div");
   filterLayout.className = "filter-layout";
@@ -180,11 +181,28 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
 
     // Preserve the existing pointer/keyboard overlay geometry (v7 behaviour).
     const ns = "http://www.w3.org/2000/svg";
-    const band = (width - 45) / (data.months.length + 0.18);
-    const bandCenter = i => 35 + band * (0.18 + 0.41 + i);
+    const xScale = svg.scale("x");
+    const band = xScale?.bandwidth ?? (width - 45) / data.months.length;
+    const bandCenter = i => xScale ? xScale.apply(data.months[i]) + band / 2 : 35 + band * (i + .5);
     container.querySelector("svg")?.remove();
     container.prepend(svg);
     const overlay = document.createElementNS(ns, "g");
+    const highlight = document.createElementNS(ns, "rect");
+    highlight.classList.add("bar-selection");
+    highlight.setAttribute("fill", "none");
+    highlight.setAttribute("pointer-events", "none");
+    highlight.setAttribute("visibility", "hidden");
+    overlay.append(highlight);
+    const yScale = svg.scale("y");
+    const selectBar = (index, datum) => {
+      const y = yScale.apply(datum.kg), base = yScale.apply(0);
+      highlight.setAttribute("x", String(bandCenter(index) - band / 2 + 1.5));
+      highlight.setAttribute("y", String(Math.min(y, base)));
+      highlight.setAttribute("width", String(Math.max(1, band - 3)));
+      highlight.setAttribute("height", String(Math.max(1, Math.abs(base - y))));
+      highlight.setAttribute("visibility", "visible");
+    };
+    clearSelection = () => highlight.setAttribute("visibility", "hidden");
     overlay.setAttribute("aria-label", "Monthly values");
     totals.forEach((datum, i) => {
       const rect = document.createElementNS(ns, "rect");
@@ -199,13 +217,14 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
         " kilograms" + (isStacked() ? ", breakdown available in tooltip and table" : "") +
         (state.basis === "imputed" && !datum.complete ? ", provisional" : ""));
       rect.addEventListener("pointermove", event => { if (!isTouchPointer(event)) showTip(event, datum); });
-      rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) showTip(event, datum); });
+      rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) { selectBar(i, datum); showTip(event, datum); } });
       rect.addEventListener("pointerleave", event => { if (!isTouchPointer(event)) hideTooltip(tip); });
       rect.addEventListener("focus", () => {
+        selectBar(i, datum);
         const bounds = rect.getBoundingClientRect();
         showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);
       });
-      rect.addEventListener("blur", () => { hideTooltip(tip); });
+      rect.addEventListener("blur", () => { hideTooltip(tip); clearSelection(); });
       overlay.append(rect);
     });
     svg.append(overlay);

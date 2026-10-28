@@ -16,7 +16,8 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
     methodology: "Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.",
     columns: ["Category", "Weight (kg)", "Share"]});
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
-  const removeTouchDismissal = installTouchDismissal(container, tip);
+  let clearSelection = () => {};
+  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection()});
   const years = [...new Set(rows.map(d => d.date.slice(0, 4)))].sort();
   const state={period:"all"};
   const controls=setupChart({root,id:"overall-recycling-rate",number:"03",title:"Recycling rate",unit:"% by weight",state,
@@ -62,6 +63,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
       .attr("d", arc)
       .each(function(d){
         const inspect = event=>{
+          clearSelection(); this.classList.add("is-selected");
           showTooltip(tip, `<strong>${d.data.name}</strong><table class="tip-table"><thead><tr><th>Category</th><th>kg</th><th>%</th></tr></thead><tbody><tr><td>${d.data.name}</td><td>${number(d.data.value)}</td><td>${total?(100*d.data.value/total).toFixed(1):"0.0"}%</td></tr></tbody></table>`);
           // Switch at the doughnut centreline, not only when space runs out.
           const bounds=container.getBoundingClientRect();
@@ -84,7 +86,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
         this.addEventListener("pointerup",event=>{if(isTouchPointer(event))inspect(event);});
         this.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))hideTooltip(tip);});
         this.addEventListener("focus",()=>{const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-        this.addEventListener("blur",()=>hideTooltip(tip));
+        this.addEventListener("blur",()=>{hideTooltip(tip);clearSelection();});
         this.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}});
       });
     svg.append("text").attr("class", "rate-value").attr("x", cx).attr("y", cy + 3)
@@ -92,6 +94,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
     svg.append("text").attr("class", "rate-caption").attr("x", cx).attr("y", cy + 23)
       .attr("text-anchor", "middle").text("recycled");
     container.replaceChildren(svg.node());
+    clearSelection = () => svg.selectAll("path").classed("is-selected", false);
     hideTooltip(tip);
     const entries = [["Recycled",recycled,rate],["General waste",general,100-rate],["Total",total,100]];
     renderTableRows(table, entries.map(([label,kg,share]) =>

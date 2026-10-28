@@ -569,17 +569,17 @@ select:disabled {
 .disclosure-trigger-2 .disclosure-toggle { justify-self: end; }
 .chart-disclosure-grid > .disclosure-panel { grid-column: 1 / -1; grid-row: 3; padding: 0 0 2px; }
 .chart-disclosure-grid > .disclosure-panel[hidden] { display: none; }
-.chart-disclosure-grid > .module:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
-.chart-disclosure-grid > .module:nth-child(2) { grid-column: 3; grid-row: 1; }
+.chart-disclosure-grid > [data-chart-id="monthly-material-weights"] { grid-column: 1 / span 2; grid-row: 1; }
+.chart-disclosure-grid > [data-chart-id="yearly-material-comparison"] { grid-column: 3; grid-row: 1; }
 .disclosure-panel .method-copy p { margin-top: 7px; }
 /* Maintain the same 20px right cell padding even on narrow screens. */
 .disclosure-panel table th, .disclosure-panel table td { padding-right: 20px; }
 @media (max-width: 780px) {
   .chart-disclosure-grid { display: grid; grid-template-columns: minmax(0,1fr); row-gap: 0; }
-  .chart-disclosure-grid > .module:nth-child(1) { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+  .chart-disclosure-grid > [data-chart-id="monthly-material-weights"] { grid-column: 1; grid-row: 1; margin-bottom: 0; }
   .disclosure-trigger-1 { grid-column: 1; grid-row: 2; }
   .chart-disclosure-grid > .disclosure-panel-1 { grid-column: 1; grid-row: 3; }
-  .chart-disclosure-grid > .module:nth-child(2) { grid-column: 1; grid-row: 4; margin-top: 24px; margin-bottom: 0; }
+  .chart-disclosure-grid > [data-chart-id="yearly-material-comparison"] { grid-column: 1; grid-row: 4; margin-top: 24px; margin-bottom: 0; }
   .disclosure-trigger-2 { grid-column: 1; grid-row: 5; text-align: left; }
   .disclosure-trigger-2 .disclosure-toggle { justify-self: start; }
   .chart-disclosure-grid > .disclosure-panel-2 { grid-column: 1; grid-row: 6; }
@@ -650,8 +650,8 @@ select:disabled {
 @media (max-width:780px) { .calendar-controls .control-row { flex-direction:row; } }
 
 /* v27: shared grid/disclosure structure for the second chart pair. */
-.chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1 / span 2; grid-row:1; }
-.chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:3; grid-row:1; }
+.chart-disclosure-grid-secondary > [data-chart-id="overall-recycling-rate"] { grid-column:1 / span 2; grid-row:1; }
+.chart-disclosure-grid-secondary > [data-chart-id="daily-material-weights"] { grid-column:3; grid-row:1; }
 .chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1 / span 2; grid-row:2; }
 .chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:3; grid-row:2; text-align:right; }
 .chart-disclosure-grid-secondary .disclosure-trigger-4 .disclosure-toggle { justify-self:end; }
@@ -667,10 +667,10 @@ select:disabled {
 [data-chart-id="daily-material-weights"] .chart svg text { fill:var(--muted); font:10px "Source Sans 3",Arial,sans-serif; }
 [data-chart-id="daily-material-weights"] .chart-tooltip { position:fixed; z-index:100; pointer-events:none; max-width:min(310px,calc(100vw - 12px)); }
 @media (max-width:780px) {
- .chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1; grid-row:1; margin-bottom:0; }
+ .chart-disclosure-grid-secondary > [data-chart-id="overall-recycling-rate"] { grid-column:1; grid-row:1; margin-bottom:0; }
  .chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1; grid-row:2; }
  .chart-disclosure-grid-secondary > #recycling-disclosure { grid-column:1; grid-row:3; }
- .chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:1; grid-row:4; margin-top:24px; margin-bottom:0; }
+ .chart-disclosure-grid-secondary > [data-chart-id="daily-material-weights"] { grid-column:1; grid-row:4; margin-top:24px; margin-bottom:0; }
  .chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:1; grid-row:5; text-align:left; }
  .chart-disclosure-grid-secondary .disclosure-trigger-4 .disclosure-toggle { justify-self:start; }
  .chart-disclosure-grid-secondary > #calendar-disclosure { grid-column:1; grid-row:6; }
@@ -679,12 +679,12 @@ select:disabled {
 }
 
 /* v28 targeted corrections; existing shared chart CSS remains untouched. */
-.chart-disclosure-grid-secondary > .module:nth-child(1) { grid-column:1; }
-.chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:2 / span 2; }
+.chart-disclosure-grid-secondary > [data-chart-id="overall-recycling-rate"] { grid-column:1; }
+.chart-disclosure-grid-secondary > [data-chart-id="daily-material-weights"] { grid-column:2 / span 2; }
 .chart-disclosure-grid-secondary .disclosure-trigger-3 { grid-column:1; }
 .chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:2 / span 2; }
 @media (max-width:780px) {
-  .chart-disclosure-grid-secondary > .module:nth-child(2) { grid-column:1; }
+  .chart-disclosure-grid-secondary > [data-chart-id="daily-material-weights"] { grid-column:1; }
   .chart-disclosure-grid-secondary .disclosure-trigger-4 { grid-column:1; }
 }
 /* v29: Figure 04 controls inherit the established Figure 03 control dimensions. */
@@ -818,3 +818,25 @@ select:disabled {
   justify-content: flex-start;
   align-items: flex-start;
 }
+
+/* Accessible selection and focus: mark geometry, not the full SVG. */
+.chart svg rect.is-selected { stroke: var(--ink, #202020); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+[data-chart-id="monthly-material-weights"] svg rect.is-selected { fill: transparent; }
+[data-chart-id="overall-recycling-rate"] svg path.is-selected { stroke: var(--ink, #202020); stroke-width: 2px; }
+[data-chart-id="overall-recycling-rate"] svg path:focus-visible { outline: 2px solid var(--ink, #202020); outline-offset: 2px; }
+[data-chart-id="daily-material-weights"] svg rect.is-selected { stroke: var(--ink, #202020); stroke-width: 2.5px; }
+.disclosure-panel .table-scroll:focus-visible { outline: 2px solid var(--ink, #202020); outline-offset: 2px; }
+@media (max-width: 780px) {
+  .comparison-controls .choices, .comparison-controls select { width: 168px; min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .comparison-controls .choices button { min-width: 0; }
+}
+@media (max-width: 430px) {
+  .comparison-controls .choices, .comparison-controls select { width: 168px; min-width: 0; max-width: 100%; }
+}
+
+/* The monthly selection follows the plotted bar, not its full-height hit target. */
+[data-chart-id="monthly-material-weights"] .bar-selection { stroke: var(--ink, #202020); stroke-width: 2; vector-effect: non-scaling-stroke; }
+[data-chart-id="monthly-material-weights"] svg g[aria-label="Monthly values"] > rect:focus-visible { outline: none; }
+/* The calendar has one keyboard entry point; selection is drawn on the active cell. */
+[data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible { outline: none; }
+[data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible svg rect.is-selected { stroke-width: 3; }
