@@ -232,6 +232,11 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         el.style.opacity = active === null ? "" : selected ? "1" : ".22";
         el.style.stroke = selected && el.tagName.toLowerCase() === "path" ? "#171717" : "";
       });
+      // Use the same visible slope styling for keyboard focus and mouse hover.
+      // The touch-only overlay remains independent of that common highlight.
+      lines.forEach((line,i) => {
+        line.style.stroke = active === i ? "#171717" : "";
+      });
       // Only this renderer may show/hide the overlay. It is never an input target.
       overlay.hidden = active === null || inputMode !== "touch";
       overlay.style.display = overlay.hidden ? "none" : "";
@@ -303,7 +308,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         return;
       }
       if (Date.now()<ignoreMouseUntil || inputMode === "touch") return;
-      select(nearest(event,8),"mouse");
+      select(nearest(event,10),"mouse");
     });
     svgRoot.addEventListener("pointerup", event => {
       if (!isTouchPointer(event)) return;
