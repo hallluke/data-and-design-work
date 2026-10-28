@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {showTooltip, hideTooltip, positionFixedTooltip} from '../js/chart-tooltip.js';
+import {showTooltip, hideTooltip, positionFixedTooltip} from '../js/chart-display.js';
 
 test('tooltip visibility can change without replacing content', () => {
   const tip = {hidden:true, innerHTML:'old'};

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { startChart } from "../js/chart-runtime.js";
+import { startChart } from "../js/chart-core.js";
 
 function fixture() {
   const errors = [];

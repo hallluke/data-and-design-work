@@ -1,4 +1,4 @@
-import { MULTI_COLUMN_MEDIA } from "./shared.js";
+import { MULTI_COLUMN_MEDIA } from "./chart-style.js";
 
 function initDisclosures(root = document) {
   const buttons = [...root.querySelectorAll("[data-disclosure]")];

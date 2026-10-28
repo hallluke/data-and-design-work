@@ -1,10 +1,12 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
-import { showTooltip, hideTooltip, positionFixedTooltip } from "../chart-tooltip.js";
-import { renderTableRows } from "../chart-table.js";
-import { setDisclosureContent } from "../chart-disclosure-content.js";
+import { showTooltip, hideTooltip, positionFixedTooltip } from "../chart-display.js";
+import { renderTableRows } from "../chart-display.js";
+import { setDisclosureContent } from "../chart-display.js";
 import { populateMaterialSelect, sourceMatchesSelection, materialLabel, materialIdFromSource } from "../materials.js";
-import { setupChart } from "../chart-setup.js";
-import { ATLAS_COLOURS, bindChartEvent, positionChartTooltip, formatWeight } from "../shared.js";
+import { setupChart } from "../chart-core.js";
+import { ATLAS_COLOURS } from "../chart-style.js";
+import { bindChartEvent } from "../chart-interaction.js";
+import { positionChartTooltip, formatWeight } from "../chart-display.js";
 
 // Map recorded weights onto the five-stop visual range by distinct values,
 // not by the number of days with each value.

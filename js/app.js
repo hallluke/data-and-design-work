@@ -1,6 +1,7 @@
 "use strict";
-import { showChartError, validateWasteData } from "./shared.js";
-import { startChart } from "./chart-runtime.js";
+import { showChartError } from "./chart-core.js";
+import { validateWasteData } from "./data.js";
+import { startChart } from "./chart-core.js";
 import { syncScrollableTableFocus } from "./chart-interaction.js";
 import { getAtlasData } from "./data.js";
 import { initFreshness } from "./freshness.js";

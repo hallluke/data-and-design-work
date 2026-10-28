@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { syncButtonGroup, setControlDisabled } from "../js/chart-controls.js";
+import { syncButtonGroup, setControlDisabled } from "../js/chart-core.js";
 
 function button(value) {
   const attrs = {};

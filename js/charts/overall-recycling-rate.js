@@ -1,11 +1,12 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
-import { showTooltip, hideTooltip } from "../chart-tooltip.js";
-import { renderTableRows } from "../chart-table.js";
-import { formatPercent } from "../chart-format.js";
+import { showTooltip, hideTooltip } from "../chart-display.js";
+import { renderTableRows } from "../chart-display.js";
+import { formatPercent } from "../chart-display.js";
 import { materialIdFromSource } from "../materials.js";
-import { setupChart } from "../chart-setup.js";
-import { setDisclosureContent } from "../chart-disclosure-content.js";
-import { bindChartEvent, formatWeight } from "../shared.js";
+import { setupChart } from "../chart-core.js";
+import { setDisclosureContent } from "../chart-display.js";
+import { bindChartEvent } from "../chart-interaction.js";
+import { formatWeight } from "../chart-display.js";
 
 function createOverallRecyclingRateChart({container, rows, root = document}) {
   const listeners = [];

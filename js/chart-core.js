@@ -1,4 +1,26 @@
-import { setControlDisabled } from "./chart-controls.js";
+"use strict";
+
+// Chart lifecycle, control construction, and status reporting.
+
+"use strict";
+
+// Shared state synchronisation for existing button groups.
+// Chart modules still own their selection and dependency rules.
+function syncButtonGroup(buttons, selected, dataKey) {
+  for (const button of buttons) {
+    button.setAttribute("aria-pressed", String(button.dataset[dataKey] === selected));
+  }
+}
+
+function setControlDisabled(control, disabled) {
+  control.disabled = Boolean(disabled);
+  // Native disabled state handles keyboard/mouse behaviour; mirror for existing CSS.
+  control.setAttribute("aria-disabled", String(control.disabled));
+}
+
+export { syncButtonGroup, setControlDisabled };
+
+
 // Chart config owns control definitions; each chart owns state and change reactions.
 export function setupChart({root=document, id, number, title, unit, controls=[], state, onChange}) {
   const article=root.querySelector(`[data-chart-id="${id}"]`);
@@ -61,3 +83,50 @@ export function setupChart({root=document, id, number, title, unit, controls=[],
   sync();
   return {elements,sync,destroy(){host.replaceChildren();}};
 }
+
+"use strict";
+
+
+// Start charts independently: a failure in one factory must not prevent the others.
+// Chart factories retain ownership of their render and destroy implementations.
+function startChart(charts, containerId, create, root = document) {
+  const container = root.getElementById(containerId);
+  if (!container) {
+    console.error(`Missing chart container: #${containerId}`);
+    return false;
+  }
+  try {
+    const chart = create(container);
+    if (!chart || typeof chart.render !== "function" || typeof chart.destroy !== "function") {
+      throw new TypeError(`Invalid chart lifecycle: #${containerId}`);
+    }
+    chart.render();
+    clearChartStatus(container);
+    charts.push(chart);
+    return true;
+  } catch (error) {
+    showChartError(container, error);
+    return false;
+  }
+}
+
+export { startChart };
+
+// A single status element serves as the initial loading message and any later error.
+function clearChartStatus(container) {
+  container?.querySelector(".chart-status, .error")?.remove();
+}
+function showChartError(container, error) {
+  console.error(error);
+  if (!container) return;
+  container.querySelector("svg")?.remove();
+  let message = container.querySelector(".chart-status, .error");
+  if (!message) {
+    message = document.createElement("p");
+    container.prepend(message);
+  }
+  message.className = "chart-status error";
+  message.textContent = "Chart unavailable: " + error.message;
+}
+
+export { showChartError, clearChartStatus };

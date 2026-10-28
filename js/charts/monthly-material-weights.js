@@ -1,10 +1,13 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
-import { showTooltip, hideTooltip } from "../chart-tooltip.js";
-import { renderTableRows } from "../chart-table.js";
-import { setDisclosureContent } from "../chart-disclosure-content.js";
+import { showTooltip, hideTooltip } from "../chart-display.js";
+import { renderTableRows } from "../chart-display.js";
+import { setDisclosureContent } from "../chart-display.js";
 import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
-import { setupChart } from "../chart-setup.js";
-import { showChartError, clearChartStatus, ATLAS_COLOURS, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent } from "../shared.js";
+import { setupChart } from "../chart-core.js";
+import { showChartError, clearChartStatus } from "../chart-core.js";
+import { ATLAS_COLOURS, atlasPalette } from "../chart-style.js";
+import { formatWeight, formatMonth, monthInitial, positionChartTooltip } from "../chart-display.js";
+import { bindChartEvent } from "../chart-interaction.js";
 
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
   data = normalizeMonthlyGroups(data);

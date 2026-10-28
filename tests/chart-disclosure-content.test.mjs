@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { setDisclosureContent } from "../js/chart-disclosure-content.js";
+import { setDisclosureContent } from "../js/chart-display.js";
 
 function fixture() {
   const method = {textContent: "", innerHTML: ""};

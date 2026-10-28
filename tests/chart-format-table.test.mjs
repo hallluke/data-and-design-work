@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { formatWeight, formatNumber, formatPercent, formatSignedNumber } from '../js/chart-format.js';
-import { renderTableRows } from '../js/chart-table.js';
+import { formatWeight, formatNumber, formatPercent, formatSignedNumber } from '../js/chart-display.js';
+import { renderTableRows } from '../js/chart-display.js';
 
 test('shared formatters preserve the existing numeric presentation', () => {
   assert.equal(formatWeight(1234.5), '1234.50');

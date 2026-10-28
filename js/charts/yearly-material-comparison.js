@@ -1,12 +1,15 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { nearestSlope } from "../slope-proximity.js";
-import { showTooltip, hideTooltip } from "../chart-tooltip.js";
-import { renderTableRows } from "../chart-table.js";
-import { formatNumber, formatSignedNumber, formatPercent } from "../chart-format.js";
+import { showTooltip, hideTooltip } from "../chart-display.js";
+import { renderTableRows } from "../chart-display.js";
+import { formatNumber, formatSignedNumber, formatPercent } from "../chart-display.js";
 import { normalizeMonthlyGroups, groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
-import { setupChart } from "../chart-setup.js";
-import { setDisclosureContent } from "../chart-disclosure-content.js";
-import { showChartError, clearChartStatus, formatWeight, formatMonth, monthInitial, positionChartTooltip, atlasPalette, bindChartEvent, MULTI_COLUMN_MEDIA } from "../shared.js";
+import { setupChart } from "../chart-core.js";
+import { setDisclosureContent } from "../chart-display.js";
+import { showChartError, clearChartStatus } from "../chart-core.js";
+import { formatWeight, formatMonth, monthInitial, positionChartTooltip } from "../chart-display.js";
+import { atlasPalette, MULTI_COLUMN_MEDIA } from "../chart-style.js";
+import { bindChartEvent } from "../chart-interaction.js";
 
 function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
   data = normalizeMonthlyGroups(data);
