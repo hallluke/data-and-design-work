@@ -178,6 +178,20 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     svg.setAttribute("role","img");
     svg.setAttribute("aria-label","Year-on-year " + state.basis + " waste by " + state.categories +
       " categories, January through " + labelMonth + ". Values in the expandable table.");
+    // A dedicated SVG selection path follows the same scales as the Plot lines.
+    // It is independent of Plot's mark/group DOM structure and never catches input.
+    const selectionPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    selectionPath.classList.add("comparison-selection-path");
+    selectionPath.setAttribute("fill", "none");
+    selectionPath.setAttribute("pointer-events", "none");
+    selectionPath.setAttribute("visibility", "hidden");
+    const xAt = year => left + (width-left-right)*(year-xDomain[0])/(xDomain[1]-xDomain[0]);
+    const selectLine = index => {
+      const row=rows[index];
+      selectionPath.setAttribute("d", `M${xAt(years[0])},${yScale(row.earlier)} L${xAt(years[1])},${yScale(row.current)}`);
+      selectionPath.setAttribute("stroke-dasharray", row.projected ? "5 3" : "none");
+      selectionPath.setAttribute("visibility", "visible");
+    };
     const activate = (index,event)=>{
       svg.querySelectorAll(".compare-series").forEach(el=>{
         const active=el.classList.contains(`compare-series-${index}`);
@@ -204,6 +218,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     const deactivate=()=>{
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
       svg.querySelectorAll(".compare-hit.is-touch-selected, .compare-series.is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
+      selectionPath.setAttribute("visibility", "hidden");
       hideTooltip(tip);
     };
     clearSelection = deactivate;
@@ -238,11 +253,12 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         activate(nearest,event);
         svg.querySelectorAll(".is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
         // Highlight the visible series, not its transparent pointer target.
-        svg.querySelectorAll(`.compare-series-${nearest}`).forEach(el => el.classList.add("is-touch-selected"));
+        selectLine(nearest);
       }
     },true);
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
     hits.forEach(hit => hit.parentNode?.append(hit));
+    svg.append(selectionPath);
     container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.

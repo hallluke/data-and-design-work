@@ -867,3 +867,43 @@ select:disabled {
   [data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
   [data-chart-id="yearly-material-comparison"] .comparison-controls select { width: min(168px, 48vw); max-width: min(168px, 48vw); flex-basis: min(168px, 48vw); }
 }
+
+/* Interaction polish: keep monthly tooltip width stable as numbers change digits. */
+[data-chart-id="monthly-material-weights"] .tip-table td:not(:first-child),
+[data-chart-id="monthly-material-weights"] .tip-table th:not(:first-child) { min-width: 5.8ch; }
+
+/* Selection geometry is independent of Observable Plot's mark wrappers. */
+[data-chart-id="yearly-material-comparison"] .comparison-selection-path {
+  stroke: var(--ink, #202020);
+  stroke-width: 3.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Use a single shared control-column width, including the button group's gap. */
+[data-chart-id="yearly-material-comparison"] .comparison-controls .control-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  align-items: center;
+  min-width: 0;
+}
+[data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
+[data-chart-id="yearly-material-comparison"] .comparison-controls select {
+  width: 168px;
+  min-width: 0;
+  max-width: 100%;
+  flex: none;
+  box-sizing: border-box;
+  margin: 0;
+}
+[data-chart-id="yearly-material-comparison"] .comparison-controls .choices button {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 0;
+}
+@media (max-width: 355px) {
+  [data-chart-id="yearly-material-comparison"] .comparison-controls .control-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 48vw);
+  }
+  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
+  [data-chart-id="yearly-material-comparison"] .comparison-controls select { width: 100%; }
+}
