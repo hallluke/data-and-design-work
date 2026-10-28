@@ -184,21 +184,27 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     selectionPath.classList.add("comparison-selection-path");
     selectionPath.setAttribute("fill", "none");
     selectionPath.setAttribute("pointer-events", "none");
-    selectionPath.setAttribute("visibility", "hidden");
+    selectionPath.style.display = "none";
     const xAt = year => left + (width-left-right)*(year-xDomain[0])/(xDomain[1]-xDomain[0]);
+    selectionPath.setAttribute("stroke", "#202020");
+    selectionPath.setAttribute("stroke-width", "4");
+    selectionPath.setAttribute("vector-effect", "non-scaling-stroke");
+    let touchSelection = null;
     const selectLine = index => {
       const row=rows[index];
       selectionPath.setAttribute("d", `M${xAt(years[0])},${yScale(row.earlier)} L${xAt(years[1])},${yScale(row.current)}`);
       selectionPath.setAttribute("stroke-dasharray", row.projected ? "5 3" : "none");
-      selectionPath.setAttribute("visibility", "visible");
+      selectionPath.style.display = "";
     };
-    const activate = (index,event)=>{
+    const activate = (index,event, {touch = false} = {})=>{
+      if (touch) touchSelection = index;
       svg.querySelectorAll(".compare-series").forEach(el=>{
         const active=el.classList.contains(`compare-series-${index}`);
         el.style.opacity=active?"1":".22";
         if (el.tagName.toLowerCase()==="path" && active && !el.classList.contains("compare-hit"))
           el.style.stroke="#171717";
       });
+      if (touch) selectLine(index);
       showTooltip(tip, tooltipHTML(rows[index]));
       // Fixed-position overlay begins at the 2026 endpoint, covering labels
       // rather than plotted lines. Clamp inside the viewport on small screens.
@@ -216,9 +222,10 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       tip.style.top=Math.max(6,Math.min(Math.max(minTop,desiredTop),chartBottom-tip.offsetHeight))+"px";
     };
     const deactivate=()=>{
+      touchSelection = null;
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
       svg.querySelectorAll(".compare-hit.is-touch-selected, .compare-series.is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
-      selectionPath.setAttribute("visibility", "hidden");
+      selectionPath.style.display = "none";
       hideTooltip(tip);
     };
     clearSelection = deactivate;
@@ -233,9 +240,9 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.addEventListener("pointerenter",event=>{if(!isTouchPointer(event))activate(i,event);});
       hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event))activate(i,event);});
 
-      hit.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))deactivate();});
+      hit.addEventListener("pointerleave",event=>{if(!isTouchPointer(event) && touchSelection === null)deactivate();});
       hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-      hit.addEventListener("blur",deactivate);
+      hit.addEventListener("blur",()=>{if (touchSelection === null) deactivate();});
     });
     // Touch chooses the closest plotted line rather than the topmost overlapping hit stroke.
     svg.addEventListener("pointerup", event => {
@@ -250,15 +257,14 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       let nearest=-1, distance=Infinity;
       rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
       if(nearest>=0 && distance<=22) {
-        activate(nearest,event);
-        svg.querySelectorAll(".is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
-        // Highlight the visible series, not its transparent pointer target.
-        selectLine(nearest);
+        activate(nearest,event,{touch:true});
       }
     },true);
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
     hits.forEach(hit => hit.parentNode?.append(hit));
-    svg.append(selectionPath);
+    // Append inside the actual SVG even if Plot.plot returns a wrapper figure.
+    const svgRoot = svg.tagName.toLowerCase() === "svg" ? svg : svg.querySelector("svg");
+    svgRoot.append(selectionPath);
     container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.
