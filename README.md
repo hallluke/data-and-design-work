@@ -1,6 +1,6 @@
 # Household Waste & Recycling
 
-For a while I've been weighing the waste I put out for collection at home, out of curiosity about how much I throw away and how much gets recycled, composted or recovered. I've been collecting the data since 2025, and this interactive visualisation explores the results through monthly totals, recycling rates, year-on-year comparisons and daily patterns.
+For a little while now I've been weighing everything I leave out for residential waste and recycling collection because I've been curios about how much I throw away and how much gets recycled, composted or recovered. This interactive visualisation explores the collected data.
 
 [Explore the interactive visualisation](https://hallluke.github.io/data-and-design-work/)
 
