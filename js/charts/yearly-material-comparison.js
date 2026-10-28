@@ -266,12 +266,19 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       const minTop=Math.min(chartTop,chartBottom-tip.offsetHeight);
       tip.style.top=Math.max(6,Math.min(Math.max(minTop,desiredTop),chartBottom-tip.offsetHeight))+"px";
     };
+    const restoreTouchIndicator = (reason) => {
+      if (touchSelection === null) return;
+      selectionPath.setAttribute("visibility", "visible");
+      selectionDots.forEach(dot => dot.setAttribute("visibility", "visible"));
+      debugLog(`keep:${reason}:${selectionPath.getAttribute("visibility")}`);
+    };
     const deactivate=()=>{
       touchSelection = null;
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
       svg.querySelectorAll(".compare-hit.is-touch-selected, .compare-series.is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
       selectionPath.setAttribute("visibility", "hidden");
       selectionDots.forEach(dot => dot.setAttribute("visibility", "hidden"));
+      debugLog("hide:deactivate");
       hideTooltip(tip);
       debugLog("D");
     };
@@ -284,12 +291,22 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.style.order = String(tabOrder.indexOf(i));
       hit.setAttribute("role","button");
       hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
-      hit.addEventListener("pointerenter",event=>{debugLog(`enter:${event.pointerType}`);if(!isTouchPointer(event))activate(i,event);});
-      hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event))activate(i,event);});
+      hit.addEventListener("pointerenter",event=>{debugLog(`enter:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard)activate(i,event);});
+      hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !touchFocusGuard)activate(i,event);});
 
-      hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && touchSelection === null)deactivate();});
+      hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)deactivate();});
       hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-      hit.addEventListener("blur",()=>{debugLog(`blur:${i}`);if (!touchFocusGuard && touchSelection === null) deactivate();});
+      hit.addEventListener("blur",()=>{
+        debugLog(`blur:${i}`);
+        if (touchSelection !== null) {
+          // Mobile browsers can blur the focused hit mark after a completed touch.
+          // Preserve the overlay independently of SVG focus state.
+          restoreTouchIndicator("blur");
+          queueMicrotask(() => restoreTouchIndicator("after-blur"));
+          return;
+        }
+        if (!touchFocusGuard) deactivate();
+      });
     });
     // A touch may focus an SVG hit mark and generate a compatibility click.
     // Neither should override the chart-level nearest-line selection.
