@@ -184,17 +184,32 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     selectionPath.classList.add("comparison-selection-path");
     selectionPath.setAttribute("fill", "none");
     selectionPath.setAttribute("pointer-events", "none");
-    selectionPath.style.display = "none";
+    selectionPath.setAttribute("visibility", "hidden");
     const xAt = year => left + (width-left-right)*(year-xDomain[0])/(xDomain[1]-xDomain[0]);
     selectionPath.setAttribute("stroke", "#202020");
     selectionPath.setAttribute("stroke-width", "4");
     selectionPath.setAttribute("vector-effect", "non-scaling-stroke");
+    const selectionDots = [years[0], years[1]].map(() => {
+      const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      dot.setAttribute("r", "5");
+      dot.setAttribute("fill", "#202020");
+      dot.setAttribute("stroke", "#fff");
+      dot.setAttribute("stroke-width", "1.5");
+      dot.setAttribute("pointer-events", "none");
+      dot.setAttribute("visibility", "hidden");
+      return dot;
+    });
     let touchSelection = null;
     const selectLine = index => {
       const row=rows[index];
       selectionPath.setAttribute("d", `M${xAt(years[0])},${yScale(row.earlier)} L${xAt(years[1])},${yScale(row.current)}`);
       selectionPath.setAttribute("stroke-dasharray", row.projected ? "5 3" : "none");
-      selectionPath.style.display = "";
+      selectionPath.setAttribute("visibility", "visible");
+      [row.earlier, row.current].forEach((value, i) => {
+        selectionDots[i].setAttribute("cx", String(xAt(years[i])));
+        selectionDots[i].setAttribute("cy", String(yScale(value)));
+        selectionDots[i].setAttribute("visibility", "visible");
+      });
     };
     const activate = (index,event, {touch = false} = {})=>{
       if (touch) touchSelection = index;
@@ -225,7 +240,8 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       touchSelection = null;
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
       svg.querySelectorAll(".compare-hit.is-touch-selected, .compare-series.is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
-      selectionPath.style.display = "none";
+      selectionPath.setAttribute("visibility", "hidden");
+      selectionDots.forEach(dot => dot.setAttribute("visibility", "hidden"));
       hideTooltip(tip);
     };
     clearSelection = deactivate;
@@ -264,7 +280,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     hits.forEach(hit => hit.parentNode?.append(hit));
     // Append inside the actual SVG even if Plot.plot returns a wrapper figure.
     const svgRoot = svg.tagName.toLowerCase() === "svg" ? svg : svg.querySelector("svg");
-    svgRoot.append(selectionPath);
+    svgRoot.append(selectionPath, ...selectionDots);
     container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.

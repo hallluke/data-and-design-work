@@ -479,12 +479,12 @@ select:disabled {
 }
 
 /* 05 — FIGURE 02 — controls share the Figure 01 button/select components. */
-.comparison-controls { margin-bottom: 9px; }
-.comparison-controls .control-row { gap: 7px; min-height: 33px; }
-.comparison-controls .control-label,.comparison-controls label { min-width: 72px; }
-.comparison-controls .choices { flex-wrap: nowrap; width: 168px; }
-.comparison-controls .choices button { flex: 1; padding: 5px 7px; }
-.comparison-controls select { width: 168px; min-width: 168px; max-width: 168px; }
+[data-chart-id="yearly-material-comparison"] .chart-controls { margin-bottom: 9px; }
+[data-chart-id="yearly-material-comparison"] .chart-controls .control-row { gap: 7px; min-height: 33px; }
+[data-chart-id="yearly-material-comparison"] .chart-controls .control-label,[data-chart-id="yearly-material-comparison"] .chart-controls label { min-width: 72px; }
+[data-chart-id="yearly-material-comparison"] .chart-controls .choices { flex-wrap: nowrap; width: 168px; }
+[data-chart-id="yearly-material-comparison"] .chart-controls .choices button { flex: 1; padding: 5px 7px; }
+[data-chart-id="yearly-material-comparison"] .chart-controls select { width: 168px; min-width: 168px; max-width: 168px; }
 [data-chart-id="yearly-material-comparison"] .chart { min-height: 250px; }
 [data-chart-id="yearly-material-comparison"] .chart svg { display: block; }
 [data-chart-id="yearly-material-comparison"] .chart .compare-series { transition: opacity .12s ease; }
@@ -495,7 +495,7 @@ select:disabled {
 [data-chart-id="yearly-material-comparison"] .tooltip { min-width: 170px; max-width: 270px; }
 [data-chart-id="yearly-material-comparison"] .tip-table { margin-top: 5px; }
 @media(max-width:430px) {
-  .comparison-controls .choices,.comparison-controls select { width: 148px; min-width: 148px; max-width: 148px; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .choices,[data-chart-id="yearly-material-comparison"] .chart-controls select { width: 148px; min-width: 148px; max-width: 148px; }
 }
 
 /* Figure 02 tooltip overlays the right-hand label gutter, not the slopes. */
@@ -504,9 +504,9 @@ select:disabled {
 [data-chart-id="yearly-material-comparison"] .tip-range { color: #d6d6d6; font-size: 10px; }
 /* Tablet: do not let the category selector exceed its column. */
 @media (min-width: 781px) and (max-width: 900px) {
-  .comparison-controls .control-row { min-width: 0; }
-  .comparison-controls select { width: min(168px, 100%); min-width: 0; max-width: 100%; }
-  .comparison-controls label, .comparison-controls .control-label { min-width: 0; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .control-row { min-width: 0; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls select { width: min(168px, 100%); min-width: 0; max-width: 100%; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls label, [data-chart-id="yearly-material-comparison"] .chart-controls .control-label { min-width: 0; }
 }
 /* Mobile: preserve the same compact vertical rhythm as desktop. */
 @media (max-width: 750px) { .control-row { padding-top: 0; padding-bottom: 0; } }
@@ -555,9 +555,9 @@ select:disabled {
 
 /* Prevent Figure 02 controls colliding with the Measurement label at tablet widths. */
 @media (min-width: 781px) and (max-width: 1050px) {
-  .comparison-controls .control-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,148px); gap: 5px; min-width: 0; }
-  .comparison-controls .choices, .comparison-controls select { width: 100%; min-width: 0; max-width: 100%; }
-  .comparison-controls .choices button { padding-inline: 4px; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .control-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,148px); gap: 5px; min-width: 0; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .choices, [data-chart-id="yearly-material-comparison"] .chart-controls select { width: 100%; min-width: 0; max-width: 100%; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .choices button { padding-inline: 4px; }
 }
 
 /* v15: chart and disclosure elements share one grid, allowing responsive ordering. */
@@ -827,11 +827,11 @@ select:disabled {
 [data-chart-id="daily-material-weights"] svg rect.is-selected { stroke: var(--ink, #202020); stroke-width: 2.5px; }
 .disclosure-panel .table-scroll:focus-visible { outline: 2px solid var(--ink, #202020); outline-offset: 2px; }
 @media (max-width: 780px) {
-  .comparison-controls .choices, .comparison-controls select { width: 168px; min-width: 0; max-width: 100%; box-sizing: border-box; }
-  .comparison-controls .choices button { min-width: 0; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .choices, [data-chart-id="yearly-material-comparison"] .chart-controls select { width: 168px; min-width: 0; max-width: 100%; box-sizing: border-box; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .choices button { min-width: 0; }
 }
 @media (max-width: 430px) {
-  .comparison-controls .choices, .comparison-controls select { width: 168px; min-width: 0; max-width: 100%; }
+  [data-chart-id="yearly-material-comparison"] .chart-controls .choices, [data-chart-id="yearly-material-comparison"] .chart-controls select { width: 168px; min-width: 0; max-width: 100%; }
 }
 
 /* The monthly selection follows the plotted bar, not its full-height hit target. */
@@ -842,45 +842,42 @@ select:disabled {
 [data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible svg rect.is-selected { stroke-width: 3; }
 
 @media (max-width: 780px) {
-  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
-  [data-chart-id="yearly-material-comparison"] .comparison-controls select { width: 100%; min-width: 0; max-width: none; box-sizing: border-box; }
-  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices button { flex: 1 1 0; min-width: 0; }
+  [data-chart-id="yearly-material-comparison"] [data-chart-id="yearly-material-comparison"] .chart-controls .choices,
+  [data-chart-id="yearly-material-comparison"] [data-chart-id="yearly-material-comparison"] .chart-controls select { width: 100%; min-width: 0; max-width: none; box-sizing: border-box; }
+  [data-chart-id="yearly-material-comparison"] [data-chart-id="yearly-material-comparison"] .chart-controls .choices button { flex: 1 1 0; min-width: 0; }
 }
 
-/* Chart 1: reserve the same tooltip table width for one- and two-digit totals. */
+/* Stabilise only the weight column; keep tooltip tables content-sized. */
 [data-chart-id="monthly-material-weights"] .chart-tooltip .tip-table {
-  width: 248px;
-  min-width: 248px;
-  table-layout: auto;
+  width: auto;
+  min-width: 0;
+}
+[data-chart-id="monthly-material-weights"] .chart-tooltip .tip-table td:nth-child(2),
+[data-chart-id="monthly-material-weights"] .chart-tooltip .tip-table th:nth-child(2) {
+  min-width: 44px;
 }
 
-/* Chart 2: one grid column shared by the select and the two-button group. */
-[data-chart-id="yearly-material-comparison"] .comparison-controls .control-row {
+/* Chart 2: the real host is .chart-controls (not .comparison-controls).
+   Both rows share the same right-hand control column. */
+[data-chart-id="yearly-material-comparison"] .chart-controls .control-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 168px);
+  grid-template-columns: minmax(0, 1fr) 168px;
   gap: 7px;
   align-items: center;
   min-width: 0;
 }
-[data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
-[data-chart-id="yearly-material-comparison"] .comparison-controls select {
-  width: 100%;
-  min-width: 0;
-  max-width: none;
-  margin: 0;
-  box-sizing: border-box;
-  justify-self: stretch;
+[data-chart-id="yearly-material-comparison"] .chart-controls .choices,
+[data-chart-id="yearly-material-comparison"] .chart-controls select {
+  width: 100%; min-width: 0; max-width: none;
+  box-sizing: border-box; margin: 0;
 }
-[data-chart-id="yearly-material-comparison"] .comparison-controls .choices {
+[data-chart-id="yearly-material-comparison"] .chart-controls .choices {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 3px;
 }
-[data-chart-id="yearly-material-comparison"] .comparison-controls .choices button {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  padding-inline: 3px;
+[data-chart-id="yearly-material-comparison"] .chart-controls .choices button {
+  width: 100%; min-width: 0; box-sizing: border-box; padding-inline: 3px;
 }
 [data-chart-id="yearly-material-comparison"] .comparison-selection-path {
   stroke: #202020;
@@ -889,7 +886,7 @@ select:disabled {
   pointer-events: none;
 }
 @media (max-width: 355px) {
-  [data-chart-id="yearly-material-comparison"] .comparison-controls .control-row {
+  [data-chart-id="yearly-material-comparison"] [data-chart-id="yearly-material-comparison"] .chart-controls .control-row {
     grid-template-columns: minmax(0, 1fr) minmax(0, 48vw);
   }
 }
