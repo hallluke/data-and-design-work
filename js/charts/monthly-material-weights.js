@@ -1,13 +1,19 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
-import { showTooltip, hideTooltip } from "../chart-display.js";
-import { renderTableRows } from "../chart-display.js";
-import { setDisclosureContent } from "../chart-display.js";
-import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels, materialLabel, materialIdFromLabel } from "../materials.js";
-import { setupChart } from "../chart-core.js";
-import { showChartError, clearChartStatus } from "../chart-core.js";
+import { showTooltip, hideTooltip, renderTableRows, setDisclosureContent,
+  formatWeight, formatMonth, monthInitial, positionChartTooltip } from "../chart-display.js";
+import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels,
+  materialLabel, materialIdFromLabel } from "../materials.js";
+import { setupChart, showChartError, clearChartStatus } from "../chart-core.js";
 import { ATLAS_COLOURS, atlasPalette } from "../chart-style.js";
-import { formatWeight, formatMonth, monthInitial, positionChartTooltip } from "../chart-display.js";
-import { bindChartEvent } from "../chart-interaction.js";
+
+// Keep legend contents independent of the DOM so every control combination is testable.
+export function monthlyLegendItems({basis, stacked, chartGroups, material}, greys, dryGreys) {
+  if (stacked) return chartGroups.slice().reverse().map(group => [group,
+    material === "mixedRecycling" ? dryGreys[chartGroups.indexOf(group)] : greys[group]]);
+  if (basis === "imputed") return [["Complete", ATLAS_COLOURS.dark], ["Provisional", ATLAS_COLOURS.light]];
+  // Recorded totals have a single colour; retain a key rather than leaving an empty region.
+  return [["Recorded", ATLAS_COLOURS.dark]];
+}
 
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
   data = normalizeMonthlyGroups(data);
@@ -44,7 +50,6 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
   const dryGreys = atlasPalette(subtypes.length);
   const completeThrough = data.metadata.completeThrough;
   let observer;
-  const listeners = [];
 
   const isStacked = () => state.display === "stacked" &&
     (state.material === "all" || (state.material === "mixedRecycling"));
@@ -88,8 +93,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
       content += "</tbody><tfoot><tr><td>Total</td><td>" + formatWeight(total) +
         "</td><td>100.0%</td></tr></tfoot></table>";
     } else {
-      const material = state.material === "all" ? "All materials" :
-        subtypes.some(label => materialIdFromLabel(label) === state.material) ? materialLabel(state.material) : materialLabel(state.material);
+      const material = state.material === "all" ? "All materials" : materialLabel(state.material);
       content += '<table class="tip-table"><thead><tr><th>Material</th><th>kg</th></tr></thead>' +
         "<tbody><tr><td>" + material + "</td><td>" + formatWeight(datum.kg) + "</td></tr></tbody></table>";
     }
@@ -118,15 +122,8 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
 
   function renderLegend(chartGroups) {
     legend.replaceChildren();
-    const items = [];
-    if (state.basis === "imputed") items.push(["Complete", ATLAS_COLOURS.dark], ["Provisional", ATLAS_COLOURS.light]);
-    if (isStacked()) {
-      items.length = 0;
-      for (const group of chartGroups.slice().reverse()) {
-        const color = state.material === "mixedRecycling" ? dryGreys[chartGroups.indexOf(group)] : greys[group];
-        items.push([group, color]);
-      }
-    }
+    const items = monthlyLegendItems({basis: state.basis, stacked: isStacked(),
+      chartGroups, material: state.material}, greys, dryGreys);
     for (const [name, color] of items) {
       const item = document.createElement("span");
       const swatch = document.createElement("i");
@@ -279,7 +276,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
     render: rerender,
     destroy() {
       observer?.disconnect();
-      listeners.forEach(remove => remove());
+      removeTouchDismissal();
       controls.destroy();
       container.querySelector("svg")?.remove();
       hideTooltip(tip);
@@ -288,10 +285,6 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
 }
 
 
-/* ============================================================
-   FIGURE 02 — YEAR-ON-YEAR SLOPEGRAPH
-   Independent state and DOM, shared formatters and tooltip helper.
-   Projection scenarios are computed upstream, not in the browser.
-   ============================================================ */
+/* Figure 01 — monthly material weights. */
 
 export { createMonthlyMaterialWeightsChart };

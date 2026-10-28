@@ -1,12 +1,10 @@
-import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
-import { showTooltip, hideTooltip } from "../chart-display.js";
-import { renderTableRows } from "../chart-display.js";
-import { formatPercent } from "../chart-display.js";
+import { installTouchDismissal, isTouchPointer, bindChartEvent } from "../chart-interaction.js";
+import { showTooltip, hideTooltip, renderTableRows, formatPercent,
+  setDisclosureContent } from "../chart-display.js";
 import { materialIdFromSource } from "../materials.js";
 import { setupChart } from "../chart-core.js";
-import { setDisclosureContent } from "../chart-display.js";
-import { bindChartEvent } from "../chart-interaction.js";
-import { formatWeight } from "../chart-display.js";
+
+// Figure 03 — recycling rate. Date windows and arc geometry remain chart-specific.
 
 function createOverallRecyclingRateChart({container, rows, root = document}) {
   const listeners = [];
@@ -111,6 +109,6 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
 }
 
 
-/* Figure 04 — continuous, recorded-date calendar heatmap. */
+/* Figure 03 — recorded-weight recycling rate. */
 
 export { createOverallRecyclingRateChart };
