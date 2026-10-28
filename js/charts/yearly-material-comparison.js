@@ -1,15 +1,32 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { nearestSlope } from "../slope-proximity.js";
-import { showTooltip, hideTooltip } from "../chart-display.js";
-import { renderTableRows } from "../chart-display.js";
-import { formatNumber, formatSignedNumber, formatPercent } from "../chart-display.js";
+import { showTooltip, hideTooltip, renderTableRows, setDisclosureContent,
+  formatNumber, formatSignedNumber, formatPercent } from "../chart-display.js";
 import { normalizeMonthlyGroups, groupLabels, individualMaterialLabels, materialLabel } from "../materials.js";
-import { setupChart } from "../chart-core.js";
-import { setDisclosureContent } from "../chart-display.js";
-import { showChartError, clearChartStatus } from "../chart-core.js";
-import { formatWeight, formatMonth, monthInitial, positionChartTooltip } from "../chart-display.js";
-import { atlasPalette, MULTI_COLUMN_MEDIA } from "../chart-style.js";
-import { bindChartEvent } from "../chart-interaction.js";
+import { setupChart, showChartError, clearChartStatus } from "../chart-core.js";
+import { MULTI_COLUMN_MEDIA } from "../chart-style.js";
+
+// Keep label collision resolution independent of SVG rendering. This is
+// chart-specific geometry, rather than a generic interaction utility.
+export function comparisonLabelPositions(desired, top, limit, gap = 13.5) {
+  if (!desired.length) return [];
+  const positions = desired.slice();
+  for (let i = 1; i < positions.length; i++)
+    positions[i] = Math.max(positions[i], positions[i - 1] + gap);
+  if (positions.at(-1) > limit) {
+    positions[positions.length - 1] = limit;
+    for (let i = positions.length - 2; i >= 0; i--)
+      positions[i] = Math.min(positions[i], positions[i + 1] - gap);
+  }
+  if (positions[0] < top) {
+    positions[0] = top;
+    for (let i = 1; i < positions.length; i++)
+      positions[i] = Math.max(positions[i], positions[i - 1] + gap);
+  }
+  for (let i = positions.length - 2; i >= 0; i--)
+    positions[i] = Math.min(positions[i + 1] - gap, Math.max(desired[i], positions[i]));
+  return positions;
+}
 
 function createYearlyMaterialComparisonChart({ container, data, detail, comparison, root = document }) {
   data = normalizeMonthlyGroups(data);
@@ -36,7 +53,6 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
   const [endYear, endMonth] = cutoff.split("-").map(Number);
   const years = [endYear - 1, endYear];
   let observer;
-  const listeners = [];
   const fmt = formatNumber;
   const sign = formatSignedNumber;
   const labelMonth = new Date(Date.UTC(2000, endMonth - 1, 1)).toLocaleDateString("en-GB", {month:"short", timeZone:"UTC"});
@@ -118,28 +134,10 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     // Year labels sit below the endpoints; horizontal rules stop at those endpoints.
     const xDomain = [years[0]-.35, years[1]+.75];
     const labelX = years[1]+.095;
-    const labelGap = 13.5;
-    // Start labels at their real 2026 heights. Resolve collisions only where
-    // necessary, then keep the stack within the available plotting height.
+    // Labels begin at their current-year heights, moving only to avoid overlap.
     const ordered = rows.slice().sort((a,b)=>yScale(a.current)-yScale(b.current));
     const desired = ordered.map(row => yScale(row.current));
-    const positions = desired.slice();
-    for (let i=1; i<positions.length; i++)
-      positions[i] = Math.max(positions[i],positions[i-1]+labelGap);
-    const limit = height-bottom-3;
-    if (positions.at(-1)>limit) {
-      positions[positions.length-1]=limit;
-      for (let i=positions.length-2; i>=0; i--)
-        positions[i]=Math.min(positions[i],positions[i+1]-labelGap);
-    }
-    if (positions[0]<top+3) {
-      positions[0]=top+3;
-      for (let i=1; i<positions.length; i++)
-        positions[i]=Math.max(positions[i],positions[i-1]+labelGap);
-    }
-    // Shift labels toward their own endpoints whenever a gap permits it.
-    for (let i=positions.length-2; i>=0; i--)
-      positions[i]=Math.min(positions[i+1]-labelGap,Math.max(desired[i],positions[i]));
+    const positions = comparisonLabelPositions(desired, top + 3, height - bottom - 3);
     const labelY = new Map(ordered.map((row,i)=>[row.name,positions[i]]));
     const labelKg = name => yScale.invert(labelY.get(name));
     const marks = [];
@@ -349,7 +347,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     } catch(error) {showChartError(container,error);}
   }
   if("ResizeObserver" in window) {observer=new ResizeObserver(()=>{if(window.Plot)rerender();});observer.observe(container);}
-  return {render:rerender,destroy(){removeTouchDismissal();observer?.disconnect();listeners.forEach(remove=>remove());controls.destroy();container.querySelector("svg")?.remove();hideTooltip(tip);}};
+  return {render:rerender,destroy(){removeTouchDismissal();observer?.disconnect();controls.destroy();container.querySelector("svg")?.remove();hideTooltip(tip);}};
 }
 
 /* ============================================================

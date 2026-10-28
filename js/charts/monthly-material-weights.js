@@ -11,8 +11,8 @@ export function monthlyLegendItems({basis, stacked, chartGroups, material}, grey
   if (stacked) return chartGroups.slice().reverse().map(group => [group,
     material === "mixedRecycling" ? dryGreys[chartGroups.indexOf(group)] : greys[group]]);
   if (basis === "imputed") return [["Complete", ATLAS_COLOURS.dark], ["Provisional", ATLAS_COLOURS.light]];
-  // Recorded totals have a single colour; retain a key rather than leaving an empty region.
-  return [["Recorded", ATLAS_COLOURS.dark]];
+  // A single recorded total is already identified by its selected control.
+  return [];
 }
 
 function createMonthlyMaterialWeightsChart({ container, data, detail, root = document }) {
