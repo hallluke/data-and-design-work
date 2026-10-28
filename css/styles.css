@@ -894,3 +894,31 @@ select:disabled {
     grid-template-columns: minmax(0, 1fr) minmax(0, 48vw);
   }
 }
+
+/* Figure 01: keep the material key on one full-width row below controls on narrow screens. */
+@media (max-width: 780px) {
+  [data-chart-id="monthly-material-weights"] .filter-layout .legend,
+  [data-chart-id="monthly-material-weights"] .chart-legend {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    justify-self: stretch;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    box-sizing: border-box;
+  }
+  [data-chart-id="monthly-material-weights"] .filter-layout .legend > span,
+  [data-chart-id="monthly-material-weights"] .chart-legend > span {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    gap: 4px;
+  }
+  [data-chart-id="monthly-material-weights"] .filter-layout .legend .swatch,
+  [data-chart-id="monthly-material-weights"] .chart-legend .swatch {
+    flex-shrink: 0;
+  }
+}
