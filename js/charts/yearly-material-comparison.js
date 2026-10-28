@@ -1,4 +1,5 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
+import { nearestSlope } from "../slope-proximity.js";
 import { showTooltip, hideTooltip } from "../chart-tooltip.js";
 import { renderTableRows } from "../chart-table.js";
 import { formatNumber, formatSignedNumber, formatPercent } from "../chart-format.js";
@@ -157,9 +158,6 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       marks.push(Plot.text([{x:labelX,y:labelKg(row.name),name:row.name}],{
         x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:"#454545",
         className:`compare-series compare-series-${i}`}));
-      // Invisible broad Plot stroke detects crossings anywhere along the line.
-      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:"transparent",strokeWidth:10,
-        className:`compare-hit compare-hit-${i}`}));
     });
     // Explicit Plot rules limit horizontal guides to the two year positions,
     // unlike a full-width axis grid. Tick labels remain readable in kg.
@@ -175,193 +173,155 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       x:{domain:xDomain,axis:null,label:null},
       y:{domain:yDomain,axis:null,grid:false,ticks:4,label:null,tickSize:0},
       marks});
-    svg.setAttribute("role","img");
+    svg.setAttribute("role","group");
     svg.setAttribute("aria-label","Year-on-year " + state.basis + " waste by " + state.categories +
       " categories, January through " + labelMonth + ". Values in the expandable table.");
-    // A dedicated SVG selection path follows the same scales as the Plot lines.
-    // It is independent of Plot's mark/group DOM structure and never catches input.
+    // Mouse and touch use the same chart-level proximity calculation. Keyboard
+    // focuses the actual Plot line paths, in descending current-year order.
+    const svgRoot = svg.tagName.toLowerCase() === "svg" ? svg : svg.querySelector("svg");
+    const xAt = year => left + (width-left-right)*(year-xDomain[0])/(xDomain[1]-xDomain[0]);
+    const x0 = xAt(years[0]), x1 = xAt(years[1]);
+    const segments = rows.map(row => ({y0:yScale(row.earlier),y1:yScale(row.current)}));
+    const overlay = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    overlay.classList.add("comparison-selection-overlay");
+    overlay.setAttribute("pointer-events", "none");
+    overlay.style.pointerEvents = "none";
     const selectionPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
     selectionPath.classList.add("comparison-selection-path");
     selectionPath.setAttribute("fill", "none");
-    selectionPath.setAttribute("pointer-events", "none");
-    selectionPath.setAttribute("visibility", "hidden");
-    const xAt = year => left + (width-left-right)*(year-xDomain[0])/(xDomain[1]-xDomain[0]);
-    selectionPath.setAttribute("stroke", "#202020");
-    selectionPath.setAttribute("stroke-width", "4");
-    selectionPath.setAttribute("vector-effect", "non-scaling-stroke");
-    const selectionDots = [years[0], years[1]].map(() => {
+    const selectionDots = [0,1].map(() => {
       const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       dot.setAttribute("r", "5");
       dot.setAttribute("fill", "#202020");
       dot.setAttribute("stroke", "#fff");
       dot.setAttribute("stroke-width", "1.5");
-      dot.setAttribute("pointer-events", "none");
-      dot.setAttribute("visibility", "hidden");
       return dot;
     });
-    // Temporary opt-in diagnostic: add ?debugSlope=1 to the page URL.
-    const debugSlope = new URLSearchParams(window.location.search).has("debugSlope");
-    let touchSelection = null;
-    let touchFocusGuard = false;
-    let touchPointerActive = false;
-    let selectLineCalls = 0;
-    let debugStatus = null;
-    const debugEvents = [];
-    const debugLog = message => {
-      if (!debugStatus) return;
-      debugEvents.push(message);
-      if (debugEvents.length > 7) debugEvents.shift();
-      debugStatus.textContent = `calls:${selectLineCalls} | ${debugEvents.join(" > ")}`;
-    };
-    if (debugSlope) {
-      try {
-        debugStatus = document.createElement("div");
-        debugStatus.setAttribute("role", "status");
-        debugStatus.style.cssText = "display:block;position:static;clear:both;margin:12px 0 0;padding:5px 7px;background:#fff;color:#171717;border:1px solid #171717;font:11px/1.5 monospace;overflow-wrap:anywhere;pointer-events:none";
-        debugStatus.textContent = "Touch chart 2; calls:0";
-        // Insert below the plot rather than overlaying its interaction area.
-        container.insertAdjacentElement("afterend", debugStatus);
-      } catch (error) {
-        debugStatus = null;
-        console.warn("Slope diagnostics unavailable", error);
-      }
-    }
-    const selectLine = (index, showIndicator = false) => {
-      selectLineCalls++;
-      debugLog(`S${index}:${showIndicator ? "on" : "off"}`);
-
-      const row=rows[index];
-      selectionPath.setAttribute("d", `M${xAt(years[0])},${yScale(row.earlier)} L${xAt(years[1])},${yScale(row.current)}`);
+    overlay.append(selectionPath,...selectionDots);
+    svgRoot.append(overlay);
+    const lines = rows.map((row,i) => {
+      const mark = svgRoot.querySelector(`.compare-series-${i} path`);
+      if (!mark) throw Error(`Comparison slope ${i} not found`);
+      mark.setAttribute("tabindex", "0");
+      mark.setAttribute("role", "button");
+      mark.setAttribute("aria-label", `${row.name}: ${fmt(row.earlier)} kg in ${years[0]}, ${fmt(row.current)} kg in ${years[1]}`);
+      mark.classList.add("comparison-focus-line");
+      return mark;
+    });
+    // Keep the established descending 2026 keyboard order without introducing
+    // invisible focusable marks. DOM order, not CSS 'order', controls SVG Tab.
+    const tabOrder = [...rows.keys()].sort((a,b) => rows[b].current - rows[a].current);
+    // Reorder the Plot line mark groups themselves: SVG does not support
+    // CSS flex order, and moving paths within their own groups has no effect.
+    tabOrder.forEach(i => {
+      const group = lines[i].closest(`.compare-series-${i}`);
+      if (group && group !== lines[i] && group.parentNode === svgRoot) svgRoot.append(group);
+    });
+    // Keep the non-interactive indicator above all Plot marks.
+    svgRoot.append(overlay);
+    // Plot's decorative marks cannot intercept pointer input. The SVG itself
+    // receives mouse/touch movement; focused lines still accept keyboard focus.
+    svgRoot.querySelectorAll(".compare-series").forEach(mark => { mark.style.pointerEvents = "none"; });
+    let active = null;
+    let inputMode = null;
+    let touchStart = null;
+    let ignoreMouseUntil = 0;
+    const renderSelection = () => {
+      svgRoot.querySelectorAll(".compare-series").forEach(el => {
+        const selected = active !== null && el.classList.contains(`compare-series-${active}`);
+        el.style.opacity = active === null ? "" : selected ? "1" : ".22";
+        el.style.stroke = selected && el.tagName.toLowerCase() === "path" ? "#171717" : "";
+      });
+      // Only this renderer may show/hide the overlay. It is never an input target.
+      overlay.hidden = active === null || inputMode !== "touch";
+      overlay.style.display = overlay.hidden ? "none" : "";
+      if (overlay.hidden) return;
+      const row = rows[active];
+      selectionPath.setAttribute("d", `M${x0},${yScale(row.earlier)} L${x1},${yScale(row.current)}`);
       selectionPath.setAttribute("stroke-dasharray", row.projected ? "5 3" : "none");
-      selectionPath.setAttribute("visibility", showIndicator ? "visible" : "hidden");
-      [row.earlier, row.current].forEach((value, i) => {
-        selectionDots[i].setAttribute("cx", String(xAt(years[i])));
-        selectionDots[i].setAttribute("cy", String(yScale(value)));
-        selectionDots[i].setAttribute("visibility", showIndicator ? "visible" : "hidden");
+      [[x0,yScale(row.earlier)],[x1,yScale(row.current)]].forEach(([x,y],i) => {
+        selectionDots[i].setAttribute("cx", String(x));
+        selectionDots[i].setAttribute("cy", String(y));
       });
     };
-    const activate = (index,event, {touch = false} = {})=>{
-      // While a touch selection is active, compatibility mouse events and SVG
-      // focus changes must not replace its overlay or opacity state.
-      if (!touch && (touchSelection !== null || touchPointerActive)) {
-        debugLog("skip:non-touch");
+    const clear = () => {
+      if (active === null) return;
+      active = null;
+      inputMode = null;
+      renderSelection();
+      hideTooltip(tip);
+    };
+    clearSelection = clear;
+    const select = (index, mode) => {
+      if (index === null) { clear(); return; }
+      // A touch may generate focus and compatibility mouse events. Those are
+      // not new selections and must never change the touch overlay.
+      if (mode !== "touch" && inputMode === "touch") return;
+      active = index;
+      inputMode = mode;
+      renderSelection();
+      showTooltip(tip, tooltipHTML(rows[index]));
+      const box = svg.getBoundingClientRect();
+      const yearFraction = (years[1]-xDomain[0])/(xDomain[1]-xDomain[0]);
+      const x = box.left+left+(box.width-left-right)*yearFraction+8;
+      const maxX = Math.max(6,window.innerWidth-tip.offsetWidth-6);
+      tip.style.left = Math.max(6,Math.min(x,maxX))+"px";
+      const anchorY = box.top+yScale(rows[index].current)*(box.height/height);
+      const desiredTop = anchorY-tip.offsetHeight/2;
+      const chartTop = Math.max(6,box.top);
+      const chartBottom = Math.min(window.innerHeight-6,box.bottom);
+      const minTop = Math.min(chartTop,chartBottom-tip.offsetHeight);
+      tip.style.top = Math.max(6,Math.min(Math.max(minTop,desiredTop),chartBottom-tip.offsetHeight))+"px";
+    };
+    const nearest = (event, tolerance) => {
+      const bounds = svgRoot.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return null;
+      const px = (event.clientX-bounds.left)*width/bounds.width;
+      const py = (event.clientY-bounds.top)*height/bounds.height;
+      // Convert the CSS-pixel tolerance into the SVG's vertical coordinate.
+      const result = nearestSlope(segments,px,py,x0,x1,tolerance*height/bounds.height,active);
+      return result?.index ?? null;
+    };
+    lines.forEach((line,i) => {
+      line.addEventListener("focus", () => {
+        if (touchStart || Date.now() < ignoreMouseUntil || inputMode === "touch") return;
+        select(i,"keyboard");
+      });
+      line.addEventListener("blur", () => {
+        if (inputMode === "keyboard" && active === i) clear();
+      });
+    });
+    svgRoot.addEventListener("pointerdown", event => {
+      if (!isTouchPointer(event)) return;
+      touchStart = {x:event.clientX,y:event.clientY,id:event.pointerId,moved:false};
+      ignoreMouseUntil = Date.now()+900;
+    },true);
+    svgRoot.addEventListener("pointermove", event => {
+      if (isTouchPointer(event)) {
+        if (touchStart && event.pointerId === touchStart.id &&
+            Math.hypot(event.clientX-touchStart.x,event.clientY-touchStart.y)>7) touchStart.moved = true;
         return;
       }
-      if (touch) touchSelection = index;
-      svg.querySelectorAll(".compare-series").forEach(el=>{
-        const active=el.classList.contains(`compare-series-${index}`);
-        el.style.opacity=active?"1":".22";
-        if (el.tagName.toLowerCase()==="path" && active && !el.classList.contains("compare-hit"))
-          el.style.stroke="#171717";
-      });
-      // Always calculate the selection geometry; display the overlay only for touch.
-      selectLine(index, touch);
-      debugLog(`A${index}:${touch ? "T" : "M"}`);
-      showTooltip(tip, tooltipHTML(rows[index]));
-      // Fixed-position overlay begins at the 2026 endpoint, covering labels
-      // rather than plotted lines. Clamp inside the viewport on small screens.
-      const box=svg.getBoundingClientRect();
-      const yearFraction=(years[1]-xDomain[0])/(xDomain[1]-xDomain[0]);
-      const x=box.left+left+(box.width-left-right)*yearFraction+8;
-      const maxX=Math.max(6,window.innerWidth-tip.offsetWidth-6);
-      tip.style.left=Math.max(6,Math.min(x,maxX))+"px";
-      // Anchor vertically to this series' 2026 endpoint, not the moving pointer.
-      const anchorY=box.top+yScale(rows[index].current)*(box.height/height);
-      const desiredTop=anchorY-tip.offsetHeight/2;
-      const chartTop=Math.max(6,box.top);
-      const chartBottom=Math.min(window.innerHeight-6,box.bottom);
-      const minTop=Math.min(chartTop,chartBottom-tip.offsetHeight);
-      tip.style.top=Math.max(6,Math.min(Math.max(minTop,desiredTop),chartBottom-tip.offsetHeight))+"px";
-    };
-    const restoreTouchIndicator = (reason) => {
-      if (touchSelection === null) return;
-      selectionPath.setAttribute("visibility", "visible");
-      selectionDots.forEach(dot => dot.setAttribute("visibility", "visible"));
-      debugLog(`keep:${reason}:${selectionPath.getAttribute("visibility")}`);
-    };
-    const deactivate=()=>{
-      touchSelection = null;
-      svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
-      svg.querySelectorAll(".compare-hit.is-touch-selected, .compare-series.is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
-      selectionPath.setAttribute("visibility", "hidden");
-      selectionDots.forEach(dot => dot.setAttribute("visibility", "hidden"));
-      debugLog("hide:deactivate");
-      hideTooltip(tip);
-      debugLog("D");
-    };
-    clearSelection = deactivate;
-    const tabOrder = [...rows.keys()].sort((a,b) => rows[b].current - rows[a].current);
-    rows.forEach((row,i)=>{
-      const hit=svg.querySelector(`.compare-hit-${i}`);
-      if(!hit)return;
-      hit.setAttribute("tabindex","0");
-      hit.style.order = String(tabOrder.indexOf(i));
-      hit.setAttribute("role","button");
-      hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
-      hit.addEventListener("pointerenter",event=>{debugLog(`enter:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)activate(i,event);});
-      hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)activate(i,event);});
-
-      hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)deactivate();});
-      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard || touchPointerActive || touchSelection !== null) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-      hit.addEventListener("blur",()=>{
-        debugLog(`blur:${i}`);
-        if (touchSelection !== null || touchPointerActive) {
-          // Mobile browsers can blur the focused hit mark after a completed touch.
-          // Preserve the overlay independently of SVG focus state.
-          restoreTouchIndicator("blur");
-          queueMicrotask(() => restoreTouchIndicator("after-blur"));
-          return;
-        }
-        if (!touchFocusGuard) deactivate();
-      });
+      if (Date.now()<ignoreMouseUntil || inputMode === "touch") return;
+      select(nearest(event,8),"mouse");
     });
-    // Single touch interaction layer: decorative Plot marks and selection overlay
-    // cannot become pointer targets. Only the broad hit strokes are interactive;
-    // a single chart-level capture listener resolves the nearest series.
-    const svgRoot = svg.tagName.toLowerCase() === "svg" ? svg : svg.querySelector("svg");
-    svgRoot.querySelectorAll(".compare-series").forEach(mark => {
-      mark.style.pointerEvents = "none";
-    });
-    svgRoot.querySelectorAll(".compare-hit").forEach(hit => {
-      hit.style.pointerEvents = "stroke";
-      hit.setAttribute("stroke-width", "24");
-    });
-    // A touch may focus an SVG hit mark and generate a compatibility click.
-    // Neither should override the chart-level nearest-line selection.
-    svgRoot.addEventListener("pointerdown", event => {
-      if (isTouchPointer(event)) { touchFocusGuard = true; touchPointerActive = true; }
-      else if (touchSelection === null) touchFocusGuard = false;
-    }, true);
-    svgRoot.addEventListener("keydown", event => {
-      if (event.key === "Tab" || event.key.startsWith("Arrow")) touchFocusGuard = false;
-    }, true);
-    // Touch chooses the closest plotted line rather than the topmost overlapping hit stroke.
     svgRoot.addEventListener("pointerup", event => {
-      debugLog(`up:${event.pointerType}`);
       if (!isTouchPointer(event)) return;
-      touchPointerActive = false;
-      const bounds=svg.getBoundingClientRect();
-      const px=(event.clientX-bounds.left)*width/bounds.width;
-      const py=(event.clientY-bounds.top)*height/bounds.height;
-      const x0=left+(width-left-right)*(years[0]-xDomain[0])/(xDomain[1]-xDomain[0]);
-      const x1=left+(width-left-right)*(years[1]-xDomain[0])/(xDomain[1]-xDomain[0]);
-      if(px<x0-16 || px>x1+16) { deactivate(); debugLog("outside"); return; }
-      const t=Math.max(0,Math.min(1,(px-x0)/(x1-x0)));
-      let nearest=-1, distance=Infinity;
-      rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
-      if(nearest>=0 && distance<=22) {
-        debugLog(`near:${nearest}`);
-        activate(nearest,event,{touch:true});
-      } else { deactivate(); debugLog(`miss:${Math.round(distance)}`); }
+      ignoreMouseUntil = Date.now()+900;
+      const tap = touchStart && touchStart.id === event.pointerId && !touchStart.moved &&
+        Math.hypot(event.clientX-touchStart.x,event.clientY-touchStart.y)<=7;
+      touchStart = null;
+      if (!tap) { clear(); return; }
+      select(nearest(event,16),"touch");
     },true);
-    if (debugStatus) {
-      svgRoot.addEventListener("pointerdown", e => debugLog(`down:${e.pointerType}`), true);
-      svgRoot.addEventListener("click", e => debugLog(`click:${e.detail}`), true);
-    }
-    const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
-    hits.forEach(hit => hit.parentNode?.append(hit));
-    // Append inside the actual SVG even if Plot.plot returns a wrapper figure.
-    svgRoot.append(selectionPath, ...selectionDots);
+    svgRoot.addEventListener("pointercancel", () => { touchStart=null; clear(); },true);
+    svgRoot.addEventListener("pointerleave", event => {
+      if (!isTouchPointer(event) && inputMode === "mouse") clear();
+    });
+    svgRoot.addEventListener("keydown", event => {
+      if (event.key === "Escape") clear();
+      if (event.key === "Tab" && inputMode === "touch") clear();
+    },true);
     container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
     // Reuse the shared disabled-button styling and force a meaningful mode.
