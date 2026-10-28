@@ -203,21 +203,29 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     const debugSlope = new URLSearchParams(window.location.search).has("debugSlope");
     let selectLineCalls = 0;
     let debugStatus = null;
+    const debugEvents = [];
+    const debugLog = message => {
+      if (!debugStatus) return;
+      debugEvents.push(message);
+      if (debugEvents.length > 7) debugEvents.shift();
+      debugStatus.textContent = `calls:${selectLineCalls} | ${debugEvents.join(" > ")}`;
+    };
     if (debugSlope) {
-      debugStatus = document.createElement("div");
-      debugStatus.setAttribute("role", "status");
-      debugStatus.style.cssText = "position:absolute;z-index:30;left:8px;bottom:8px;max-width:calc(100% - 16px);padding:5px 7px;background:#fff;color:#171717;border:1px solid #171717;font:11px/1.4 monospace;pointer-events:none;overflow-wrap:anywhere";
-      debugStatus.textContent = "Slope diagnostic: waiting for activation";
-      // `root` is normally document, which has no style property.
-      // Keep diagnostics isolated from chart rendering.
-      const debugHost = container.parentElement;
-      if (debugHost) {
-        debugHost.style.position = "relative";
-        debugHost.append(debugStatus);
+      try {
+        debugStatus = document.createElement("div");
+        debugStatus.setAttribute("role", "status");
+        debugStatus.style.cssText = "display:block;position:static;clear:both;margin:12px 0 0;padding:5px 7px;background:#fff;color:#171717;border:1px solid #171717;font:11px/1.5 monospace;overflow-wrap:anywhere;pointer-events:none";
+        debugStatus.textContent = "Touch chart 2; calls:0";
+        // Insert below the plot rather than overlaying its interaction area.
+        container.insertAdjacentElement("afterend", debugStatus);
+      } catch (error) {
+        debugStatus = null;
+        console.warn("Slope diagnostics unavailable", error);
       }
     }
     const selectLine = (index, showIndicator = false) => {
       selectLineCalls++;
+      debugLog(`S${index}:${showIndicator ? "on" : "off"}`);
 
       const row=rows[index];
       selectionPath.setAttribute("d", `M${xAt(years[0])},${yScale(row.earlier)} L${xAt(years[1])},${yScale(row.current)}`);
@@ -239,16 +247,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       });
       // Always calculate the selection geometry; display the overlay only for touch.
       selectLine(index, touch);
-      if (debugStatus) {
-        const diagnostic = () => {
-          const attached = selectionPath.isConnected;
-          const computed = attached ? getComputedStyle(selectionPath).visibility : "detached";
-          const info = `activate: ${touch ? "touch" : "mouse/keyboard"} | line: ${index} | selectLine calls: ${selectLineCalls} | SVG attached: ${attached} | attribute: ${selectionPath.getAttribute("visibility")} | computed: ${computed} | path: ${selectionPath.getAttribute("d")}`;
-          debugStatus.textContent = info;
-          console.info("[Slope diagnostic]", info, selectionPath);
-        };
-        requestAnimationFrame(diagnostic);
-      }
+      debugLog(`A${index}:${touch ? "T" : "M"}`);
       showTooltip(tip, tooltipHTML(rows[index]));
       // Fixed-position overlay begins at the 2026 endpoint, covering labels
       // rather than plotted lines. Clamp inside the viewport on small screens.
@@ -272,7 +271,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       selectionPath.setAttribute("visibility", "hidden");
       selectionDots.forEach(dot => dot.setAttribute("visibility", "hidden"));
       hideTooltip(tip);
-      if (debugStatus) debugStatus.textContent = `deactivate | selectLine calls: ${selectLineCalls} | overlay hidden`;
+      debugLog("D");
     };
     clearSelection = deactivate;
     const tabOrder = [...rows.keys()].sort((a,b) => rows[b].current - rows[a].current);
@@ -283,15 +282,16 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.style.order = String(tabOrder.indexOf(i));
       hit.setAttribute("role","button");
       hit.setAttribute("aria-label",row.name+": "+fmt(row.earlier)+" kg in "+years[0]+", "+fmt(row.current)+" kg in "+years[1]);
-      hit.addEventListener("pointerenter",event=>{if(!isTouchPointer(event))activate(i,event);});
+      hit.addEventListener("pointerenter",event=>{debugLog(`enter:${event.pointerType}`);if(!isTouchPointer(event))activate(i,event);});
       hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event))activate(i,event);});
 
-      hit.addEventListener("pointerleave",event=>{if(!isTouchPointer(event) && touchSelection === null)deactivate();});
-      hit.addEventListener("focus",()=>{const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-      hit.addEventListener("blur",()=>{if (touchSelection === null) deactivate();});
+      hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && touchSelection === null)deactivate();});
+      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+      hit.addEventListener("blur",()=>{debugLog(`blur:${i}`);if (touchSelection === null) deactivate();});
     });
     // Touch chooses the closest plotted line rather than the topmost overlapping hit stroke.
     svg.addEventListener("pointerup", event => {
+      debugLog(`up:${event.pointerType}`);
       if (!isTouchPointer(event)) return;
       const bounds=svg.getBoundingClientRect();
       const px=(event.clientX-bounds.left)*width/bounds.width;
@@ -303,9 +303,14 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       let nearest=-1, distance=Infinity;
       rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
       if(nearest>=0 && distance<=22) {
+        debugLog(`near:${nearest}`);
         activate(nearest,event,{touch:true});
-      }
+      } else debugLog(`miss:${Math.round(distance)}`);
     },true);
+    if (debugStatus) {
+      svg.addEventListener("pointerdown", e => debugLog(`down:${e.pointerType}`), true);
+      svg.addEventListener("click", e => debugLog(`click:${e.detail}`), true);
+    }
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
     hits.forEach(hit => hit.parentNode?.append(hit));
     // Append inside the actual SVG even if Plot.plot returns a wrapper figure.
