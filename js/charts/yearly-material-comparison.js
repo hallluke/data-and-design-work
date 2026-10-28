@@ -199,16 +199,29 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       dot.setAttribute("visibility", "hidden");
       return dot;
     });
-    let touchSelection = null;
-    const selectLine = index => {
+    // Temporary opt-in diagnostic: add ?debugSlope=1 to the page URL.
+    const debugSlope = new URLSearchParams(window.location.search).has("debugSlope");
+    let selectLineCalls = 0;
+    let debugStatus = null;
+    if (debugSlope) {
+      debugStatus = document.createElement("div");
+      debugStatus.setAttribute("role", "status");
+      debugStatus.style.cssText = "position:absolute;z-index:30;left:8px;bottom:8px;max-width:calc(100% - 16px);padding:5px 7px;background:#fff;color:#171717;border:1px solid #171717;font:11px/1.4 monospace;pointer-events:none;overflow-wrap:anywhere";
+      debugStatus.textContent = "Slope diagnostic: waiting for activation";
+      root.style.position = root.style.position || "relative";
+      root.append(debugStatus);
+    }
+    const selectLine = (index, showIndicator = false) => {
+      selectLineCalls++;
+
       const row=rows[index];
       selectionPath.setAttribute("d", `M${xAt(years[0])},${yScale(row.earlier)} L${xAt(years[1])},${yScale(row.current)}`);
       selectionPath.setAttribute("stroke-dasharray", row.projected ? "5 3" : "none");
-      selectionPath.setAttribute("visibility", "visible");
+      selectionPath.setAttribute("visibility", showIndicator ? "visible" : "hidden");
       [row.earlier, row.current].forEach((value, i) => {
         selectionDots[i].setAttribute("cx", String(xAt(years[i])));
         selectionDots[i].setAttribute("cy", String(yScale(value)));
-        selectionDots[i].setAttribute("visibility", "visible");
+        selectionDots[i].setAttribute("visibility", showIndicator ? "visible" : "hidden");
       });
     };
     const activate = (index,event, {touch = false} = {})=>{
@@ -219,7 +232,18 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         if (el.tagName.toLowerCase()==="path" && active && !el.classList.contains("compare-hit"))
           el.style.stroke="#171717";
       });
-      if (touch) selectLine(index);
+      // Always calculate the selection geometry; display the overlay only for touch.
+      selectLine(index, touch);
+      if (debugStatus) {
+        const diagnostic = () => {
+          const attached = selectionPath.isConnected;
+          const computed = attached ? getComputedStyle(selectionPath).visibility : "detached";
+          const info = `activate: ${touch ? "touch" : "mouse/keyboard"} | line: ${index} | selectLine calls: ${selectLineCalls} | SVG attached: ${attached} | attribute: ${selectionPath.getAttribute("visibility")} | computed: ${computed} | path: ${selectionPath.getAttribute("d")}`;
+          debugStatus.textContent = info;
+          console.info("[Slope diagnostic]", info, selectionPath);
+        };
+        requestAnimationFrame(diagnostic);
+      }
       showTooltip(tip, tooltipHTML(rows[index]));
       // Fixed-position overlay begins at the 2026 endpoint, covering labels
       // rather than plotted lines. Clamp inside the viewport on small screens.
@@ -243,6 +267,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       selectionPath.setAttribute("visibility", "hidden");
       selectionDots.forEach(dot => dot.setAttribute("visibility", "hidden"));
       hideTooltip(tip);
+      if (debugStatus) debugStatus.textContent = `deactivate | selectLine calls: ${selectLineCalls} | overlay hidden`;
     };
     clearSelection = deactivate;
     const tabOrder = [...rows.keys()].sort((a,b) => rows[b].current - rows[a].current);
