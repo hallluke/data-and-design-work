@@ -201,6 +201,8 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     });
     // Temporary opt-in diagnostic: add ?debugSlope=1 to the page URL.
     const debugSlope = new URLSearchParams(window.location.search).has("debugSlope");
+    let touchSelection = null;
+    let touchFocusGuard = false;
     let selectLineCalls = 0;
     let debugStatus = null;
     const debugEvents = [];
@@ -286,9 +288,18 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event))activate(i,event);});
 
       hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && touchSelection === null)deactivate();});
-      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-      hit.addEventListener("blur",()=>{debugLog(`blur:${i}`);if (touchSelection === null) deactivate();});
+      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+      hit.addEventListener("blur",()=>{debugLog(`blur:${i}`);if (!touchFocusGuard && touchSelection === null) deactivate();});
     });
+    // A touch may focus an SVG hit mark and generate a compatibility click.
+    // Neither should override the chart-level nearest-line selection.
+    svg.addEventListener("pointerdown", event => {
+      if (isTouchPointer(event)) touchFocusGuard = true;
+      else touchFocusGuard = false;
+    }, true);
+    svg.addEventListener("keydown", event => {
+      if (event.key === "Tab" || event.key.startsWith("Arrow")) touchFocusGuard = false;
+    }, true);
     // Touch chooses the closest plotted line rather than the topmost overlapping hit stroke.
     svg.addEventListener("pointerup", event => {
       debugLog(`up:${event.pointerType}`);
@@ -298,14 +309,14 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       const py=(event.clientY-bounds.top)*height/bounds.height;
       const x0=left+(width-left-right)*(years[0]-xDomain[0])/(xDomain[1]-xDomain[0]);
       const x1=left+(width-left-right)*(years[1]-xDomain[0])/(xDomain[1]-xDomain[0]);
-      if(px<x0-16 || px>x1+16) return;
+      if(px<x0-16 || px>x1+16) { deactivate(); debugLog("outside"); return; }
       const t=Math.max(0,Math.min(1,(px-x0)/(x1-x0)));
       let nearest=-1, distance=Infinity;
       rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
       if(nearest>=0 && distance<=22) {
         debugLog(`near:${nearest}`);
         activate(nearest,event,{touch:true});
-      } else debugLog(`miss:${Math.round(distance)}`);
+      } else { deactivate(); debugLog(`miss:${Math.round(distance)}`); }
     },true);
     if (debugStatus) {
       svg.addEventListener("pointerdown", e => debugLog(`down:${e.pointerType}`), true);
