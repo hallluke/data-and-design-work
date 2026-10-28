@@ -203,7 +203,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     };
     const deactivate=()=>{
       svg.querySelectorAll(".compare-series").forEach(el=>{el.style.opacity="";el.style.stroke="";});
-      svg.querySelectorAll(".compare-hit.is-touch-selected").forEach(hit => hit.classList.remove("is-touch-selected"));
+      svg.querySelectorAll(".compare-hit.is-touch-selected, .compare-series.is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
       hideTooltip(tip);
     };
     clearSelection = deactivate;
@@ -236,8 +236,9 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       rows.forEach((row,i)=>{const y=yScale(row.earlier+(row.current-row.earlier)*t);const d=Math.abs(py-y);if(d<distance){distance=d;nearest=i;}});
       if(nearest>=0 && distance<=22) {
         activate(nearest,event);
-        svg.querySelectorAll(".compare-hit").forEach(hit => hit.classList.remove("is-touch-selected"));
-        svg.querySelector(`.compare-hit-${nearest}`)?.classList.add("is-touch-selected");
+        svg.querySelectorAll(".is-touch-selected").forEach(el => el.classList.remove("is-touch-selected"));
+        // Highlight the visible series, not its transparent pointer target.
+        svg.querySelectorAll(`.compare-series-${nearest}`).forEach(el => el.classList.add("is-touch-selected"));
       }
     },true);
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);

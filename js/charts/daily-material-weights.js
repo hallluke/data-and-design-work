@@ -85,7 +85,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   function navigateCalendar(event) {
     if(event.target!==scroll)return;
     const key=event.key;
-    const handled=["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","PageUp","PageDown","Enter"," ","Escape"];
+    const handled=["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Enter"," ","Escape"];
     if(!handled.includes(key) && !(event.shiftKey && (key==="ArrowLeft" || key==="ArrowRight" || key==="ArrowUp" || key==="ArrowDown")))return;
     if(key==="Escape") {event.preventDefault();hideTip();selectedDate=null;keyboardDate=null;updateSelected();return;}
     if(key==="Enter"||key===" ") {
@@ -106,10 +106,8 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     } else if(key==="ArrowUp"||key==="ArrowDown") {
       const weekday=current.weekday+(key==="ArrowUp"?-1:1);
       target=calendarCells.find(d=>d.week===current.week&&d.weekday===weekday);
-    } else if(key==="Home"||key==="End") {
-      target=calendarCells.filter(d=>d.week===current.week).at(key==="Home"?0:-1);
-    } else if(key==="PageUp"||key==="PageDown" || (event.shiftKey && (key==="ArrowLeft"||key==="ArrowRight"))) {
-      const d=new Date(current.date+"T00:00:00Z"), offset=(key==="PageUp"||key==="ArrowLeft")?-1:1;
+    } else if(event.shiftKey && (key==="ArrowLeft"||key==="ArrowRight")) {
+      const d=new Date(current.date+"T00:00:00Z"), offset=key==="ArrowLeft"?-1:1;
       const ordinal=Math.floor((d.getUTCDate()-1)/7);
       const monthStart=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+offset,1));
       const firstWeekday=(monthStart.getUTCDay()+6)%7;
@@ -124,7 +122,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     keyboardDate=target.date;selectedDate=target.date;
     const targetIndex=calendarCells.indexOf(target);
     updateSelected();ensureVisible(targetIndex,mode,direction);
-    scroll.setAttribute("aria-label",`Recording calendar: ${fmtDate(target.date)}, ${target.records.length?target.kg.toFixed(2)+" kilograms":"no recorded weight"}. Arrow keys navigate; Page Up and Down jump by ordinal weekday in month; Enter shows details; Escape dismisses.`);
+    scroll.setAttribute("aria-label",`Recording calendar: ${fmtDate(target.date)}, ${target.records.length?target.kg.toFixed(2)+" kilograms":"no recorded weight"}. Arrow keys navigate; Shift plus Left and Right jump by ordinal weekday in month; Enter shows details; Escape dismisses.`);
     if(!tip.hidden) {showTip(target);const b=cellRects[targetIndex].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}
   }
   on(scroll,"keydown",navigateCalendar);
