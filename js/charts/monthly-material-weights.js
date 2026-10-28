@@ -223,7 +223,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
       rect.addEventListener("focus", () => {
         selectBar(i, datum);
         const bounds = rect.getBoundingClientRect();
-        showTip({ clientX: bounds.left + bounds.width / 2 + 6, clientY: bounds.top + 30 }, datum);
+        showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);
       });
       rect.addEventListener("blur", () => { hideTooltip(tip); clearSelection(); });
       overlay.append(rect);

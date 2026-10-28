@@ -186,6 +186,9 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     overlay.classList.add("comparison-selection-overlay");
     overlay.setAttribute("pointer-events", "none");
     overlay.style.pointerEvents = "none";
+    // Endpoint circles have default coordinates (0,0) until a touch selection.
+    // Hide the whole SVG group before inserting it into the live chart.
+    overlay.style.display = "none";
     const selectionPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
     selectionPath.classList.add("comparison-selection-path");
     selectionPath.setAttribute("fill", "none");
