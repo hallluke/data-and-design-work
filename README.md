@@ -1,20 +1,48 @@
 # Household Waste & Recycling
 
-For a little while now I've been weighing everything I leave out for residential waste and recycling collection because I've been curios about how much I throw away and how much gets recycled, composted or recovered. This interactive visualisation exists to explore the collected data.
+For a while I've been weighing the waste I put out for collection at home, out of curiosity about how much I throw away and how much gets recycled, composted or recovered. I've been collecting the data since 2025, and this interactive visualisation explores the results through monthly totals, recycling rates, year-on-year comparisons and daily patterns.
 
 [Explore the interactive visualisation](https://hallluke.github.io/data-and-design-work/)
 
-## Making sense of the data
+## Design principles
 
-The measurements tell me how much was collected, but not exactly when that waste was produced. It's impractical to weigh everything each day, so the charts distinguish **recorded weights** from **imputed ones** — estimates that distribute the measurement across the days since the previous record. They also distinguish complete months from provisional ones, where some measurements are still missing.
+The charts are intended to make the data easier to explore and understand, while being clear about what the measurements can — and can't — tell us.
 
-Each chart includes a data table and an explanation of its methodology, making it possible to examine the figures, understand how they were calculated and the reasoning behind those choices.
+### <img src="assets/icons/database.svg" width="20" height="20" alt=""> 01. Data integrity and transparency
 
-## Making it easy to use
+The measurements tell me how much waste was collected, but not exactly when it was produced. Since weighing everything daily is impractical, the charts distinguish **recorded weights** from **imputed estimates**, distributing measurements across the periods between collections. Complete and provisional months are also identified to avoid presenting incomplete data as definitive.
 
-The four charts share a consistent visual language, with related colours, terminology and controls that adapt to the available data. The design aims to keep attention on the information, using clear visual hierarchy, restrained decoration and proximity to connect values with the things they describe, alongside accessible colour contrast, legible typography and visible focus indicators.
+<sub>Data provenance · Temporal attribution · Uncertainty · Reproducible calculations · Data validation</sub>
 
-Responsive layouts adapt to desktop and mobile screens, while interactions are designed for mouse, keyboard and touch. Keyboard navigation, visible focus indicators, accessible controls and consistent selection behaviour are intrinsic to the design.
+### <img src="assets/icons/chart-no-axes-combined.svg" width="20" height="20" alt=""> 02. Appropriate visual encoding
+
+Each chart explores a different aspect of the data. Bars compare monthly quantities and material contributions, slopes show year-on-year changes, the doughnut communicates the overall recycling rate, and the calendar reveals daily patterns.
+
+<sub>Quantitative comparison · Part-to-whole relationships · Temporal patterns · Fit-for-purpose chart selection</sub>
+
+### <img src="assets/icons/palette.svg" width="20" height="20" alt=""> 03. Semantic consistency and redundant encoding
+
+Materials retain consistent colours and terminology across charts, helping readers recognise the same categories in different contexts. Labels, numerical values and supporting tables provide alternative ways to understand information without relying on colour alone.
+
+<sub>Consistent visual grammar · Categorical colour systems · Colour-independent communication · Accessible contrast</sub>
+
+### <img src="assets/icons/sliders-horizontal.svg" width="20" height="20" alt=""> 04. Adaptive controls and error prevention
+
+Interactive controls respond to the available data and current selection, disabling incompatible options rather than allowing misleading or meaningless combinations. Related materials are grouped and visually nested to make the choices easier to understand.
+
+<sub>Constraint-based interaction · Error prevention · Immediate feedback · Hierarchical navigation</sub>
+
+### <img src="assets/icons/layers.svg" width="20" height="20" alt=""> 05. Progressive disclosure and visual hierarchy
+
+The charts provide an immediate overview, with expandable data tables and methodology for anyone who wants to investigate further. Clear spacing, restrained decoration and proximity keep related information together without crowding the initial view.
+
+<sub>Overview first, details on demand · Gestalt proximity · Reduced cognitive load · Analytical transparency</sub>
+
+### <img src="assets/icons/door-open.svg" width="20" height="20" alt=""> 06. Accessible and responsive interaction
+
+The charts are designed for mouse, keyboard and touch, with visible focus indicators, consistent selection behaviour and contextual feedback. Responsive layouts adapt the charts, controls and legends to different screen sizes while preserving their functionality.
+
+<sub>Keyboard accessibility · Focus management · Input independence · Responsive design · Touch usability</sub>
 
 ## How it works
 
