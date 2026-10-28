@@ -203,6 +203,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     const debugSlope = new URLSearchParams(window.location.search).has("debugSlope");
     let touchSelection = null;
     let touchFocusGuard = false;
+    let touchPointerActive = false;
     let selectLineCalls = 0;
     let debugStatus = null;
     const debugEvents = [];
@@ -242,7 +243,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     const activate = (index,event, {touch = false} = {})=>{
       // While a touch selection is active, compatibility mouse events and SVG
       // focus changes must not replace its overlay or opacity state.
-      if (!touch && touchSelection !== null) {
+      if (!touch && (touchSelection !== null || touchPointerActive)) {
         debugLog("skip:non-touch");
         return;
       }
@@ -301,10 +302,10 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       hit.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)activate(i,event);});
 
       hit.addEventListener("pointerleave",event=>{debugLog(`leave:${event.pointerType}`);if(!isTouchPointer(event) && !touchFocusGuard && touchSelection === null)deactivate();});
-      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard || touchSelection !== null) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+      hit.addEventListener("focus",()=>{debugLog(`focus:${i}`);if (touchFocusGuard || touchPointerActive || touchSelection !== null) return;const b=hit.getBoundingClientRect();activate(i,{clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
       hit.addEventListener("blur",()=>{
         debugLog(`blur:${i}`);
-        if (touchSelection !== null) {
+        if (touchSelection !== null || touchPointerActive) {
           // Mobile browsers can blur the focused hit mark after a completed touch.
           // Preserve the overlay independently of SVG focus state.
           restoreTouchIndicator("blur");
@@ -314,19 +315,31 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         if (!touchFocusGuard) deactivate();
       });
     });
+    // Single touch interaction layer: decorative Plot marks and selection overlay
+    // cannot become pointer targets. Only the broad hit strokes are interactive;
+    // a single chart-level capture listener resolves the nearest series.
+    const svgRoot = svg.tagName.toLowerCase() === "svg" ? svg : svg.querySelector("svg");
+    svgRoot.querySelectorAll(".compare-series").forEach(mark => {
+      mark.style.pointerEvents = "none";
+    });
+    svgRoot.querySelectorAll(".compare-hit").forEach(hit => {
+      hit.style.pointerEvents = "stroke";
+      hit.setAttribute("stroke-width", "24");
+    });
     // A touch may focus an SVG hit mark and generate a compatibility click.
     // Neither should override the chart-level nearest-line selection.
-    svg.addEventListener("pointerdown", event => {
-      if (isTouchPointer(event)) touchFocusGuard = true;
-      else touchFocusGuard = false;
+    svgRoot.addEventListener("pointerdown", event => {
+      if (isTouchPointer(event)) { touchFocusGuard = true; touchPointerActive = true; }
+      else if (touchSelection === null) touchFocusGuard = false;
     }, true);
-    svg.addEventListener("keydown", event => {
+    svgRoot.addEventListener("keydown", event => {
       if (event.key === "Tab" || event.key.startsWith("Arrow")) touchFocusGuard = false;
     }, true);
     // Touch chooses the closest plotted line rather than the topmost overlapping hit stroke.
-    svg.addEventListener("pointerup", event => {
+    svgRoot.addEventListener("pointerup", event => {
       debugLog(`up:${event.pointerType}`);
       if (!isTouchPointer(event)) return;
+      touchPointerActive = false;
       const bounds=svg.getBoundingClientRect();
       const px=(event.clientX-bounds.left)*width/bounds.width;
       const py=(event.clientY-bounds.top)*height/bounds.height;
@@ -342,13 +355,12 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       } else { deactivate(); debugLog(`miss:${Math.round(distance)}`); }
     },true);
     if (debugStatus) {
-      svg.addEventListener("pointerdown", e => debugLog(`down:${e.pointerType}`), true);
-      svg.addEventListener("click", e => debugLog(`click:${e.detail}`), true);
+      svgRoot.addEventListener("pointerdown", e => debugLog(`down:${e.pointerType}`), true);
+      svgRoot.addEventListener("click", e => debugLog(`click:${e.detail}`), true);
     }
     const hits = tabOrder.map(i => svg.querySelector(`.compare-hit-${i}`)).filter(Boolean);
     hits.forEach(hit => hit.parentNode?.append(hit));
     // Append inside the actual SVG even if Plot.plot returns a wrapper figure.
-    const svgRoot = svg.tagName.toLowerCase() === "svg" ? svg : svg.querySelector("svg");
     svgRoot.append(selectionPath, ...selectionDots);
     container.querySelector("svg")?.remove();container.prepend(svg);
     container.style.minHeight=height+"px";
