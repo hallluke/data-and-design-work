@@ -1,55 +1,39 @@
-# Household waste — data and design
+# Household Waste & Recycling
 
-A static, interactive dashboard of household waste collections, with four visualisations covering monthly material weights, year-on-year comparisons, recycling rate, and daily collection patterns. The site uses plain HTML/CSS and JavaScript modules, with D3 and Observable Plot loaded from a CDN. Python generates and validates the published JSON datasets.
+**A small personal data project about how everyday information can be made useful, understandable and enjoyable to explore.**
 
-## Run and test locally
+I like data. I also like recycling. So I started weighing the waste and recycling I put out for collection at home. The resulting dataset isn't particularly glamorous, but that's part of the appeal: it provides an opportunity to focus on the design of the information rather than the spectacle of the subject matter.
 
-Serve the repository root with a local HTTP server (ES modules and JSON fetches should not be opened directly from `file://`):
+[Explore the interactive dashboard](https://hallluke.github.io/data-and-design-work/)
 
-```sh
-python3 -m http.server 8000
-```
+## From measurements to meaning
 
-Open `http://localhost:8000/`. To run the automated tests:
+The dashboard uses four complementary views: monthly weights by material, a year-on-year comparison, an overall recycling rate and a calendar of daily collection records. Each answers a slightly different question without requiring the visitor to learn a new visual language every time.
 
-```sh
-node --test tests/*.test.mjs
-python3 -m unittest discover -s tests -p 'test_*.py'
-```
+A key design decision was to distinguish **when waste was collected** from **when it likely accumulated**. Recorded figures show weights on collection dates; imputed figures distribute them across the preceding collection interval. The comparison also identifies provisional estimates rather than presenting incomplete periods as definitive. Explanations and underlying data tables accompany the charts so that the assumptions remain visible.
 
-To generate a test dataset without modifying the published `data/` directory:
+## Designing the experience
 
-```sh
-python3 scripts/build_data.py --csv reference/collections-source.csv --output build/data
-```
+The charts are deliberately relatively simple. Much of the work went into making them coherent and usable as a set:
 
-See [PIPELINE.md](PIPELINE.md) for the live Google Sheets and GitHub Actions process.
+- **Consistent visual language:** shared colours, controls, legends, labels and tooltip patterns across different chart types.
+- **Different ways to explore:** mouse, keyboard and touchscreen interactions designed around the strengths of each input method, rather than assuming that hover works everywhere.
+- **Keyboard accessibility:** navigable chart elements, visible focus indicators and Escape to dismiss temporary information without losing keyboard position.
+- **Responsive presentation:** layouts, legends and tooltips adapted for narrow screens without sacrificing the information available on desktop.
+- **Progressive detail:** concise charts first, with explanatory disclosures and accessible tables for people who want to examine the figures or methodology more closely.
 
-## Project structure
+The aim wasn't to make the most elaborate charts possible. It was to make modest charts that communicate clearly, reward exploration and behave predictably.
 
-- `index.html`, `css/styles.css`: page structure and responsive styling.
-- `js/app.js`: application entry point and independent chart initialisation.
-- `js/charts/`: one module per chart (`monthly-material-weights`, `yearly-material-comparison`, `overall-recycling-rate`, `daily-material-weights`).
-- `js/chart-core.js`: chart setup, controls, lifecycle and status.
-- `js/chart-display.js`: tooltips, number/date formatting, tables and disclosure content.
-- `js/chart-interaction.js`: shared touch dismissal, Escape/focus handling, event cleanup and scrollable-table focus.
-- `js/chart-style.js`: shared chart colours and responsive breakpoint.
-- `js/materials.js`, `js/material-registry.js`: material lookup and generated material configuration.
-- `js/data.js`, `js/freshness.js`, `js/disclosures.js`: data fetching/validation, refresh metadata and page disclosures.
-- `js/slope-proximity.js`: separately tested slope-selection geometry for Chart 2.
-- `config/materials.json`: canonical material definitions; `scripts/`: Python data pipeline; `tests/`: JavaScript and Python tests.
-- `data/`: published JSON; `reference/`: historical regression fixtures.
+## How it works
 
-## Maintenance and naming conventions
+The source data is maintained in a private **Google Sheet**. A **Python** pipeline retrieves the collection records, checks and transforms them, calculates summaries and provisional estimates, and publishes validated **JSON** datasets through **GitHub Actions**.
 
-- Use **kebab-case** for JavaScript filenames, CSS classes, chart IDs and test filenames; use **camelCase** for JavaScript functions, variables and material IDs; use **UPPER_SNAKE_CASE** for constants where appropriate. Python uses **snake_case** for functions and modules.
-- Chart IDs are stable integration identifiers: `monthly-material-weights`, `yearly-material-comparison`, `overall-recycling-rate`, `daily-material-weights`. Do not rename them merely to change visible headings.
-- Keep chart geometry, selection calculations and rendering in the respective `js/charts/` module. Share lifecycle, event cleanup, tooltip positioning and formatting only where responsibilities really match. Use section comments within shared modules rather than creating a file for every small helper.
-- Preserve keyboard focus indicators when Escape dismisses chart tooltips. Touch selection is dismissed by touching outside the chart or scrolling; preserve current per-chart behaviour.
-- Use `config/materials.json` as the source of truth for materials. Run `python3 scripts/sync_materials.py` to regenerate `js/material-registry.js`; do not edit that generated file manually. Material IDs such as `residualWaste` and `mixedRecycling` are stable even if their display labels change.
-- Imputation eligibility is defined per material, not inferred from group membership. The current monthly dataset retains display-label group keys for compatibility; a future schema migration may replace them with stable IDs.
-- The chart modules use `setupChart()` for control creation and lifecycle, but retain ownership of their render and destroy functions. Maintain matching tests for changes to interactions, data contracts or selection logic.
+The static site then loads those datasets using modular **JavaScript**. **Observable Plot** and **D3** provide the visualisations, while **HTML and CSS** handle the surrounding structure, responsive layout and presentation. The site is hosted on **GitHub Pages**, with no application server required.
 
-## Verification limits
+**Google Sheets → Python → validated JSON → JavaScript / Observable Plot / D3 → HTML & CSS**
 
-The automated suite checks data transformations and selected JavaScript behaviours. It does **not** provide pixel-level browser visual regression or full mouse, touch and keyboard end-to-end coverage. After chart changes, manually verify all controls, tooltips, Escape/focus handling, touch dismissal, disclosures and responsive layouts before publishing.
+For the data definitions, calculations, validation and automated publishing process, see [PIPELINE.md](PIPELINE.md).
+
+## About this project
+
+This is a personal portfolio project exploring the overlap between data analysis, visualisation and information design. It brings together the less visible parts of making a dashboard — data quality, uncertainty, interaction details, accessibility and consistency — as well as the finished charts.
