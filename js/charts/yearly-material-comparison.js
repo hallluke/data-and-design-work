@@ -32,7 +32,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
   data = normalizeMonthlyGroups(data);
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   let clearSelection = () => {};
-  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection()});
+  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection(), preserveKeyboardFocus: true});
   const table = root.getElementById("comparison-table");
 
 
@@ -328,7 +328,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       if (!isTouchPointer(event) && inputMode === "mouse") clear();
     });
     svgRoot.addEventListener("keydown", event => {
-      if (event.key === "Escape") clear();
+      // Escape dismissal is owned by chart-interaction.js.
       if (event.key === "Tab" && inputMode === "touch") clear();
     },true);
     container.querySelector("svg")?.remove();container.prepend(svg);

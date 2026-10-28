@@ -1,12 +1,9 @@
-import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
-import { showTooltip, hideTooltip, positionFixedTooltip } from "../chart-display.js";
-import { renderTableRows } from "../chart-display.js";
-import { setDisclosureContent } from "../chart-display.js";
+import { installTouchDismissal, isTouchPointer, bindChartEvent } from "../chart-interaction.js";
+import { showTooltip, hideTooltip, positionFixedTooltip, renderTableRows,
+  setDisclosureContent, positionChartTooltip, formatWeight } from "../chart-display.js";
 import { populateMaterialSelect, sourceMatchesSelection, materialLabel, materialIdFromSource } from "../materials.js";
 import { setupChart } from "../chart-core.js";
 import { ATLAS_COLOURS } from "../chart-style.js";
-import { bindChartEvent } from "../chart-interaction.js";
-import { positionChartTooltip, formatWeight } from "../chart-display.js";
 
 // Map recorded weights onto the five-stop visual range by distinct values,
 // not by the number of days with each value.
@@ -66,7 +63,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   let keyboardDate = null;
   let calendarCells = [];
   let cellRects = [];
-  const removeTouchDismissal = installTouchDismissal(content, tip, {preserveKeyboardScroll:true, clear: () => {selectedDate=null; keyboardDate=null; updateSelected();}});
+  const removeTouchDismissal = installTouchDismissal(content, tip, {preserveKeyboardScroll:true, preserveKeyboardFocus:true, clear: () => {selectedDate=null; keyboardDate=null; updateSelected();}});
   function updateSelected() {
     cellRects.forEach((rect,i) => {
       const active = calendarCells[i]?.date === (selectedDate || keyboardDate);
@@ -89,7 +86,12 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     const key=event.key;
     const handled=["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Enter"," ","Escape"];
     if(!handled.includes(key) && !(event.shiftKey && (key==="ArrowLeft" || key==="ArrowRight" || key==="ArrowUp" || key==="ArrowDown")))return;
-    if(key==="Escape") {event.preventDefault();hideTip();selectedDate=null;keyboardDate=null;updateSelected();return;}
+    if(key==="Escape") {
+      event.preventDefault();
+      hideTip();
+      // Keep the current cell highlighted while the calendar retains keyboard focus.
+      return;
+    }
     if(key==="Enter"||key===" ") {
       event.preventDefault();const cell=calendarCells.find(d=>d.date===keyboardDate);
       if(cell) {if(!tip.hidden && activeTipDate===cell.date)hideTip();else {showTip(cell);const b=cellRects[calendarCells.indexOf(cell)].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}}return;

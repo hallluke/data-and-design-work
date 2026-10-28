@@ -19,7 +19,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
   data = normalizeMonthlyGroups(data);
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   let clearSelection = () => {};
-  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection()});
+  const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection(), preserveKeyboardFocus: true});
   const table = root.querySelector("#data-table");
   const filterLayout = root.createElement("div");
   filterLayout.className = "filter-layout";

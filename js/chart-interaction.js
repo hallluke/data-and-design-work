@@ -1,7 +1,16 @@
 import { hideTooltip } from "./chart-display.js";
 
+// A keyboard dismissal closes transient UI without erasing the visible position
+// of focus. Charts may draw that indicator as selection styling rather than
+// a native CSS outline (notably bars, slopes, and calendar cells).
+export function dismissChartSelection({tooltip, clear, preserveKeyboardFocus = false, chart, activeElement = document.activeElement}) {
+  hideTooltip(tooltip);
+  if (preserveKeyboardFocus && chart?.contains(activeElement) && activeElement?.matches?.(":focus-visible")) return;
+  clear();
+}
+
 // Keep touch selection stable until a deliberate dismissal; never intercept scrolling.
-export function installTouchDismissal(chart, tooltip, {clear = () => {}, preserveKeyboardScroll = false} = {}) {
+export function installTouchDismissal(chart, tooltip, {clear = () => {}, preserveKeyboardScroll = false, preserveKeyboardFocus = false} = {}) {
   let touchStart = null;
   let lastTouch = 0;
   const dismiss = () => { hideTooltip(tooltip); clear(); };
@@ -16,7 +25,10 @@ export function installTouchDismissal(chart, tooltip, {clear = () => {}, preserv
     dismissScroll();
   };
   const outside = e => { if (!chart.contains(e.target) && !tooltip.contains(e.target)) dismiss(); };
-  const escape = e => { if (e.key === "Escape" && (chart.contains(document.activeElement) || !tooltip.hidden)) dismiss(); };
+  const escape = e => {
+    if (e.key === "Escape" && (chart.contains(document.activeElement) || !tooltip.hidden))
+      dismissChartSelection({tooltip, clear, preserveKeyboardFocus, chart});
+  };
   const touchMove = e => {
     if (!touchStart || !e.touches?.length) return;
     const touch = e.touches[0];
