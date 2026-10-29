@@ -27,16 +27,17 @@ function initDisclosures(root = document) {
     const article = root.querySelector(`[data-chart-id="${chartIds[index]}"]`);
     const trigger = button.closest(".disclosure-trigger");
     const panel = root.getElementById(button.dataset.disclosure);
-    if (article && trigger && panel) pairs.push({ article, trigger, panel, button });
+    const content = panel?.querySelector(".disclosure-content-hitbox");
+    if (article && trigger && panel && content) pairs.push({ article, trigger, panel, content, button });
   });
   function refreshAttention() {
     const active = root.activeElement;
-    for (const { article, trigger, panel, button } of pairs) {
+    for (const { article, trigger, panel, content, button } of pairs) {
       const chartKeyboard = keyboardMode && article.contains(active);
       const disclosureKeyboard = keyboardMode &&
         (trigger.contains(active) || (!panel.hidden && panel.contains(active)));
       const disclosurePointer = trigger.matches(":hover") ||
-        (!panel.hidden && panel.matches(":hover"));
+        (!panel.hidden && content.matches(":hover"));
       article.classList.toggle("is-keyboard-attended", chartKeyboard);
       article.classList.toggle("is-disclosure-attended", disclosurePointer || disclosureKeyboard);
       trigger.classList.toggle("is-disclosure-attended", disclosurePointer || disclosureKeyboard);
@@ -53,8 +54,8 @@ function initDisclosures(root = document) {
   }, true);
   root.addEventListener("focusin", () => queueMicrotask(refreshAttention), true);
   root.addEventListener("focusout", () => queueMicrotask(refreshAttention), true);
-  for (const { article, trigger, panel, button } of pairs) {
-    for (const element of [article, trigger, panel]) {
+  for (const { article, trigger, panel, content, button } of pairs) {
+    for (const element of [article, trigger, content]) {
       element.addEventListener("pointerenter", refreshAttention);
       element.addEventListener("pointerleave", refreshAttention);
     }
