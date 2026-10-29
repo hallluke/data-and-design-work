@@ -21,5 +21,4 @@ export function initFreshness(data) {
   }).format(refreshDate);
   document.getElementById("stamp-filed").textContent = latest;
   document.getElementById("stamp-checked").textContent = checked;
-  band.hidden = false;
 }
