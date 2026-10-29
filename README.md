@@ -1,6 +1,6 @@
 # Household Waste & Recycling
 
-For a little while now I've been weighing everything I leave out for residential waste and recycling collection because I've been curious about how much I throw away and how much gets recycled, composted or recovered. This interactive visualisation explores the collected data.
+For a little while now I've been weighing everything I leave out for residential waste and recycling collection because I've been curious about how much I throw away and how much gets recycled, composted or recovered. This interactive visualisation explores the collected data. Can you guess which day of the week my collections take place?
 
 [Explore the interactive visualisation](https://hallluke.github.io/data-and-design-work/)
 
