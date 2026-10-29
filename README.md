@@ -1,12 +1,12 @@
 # Household Waste & Recycling
 
-For a while I've been weighing the waste I put out for collection at home, out of curiosity about how much I throw away and how much gets recycled, composted or recovered. I've been collecting the data since 2025, and this interactive visualisation explores the results through monthly totals, recycling rates, year-on-year comparisons and daily patterns.
+For a little while now I've been weighing everything I leave out for residential waste and recycling collection because I've been curious about how much I throw away and how much gets recycled, composted or recovered. This interactive visualisation explores the collected data.
 
 [Explore the interactive visualisation](https://hallluke.github.io/data-and-design-work/)
 
-## Design principles
+## Designing the visualisation
 
-The charts are intended to make the data easier to explore and understand, while being clear about what the measurements can — and can't — tell us.
+Beyond plotting the measurements, I've tried to make the data meaningful, the comparisons useful and the charts straightforward to explore. The following six principles have guided the decisions behind the visualisation.
 
 ### <img src="assets/icons/database.svg" width="20" height="20" alt=""> 01. Data integrity and transparency
 
@@ -46,8 +46,9 @@ The charts are designed for mouse, keyboard and touch, with visible focus indica
 
 ## How it works
 
-The records live in a private **Google Sheet**. A **Python** pipeline checks and processes the data, calculates estimates and summaries, and publishes validated **JSON** through **GitHub Actions**. The static site uses **JavaScript**, **Observable Plot** and **D3** to build the charts, with **HTML and CSS** for layout and presentation, hosted on **GitHub Pages**.
+The records live in a private Google Sheet. A Python pipeline checks and processes the data, calculates estimates and summaries, and publishes validated JSON through GitHub Actions. The static site uses JavaScript, Observable Plot and D3 to build the charts, with HTML and CSS for layout and presentation, hosted on GitHub Pages.
 
 **Google Sheets → Python → JSON → JavaScript / Observable Plot / D3 → HTML & CSS**
 
 More detail on the calculations and publishing process is in [PIPELINE.md](PIPELINE.md).
+For more detail on the design decisions, implementation and accessibility considerations, see [DESIGN_NOTES.md](DESIGN_NOTES.md).
