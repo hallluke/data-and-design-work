@@ -13,7 +13,7 @@ A record of data, information-design, interaction and engineering decisions in t
 | Daily and monthly aggregation | The underlying measurements support different time resolutions and analytical questions. | Appropriate aggregation; multiple analytical perspectives |
 | Complete vs provisional months | Months with complete collection coverage are distinguished from those still awaiting measurements. | Communicating uncertainty and data completeness |
 | Provisional estimates | Available historical information supports provisional estimates for incomplete periods, with their status identified. | Qualified estimates; avoiding false certainty |
-| Missing data vs zero | Absent measurements are not automatically interpreted as evidence that no waste was generated. | Missingness is not zero; data integrity |
+| Missing data vs zero | Absent measurements are not automatically interpreted as evidence that no waste was generated. | Absence is not zero; data integrity |
 | Material definitions | Material identities and groupings are maintained consistently through processing and presentation. | Controlled vocabulary; semantic consistency |
 | Input validation | Source fields, dates, materials and weights are checked before publication. | Data quality assurance; fail-fast validation |
 | Generated summaries | Derived figures are calculated through a repeatable Python process rather than manually edited. | Reproducibility; single source of truth |
@@ -31,7 +31,7 @@ A record of data, information-design, interaction and engineering decisions in t
 | Stacked vs total toggle | Alternative presentations are offered without duplicating charts. | Flexible analytical perspective |
 | Slope chart for year-on-year change | Values across two years are connected to emphasise the direction and magnitude of changes by material. | Change-focused comparison |
 | Doughnut for recycling rate | A compact part-to-whole visual communicates the overall recycling proportion. | Match chart type to analytical task |
-| Calendar heatmap for daily patterns | Daily weights are displayed within a familiar calendar structure to reveal temporal patterns. | Temporal context; pattern recognition |
+| Calendar heat-map for daily patterns | Daily weights are displayed within a familiar calendar structure to reveal temporal patterns. | Temporal context; pattern recognition |
 | Consistent visual conventions | Colours, labels and other graphical elements are used predictably within each chart. | Semantic consistency |
 | Related colour families | Related materials use related colours to reinforce their grouping. | Visual grouping; categorical hierarchy |
 | Complete/provisional distinction | Different visual treatments communicate the completeness of the data. | Encode data quality, not just value |
@@ -77,7 +77,7 @@ A record of data, information-design, interaction and engineering decisions in t
 | Persistent selection highlighting | Inspected marks remain identifiable while their details are shown. | Clear feedback; focus–context relationship |
 | Tooltips near marks | Contextual values appear close to the corresponding data points. | Spatial proximity; reduced visual search |
 | Tooltip boundary handling | Tooltip placement accounts for chart and viewport edges. | Robust responsive interaction |
-| ARIA labels | Chart regions and interactive elements receive descriptive accessible names. | Programmatic accessibility; accessible names |
+| <abbr title="Accessible Rich Internet Applications">ARIA</abbr> labels | Chart regions and interactive elements receive descriptive accessible names. | Programmatic accessibility; accessible names |
 | Accessible data tables | Numerical tables provide another representation of the chart information. | Equivalent information; multimodal access |
 | Scrollable-table focus handling | Overflowing table regions can be reached and navigated by keyboard where necessary. | Keyboard access to overflow content |
 | Redundant encoding | Text, values and other cues supplement colour. | Colour-independent communication |
@@ -109,25 +109,12 @@ A record of data, information-design, interaction and engineering decisions in t
 | Static website | GitHub Pages hosts the visualisation without a dedicated application server. | Lightweight architecture; low maintenance |
 | Observable Plot and D3 | Higher-level plotting and customised geometry are used where appropriate. | Appropriate abstraction; fit-for-purpose tools |
 | Individual chart modules | Chart-specific geometry and behaviour remain separate. | Modularity; single responsibility |
-| Shared chart utilities | Lifecycle, formatting, controls, tooltips and common interactions are consolidated. | Reusability; DRY principle |
+| Shared chart utilities | Lifecycle, formatting, controls, tooltips and common interactions are consolidated. | Reusability; <abbr title="Don't Repeat Yourself">DRY</abbr> principle |
 | Central material registry | Category definitions remain consistent across the application. | Single source of truth |
 | Explicit event cleanup | Registered listeners are removed when chart instances are destroyed. | Lifecycle management; resource hygiene |
 | Automated tests | Python processing and JavaScript behaviours have automated regression coverage. | Regression prevention; verifiability |
 | Documented pipeline | The data-processing and publishing workflow is described separately from the public introduction. | Maintainability; reproducibility |
 
-## 7. Further considerations — not claims of completed work
-
-| Area | Current position | Possible follow-up / principle |
-|---|---|---|
-| Data uncertainty | Recorded/imputed and complete/provisional distinctions are explained. | Test sensitivity to imputation assumptions; uncertainty communication |
-| Comparability | Material definitions and visual conventions support comparison. | Review scales and comparison periods for misleading impressions; fair comparison |
-| Colour contrast | Contrast has informed styling. | Systematic WCAG contrast audit; perceptibility |
-| Screen-reader experience | ARIA descriptions and data tables are provided. | Test complete journeys with VoiceOver or NVDA; assistive-technology usability |
-| Reduced motion | Behaviour has not been established in this inventory. | Review animation and `prefers-reduced-motion`; motion accessibility |
-| Browser regression | Automated tests cover parts of the implementation. | Add end-to-end focus, interaction and responsive tests; integration testing |
-| External benchmarking | The project primarily explores personal measurements. | Compare cautiously with local figures, adjusting for household size and methodology; contextualisation |
-| Methodology maintenance | Assumptions and calculations are documented. | Keep documentation aligned with pipeline changes; documentation accuracy |
-
 ---
 
-*These notes are a working inventory of decisions discussed during development. Individual implementation claims should be checked against the current site and code before being used as evidence of formal compliance or test coverage.*
+*Not all of these principles made it in to the final version of the site, but they were all considered at some point during development*
