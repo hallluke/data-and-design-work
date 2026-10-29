@@ -1,58 +1,54 @@
 # Household waste data pipeline
 
-The dashboard reads JSON from the repository's `data/` directory. Python builds and validates the data; GitHub Actions can test a build without publishing or fetch a private Google Sheet and publish validated outputs.
+This document explains how the household waste records are turned into the datasets used by the website, how updates are published, and what needs attention when maintaining the process.
 
-## Source and generated files
+## From spreadsheet to website
 
-- Private Google Sheets worksheet: **Collections**, columns exactly `Date`, `Material`, `Weight (kg)` (dates in `DD/MM/YYYY`).
-- `scripts/fetch_sheet.py`: uses Google Application Default Credentials and the read-only Sheets scope to fetch the `Collections` worksheet. It rejects malformed headers and incomplete rows and writes a temporary CSV.
-- `scripts/build_collections.py`: parses and validates source records.
-- `scripts/build_summaries.py`: produces recorded and collection-interval imputed monthly aggregates.
-- `scripts/build_comparison.py`: generates the provisional residual-waste comparison estimate.
-- `scripts/validate_data.py`: validates the combined dataset.
-- `scripts/build_data.py`: builds and validates four JSON files in a staging directory before replacing files in its **specified output directory**.
-- `data/collections.json`, `data/monthly.json`, `data/detail.json`, `data/comparison.json`: published datasets; `data/refresh.json`: last successful publication timestamp.
-- `reference/collections-source.csv`: historical test fixture, **not** the live sheet.
+The original measurements are kept in a private Google Sheet, in a worksheet named `Collections`. Each record contains a date, material and weight in kilograms.
 
-Material definitions are maintained in `config/materials.json`. Run `python3 scripts/sync_materials.py` to update the browser's generated `js/material-registry.js`. Python reads the configuration directly.
+A series of Python scripts retrieves and checks the records, calculates the figures used by the charts, and produces four JSON files in the repository's `data/` directory. The website reads these files rather than connecting directly to Google Sheets.
 
-## Local verification (does not publish)
+The processing includes:
 
-```sh
-node --test tests/*.test.mjs
-python3 -m unittest discover -s tests -p 'test_*.py'
-python3 scripts/build_data.py --csv reference/collections-source.csv --output build/data
-```
+- **Validation:** Checking dates, weights, materials and the structure of the source data.
+- **Aggregation:** Calculating monthly totals from recorded collection weights.
+- **Imputation:** Distributing collected weights across the days since the previous measurement to estimate when waste accumulated.
+- **Comparison:** Producing year-on-year figures, including a clearly identified provisional estimate for residual waste where necessary.
 
-The last command generates test JSON under `build/data`; it does not modify the site's `data/` directory.
+Material definitions are maintained in `config/materials.json`, which also supplies the browser's material registry through a synchronisation script.
 
-## GitHub Actions workflows
+## Testing and publishing
 
-### `test-data.yml` — Test waste data pipeline
+Two GitHub Actions workflows handle the automated process:
 
-Runs on manual dispatch and on pushes affecting pipeline scripts, tests, reference files, the workflow or requirements. By default it uses the historical CSV fixture. Manual dispatch also offers `sheets`, which authenticates to Google Cloud and reads the private Collections worksheet. The workflow runs Python tests, builds JSON and uploads a `waste-json-test-build` artifact for inspection (seven-day retention). **It does not commit or publish data.**
+| Workflow | Purpose |
+|---|---|
+| `test-data.yml` | Runs tests and builds sample JSON, normally using a historical CSV dataset. It can also test against the live Google Sheet when started manually. **It doesn't publish anything.** |
+| `publish-data.yml` | Runs manually or on a daily schedule, reads the live spreadsheet, tests and validates the generated data, and publishes the updated JSON files. |
 
-### `publish-data.yml` — Publish waste data (manual)
+The publishing workflow is scheduled for **03:30 UK time**, although GitHub may run scheduled jobs later.
 
-Runs on manual dispatch and is configured with a daily scheduled trigger at **03:30 Europe/London**. GitHub Actions scheduled jobs can start later than their configured time. The workflow:
+Before publishing, the workflow checks that the four expected JSON files have been generated successfully. It then updates `collections.json`, `monthly.json`, `detail.json` and `comparison.json` in `data/`, along with `refresh.json`, which records the latest successful publication time. Changes are committed automatically; if nothing has changed, no new commit is made.
 
-1. Checks out the repository and installs Python 3.12 dependencies.
-2. Runs Python tests.
-3. Authenticates through Google Cloud Workload Identity Federation; fetches the private Collections sheet into `build/source/collections.csv`.
-4. Builds and validates JSON in `build/data/`, checking that exactly four expected JSON files exist and parse successfully.
-5. Copies only those four validated files into `data/` and writes `data/refresh.json` with a UTC timestamp.
-6. Stages only the four JSON files and `refresh.json`; commits and pushes them to the triggering branch if changes exist. If no staged changes exist, no commit is created.
+The historical dataset at `reference/collections-source.csv` is used for testing, not as the live source.
 
-The workflow has job-level `contents: write` permission to publish. It uses the repository's short-lived GitHub token for pushing, not a stored GitHub personal access token. The test workflow has read-only repository permission.
+## Access to Google Sheets
 
-**Required GitHub Actions variables:** `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, and `GOOGLE_SHEET_ID`. The Google Cloud service account needs read access to the relevant spreadsheet. The workflow obtains temporary credentials using OIDC; no service-account key file should be committed.
+GitHub Actions uses **Google Cloud Workload Identity Federation** to access the private spreadsheet. This allows the workflow to obtain temporary credentials without storing a Google service-account key in the repository.
 
-## Safety and maintenance notes
+Three GitHub Actions variables identify the connection:
 
-- Do not commit the private sheet export, cloud credentials or tokens. The fixture under `reference/` is a separate historical test dataset.
-- The pipeline expects the configured material categories and rejects missing or malformed source data rather than treating absence as zero.
-- The initial imputation date is currently 2025-01-01. Review this if the collection history changes.
-- The year-on-year chart currently compares 2025 with 2026; plan a display update before publishing a new comparison year.
-- Review the provisional comparison methodology and source coverage before relying on unattended future-year publication.
-- The monthly JSON currently uses display-label group keys for compatibility. Changes to material groups require rebuilding the derived datasets.
-- Tests and schema checks are not substitutes for browser checks of the published charts and interaction states.
+- `GOOGLE_SHEET_ID` — the source spreadsheet.
+- `GCP_SERVICE_ACCOUNT` — the Google Cloud service account used to read it.
+- `GCP_WORKLOAD_IDENTITY_PROVIDER` — the Google Cloud identity configuration that allows GitHub Actions to authenticate.
+
+The service account must have read access to the spreadsheet. The source data and authentication credentials should remain private; only the processed JSON is published.
+
+## Maintenance
+
+- **Adding or changing materials:** Update `config/materials.json`, run `python3 scripts/sync_materials.py`, and rebuild the derived data.
+- **Changing the source spreadsheet:** Keep the `Collections` worksheet and its expected columns (`Date`, `Material`, `Weight (kg)`), with dates in `DD/MM/YYYY` format.
+- **Changing the time period:** Review the initial imputation date (currently `2025-01-01`), the year-on-year comparison (currently 2025–2026), and the provisional estimation method.
+- **If updates stop:** Check the `Publish waste data` run in GitHub Actions. Failures may relate to source-data validation, spreadsheet access, Google authentication or the build itself. The separate test workflow can help investigate without publishing changes.
+
+The individual Python scripts are in `scripts/`, and the GitHub Actions workflow definitions are in `.github/workflows/`.
