@@ -32,7 +32,7 @@ A record of data, information-design, interaction and engineering decisions in t
 | Slope chart for year-on-year change | Values across two years are connected to emphasise the direction and magnitude of changes by material. | Change-focused comparison |
 | Doughnut for recycling rate | A compact part-to-whole visual communicates the overall recycling proportion. | Match chart type to analytical task |
 | Calendar heatmap for daily patterns | Daily weights are displayed within a familiar calendar structure to reveal temporal patterns. | Temporal context; pattern recognition |
-| Stable material colours | Material colours are reused across views to support recognition. | Semantic consistency |
+| Consistent visual conventions | Colours, labels and other graphical elements are used predictably within each chart. | Semantic consistency |
 | Related colour families | Related materials use related colours to reinforce their grouping. | Visual grouping; categorical hierarchy |
 | Complete/provisional distinction | Different visual treatments communicate the completeness of the data. | Encode data quality, not just value |
 | Restrained palette | Unnecessary competing colours are avoided so meaningful differences remain noticeable. | Visual economy; signal over decoration |
