@@ -17,26 +17,50 @@ function initDisclosures(root = document) {
     button.setAttribute("aria-expanded", String(!wasExpanded));
     root.getElementById(button.dataset.disclosure).hidden = wasExpanded;
   }));
-  // Associate sibling chart, trigger and expanded panel without moving DOM nodes.
+  // Attention is pointer-hover OR keyboard focus, not retained mouse-click focus.
+  // A clicked select/button remains focused in browsers even after the pointer
+  // moves elsewhere; :focus-within would therefore leave its highlight stuck.
+  let keyboardMode = false;
+  const pairs = [];
   const chartIds = ["monthly-material-weights", "yearly-material-comparison", "overall-recycling-rate", "daily-material-weights"];
   buttons.forEach((button, index) => {
     const article = root.querySelector(`[data-chart-id="${chartIds[index]}"]`);
     const trigger = button.closest(".disclosure-trigger");
     const panel = root.getElementById(button.dataset.disclosure);
-    if (!article || !trigger || !panel) return;
-    const update = () => {
-      const attending = trigger.matches(":hover, :focus-within") ||
-        (!panel.hidden && panel.matches(":hover, :focus-within"));
-      article.classList.toggle("is-disclosure-attended", attending);
-      trigger.classList.toggle("is-disclosure-attended", attending);
-    };
-    [trigger, panel].forEach(element => {
-      for (const event of ["pointerenter", "pointerleave", "focusin", "focusout"]) {
-        element.addEventListener(event, update);
-      }
-    });
-    button.addEventListener("click", () => requestAnimationFrame(update));
+    if (article && trigger && panel) pairs.push({ article, trigger, panel, button });
   });
+  function refreshAttention() {
+    const active = root.activeElement;
+    for (const { article, trigger, panel, button } of pairs) {
+      const chartKeyboard = keyboardMode && article.contains(active);
+      const disclosureKeyboard = keyboardMode &&
+        (trigger.contains(active) || (!panel.hidden && panel.contains(active)));
+      const disclosurePointer = trigger.matches(":hover") ||
+        (!panel.hidden && panel.matches(":hover"));
+      article.classList.toggle("is-keyboard-attended", chartKeyboard);
+      article.classList.toggle("is-disclosure-attended", disclosurePointer || disclosureKeyboard);
+      trigger.classList.toggle("is-disclosure-attended", disclosurePointer || disclosureKeyboard);
+      button.classList.toggle("is-keyboard-attended", disclosureKeyboard);
+    }
+  }
+  // Track the input modality so pointer-click focus does not act like keyboard focus.
+  root.addEventListener("pointerdown", () => { keyboardMode = false; refreshAttention(); }, true);
+  root.addEventListener("keydown", event => {
+    if (event.key === "Tab" || event.key.startsWith("Arrow") || event.key === "Enter" || event.key === " ") {
+      keyboardMode = true;
+      queueMicrotask(refreshAttention);
+    }
+  }, true);
+  root.addEventListener("focusin", () => queueMicrotask(refreshAttention), true);
+  root.addEventListener("focusout", () => queueMicrotask(refreshAttention), true);
+  for (const { article, trigger, panel, button } of pairs) {
+    for (const element of [article, trigger, panel]) {
+      element.addEventListener("pointerenter", refreshAttention);
+      element.addEventListener("pointerleave", refreshAttention);
+    }
+    button.addEventListener("click", () => requestAnimationFrame(refreshAttention));
+  }
+  refreshAttention();
   const layout = window.matchMedia(MULTI_COLUMN_MEDIA);
   const reconcile = () => {
     if (!layout.matches) return;
