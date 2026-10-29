@@ -998,25 +998,3 @@ select:disabled {
  .heading h2 .title-mark::before,.disclosure-toggle .disclosure-label,.foot a {transition:none;}
 }
 
-/* Disclosure hover experiment: content-sized hitbox, not the full-width panel.
-   Constrain the method column and let the table determine its natural width. */
-.disclosure-panel .disclosure-content-hitbox {
-  display: inline-block;
-  vertical-align: top;
-  max-width: 100%;
-}
-.disclosure-panel .disclosure-content-hitbox .details-layout {
-  display: grid;
-  width: max-content;
-  max-width: 100%;
-  grid-template-columns: minmax(0, 230px) minmax(0, max-content);
-  align-items: start;
-}
-.disclosure-panel .disclosure-content-hitbox .table-scroll { max-width: min(55vw, 620px); }
-@media (max-width: 750px) {
-  .disclosure-panel .disclosure-content-hitbox { display: block; width: 100%; }
-  .disclosure-panel .disclosure-content-hitbox .details-layout {
-    width: 100%; grid-template-columns: minmax(0, 1fr);
-  }
-  .disclosure-panel .disclosure-content-hitbox .table-scroll { max-width: 100%; }
-}

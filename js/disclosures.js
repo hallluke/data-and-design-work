@@ -17,35 +17,84 @@ function initDisclosures(root = document) {
     button.setAttribute("aria-expanded", String(!wasExpanded));
     root.getElementById(button.dataset.disclosure).hidden = wasExpanded;
   }));
-  // Attention is pointer-hover OR keyboard focus, not retained mouse-click focus.
-  // A clicked select/button remains focused in browsers even after the pointer
-  // moves elsewhere; :focus-within would therefore leave its highlight stuck.
+  // Pointer and keyboard attention are deliberately independent. Mouse-click
+  // focus must not leave a chart highlighted after the pointer moves away.
   let keyboardMode = false;
+  let pointerPosition = null;
+  let scheduled = false;
   const pairs = [];
   const chartIds = ["monthly-material-weights", "yearly-material-comparison", "overall-recycling-rate", "daily-material-weights"];
   buttons.forEach((button, index) => {
     const article = root.querySelector(`[data-chart-id="${chartIds[index]}"]`);
     const trigger = button.closest(".disclosure-trigger");
     const panel = root.getElementById(button.dataset.disclosure);
-    const content = panel?.querySelector(".disclosure-content-hitbox");
-    if (article && trigger && panel && content) pairs.push({ article, trigger, panel, content, button });
+    const method = panel?.querySelector(".method-copy");
+    const table = panel?.querySelector(".table-scroll");
+    if (article && trigger && panel && method && table) {
+      pairs.push({ article, trigger, panel, method, table, button, index, bounds: null });
+    }
   });
+  const within = (point, rect) => Boolean(point && rect &&
+    point.x >= rect.left && point.x <= rect.right &&
+    point.y >= rect.top && point.y <= rect.bottom);
+
+  function measure() {
+    for (const pair of pairs) {
+      if (pair.panel.hidden) { pair.bounds = null; continue; }
+      const panel = pair.panel.getBoundingClientRect();
+      if (pair.index % 2 === 1) {
+        // Figures 02 and 04: retain the original full-panel hover area.
+        pair.bounds = panel;
+      } else {
+        // Figures 01 and 03: include the method/table gap, but not the
+        // unused right or lower portion of the disclosure panel.
+        const method = pair.method.getBoundingClientRect();
+        const table = pair.table.getBoundingClientRect();
+        pair.bounds = {
+          left: panel.left,
+          right: Math.min(panel.right, Math.max(method.right, table.right)),
+          top: Math.min(method.top, table.top),
+          bottom: Math.max(method.bottom, table.bottom)
+        };
+      }
+    }
+  }
   function refreshAttention() {
     const active = root.activeElement;
-    for (const { article, trigger, panel, content, button } of pairs) {
+    for (const { article, trigger, panel, button, bounds } of pairs) {
       const chartKeyboard = keyboardMode && article.contains(active);
       const disclosureKeyboard = keyboardMode &&
         (trigger.contains(active) || (!panel.hidden && panel.contains(active)));
-      const disclosurePointer = trigger.matches(":hover") ||
-        (!panel.hidden && content.matches(":hover"));
+      const disclosurePointer = within(pointerPosition, bounds) ||
+        within(pointerPosition, trigger.getBoundingClientRect());
       article.classList.toggle("is-keyboard-attended", chartKeyboard);
       article.classList.toggle("is-disclosure-attended", disclosurePointer || disclosureKeyboard);
       trigger.classList.toggle("is-disclosure-attended", disclosurePointer || disclosureKeyboard);
       button.classList.toggle("is-keyboard-attended", disclosureKeyboard);
     }
   }
-  // Track the input modality so pointer-click focus does not act like keyboard focus.
-  root.addEventListener("pointerdown", () => { keyboardMode = false; refreshAttention(); }, true);
+  function scheduleRefresh() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      measure();
+      refreshAttention();
+    });
+  }
+  root.addEventListener("pointermove", event => {
+    if (event.pointerType === "touch") return;
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    // Rectangles are cached; only layout changes trigger measurements.
+    refreshAttention();
+  }, { passive: true });
+  root.addEventListener("pointerdown", event => {
+    keyboardMode = false;
+    if (event.pointerType !== "touch") pointerPosition = { x: event.clientX, y: event.clientY };
+    refreshAttention();
+  }, true);
+  document.addEventListener("pointerleave", () => { pointerPosition = null; refreshAttention(); });
+  window.addEventListener("blur", () => { pointerPosition = null; refreshAttention(); });
   root.addEventListener("keydown", event => {
     if (event.key === "Tab" || event.key.startsWith("Arrow") || event.key === "Enter" || event.key === " ") {
       keyboardMode = true;
@@ -54,14 +103,22 @@ function initDisclosures(root = document) {
   }, true);
   root.addEventListener("focusin", () => queueMicrotask(refreshAttention), true);
   root.addEventListener("focusout", () => queueMicrotask(refreshAttention), true);
-  for (const { article, trigger, panel, content, button } of pairs) {
-    for (const element of [article, trigger, content]) {
-      element.addEventListener("pointerenter", refreshAttention);
-      element.addEventListener("pointerleave", refreshAttention);
-    }
-    button.addEventListener("click", () => requestAnimationFrame(refreshAttention));
+  // Dynamic table contents, wrapping and scroll-container size may change
+  // without a viewport resize. ResizeObserver tracks the visible boxes;
+  // MutationObserver also covers changes to hidden panels and table markup.
+  const resizeObserver = new ResizeObserver(scheduleRefresh);
+  const mutationObserver = new MutationObserver(scheduleRefresh);
+  for (const { panel, method, table, button } of pairs) {
+    for (const element of [panel, method, table]) resizeObserver.observe(element);
+    mutationObserver.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
+    mutationObserver.observe(table, { childList: true, subtree: true, characterData: true });
+    mutationObserver.observe(method, { childList: true, subtree: true, characterData: true });
+    button.addEventListener("click", scheduleRefresh);
   }
-  refreshAttention();
+  window.addEventListener("resize", scheduleRefresh, { passive: true });
+  window.addEventListener("scroll", scheduleRefresh, { passive: true, capture: true });
+  document.fonts?.ready.then(scheduleRefresh);
+  scheduleRefresh();
   const layout = window.matchMedia(MULTI_COLUMN_MEDIA);
   const reconcile = () => {
     if (!layout.matches) return;
@@ -71,7 +128,7 @@ function initDisclosures(root = document) {
       root.getElementById(b.dataset.disclosure).hidden = true;
     });
   };
-  layout.addEventListener("change", reconcile);
+  layout.addEventListener("change", () => { reconcile(); scheduleRefresh(); });
 }
 
 /* Figure 03 — recorded-weight recycling share. Independent of imputed charts. */
