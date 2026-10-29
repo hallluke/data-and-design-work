@@ -1,6 +1,6 @@
 # Design Notes — Household Waste & Recycling
 
-A record of data, information-design, interaction and engineering decisions in the [Household Waste & Recycling visualisation](https://hallluke.github.io/data-and-design-work/). The tables distinguish implemented decisions from possible improvements. The terminology in the final column describes relevant design and engineering principles, not formal certification against a standard.
+A record of data, information-design, interaction and engineering decisions in the [Household Waste & Recycling visualisation](https://hallluke.github.io/data-and-design-work/).
 
 ## 1. Data collection, interpretation and methodology
 
