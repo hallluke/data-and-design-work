@@ -83,8 +83,6 @@ A record of data, information-design, interaction and engineering decisions in t
 | Redundant encoding | Text, values and other cues supplement colour. | Colour-independent communication |
 | Colour contrast and typography | Legibility, contrast and focus visibility inform the presentation. | Perceptibility; visual accessibility |
 
-**Accessibility qualification:** These are accessibility-informed implementation decisions, not a claim of full WCAG conformance. Formal assessment would require additional testing, including assistive technologies.
-
 ## 5. Responsive and visual design
 
 | Decision | Action and rationale | Principle / summary phrase |
