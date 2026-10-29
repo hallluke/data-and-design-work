@@ -17,6 +17,26 @@ function initDisclosures(root = document) {
     button.setAttribute("aria-expanded", String(!wasExpanded));
     root.getElementById(button.dataset.disclosure).hidden = wasExpanded;
   }));
+  // Associate sibling chart, trigger and expanded panel without moving DOM nodes.
+  const chartIds = ["monthly-material-weights", "yearly-material-comparison", "overall-recycling-rate", "daily-material-weights"];
+  buttons.forEach((button, index) => {
+    const article = root.querySelector(`[data-chart-id="${chartIds[index]}"]`);
+    const trigger = button.closest(".disclosure-trigger");
+    const panel = root.getElementById(button.dataset.disclosure);
+    if (!article || !trigger || !panel) return;
+    const update = () => {
+      const attending = trigger.matches(":hover, :focus-within") ||
+        (!panel.hidden && panel.matches(":hover, :focus-within"));
+      article.classList.toggle("is-disclosure-attended", attending);
+      trigger.classList.toggle("is-disclosure-attended", attending);
+    };
+    [trigger, panel].forEach(element => {
+      for (const event of ["pointerenter", "pointerleave", "focusin", "focusout"]) {
+        element.addEventListener(event, update);
+      }
+    });
+    button.addEventListener("click", () => requestAnimationFrame(update));
+  });
   const layout = window.matchMedia(MULTI_COLUMN_MEDIA);
   const reconcile = () => {
     if (!layout.matches) return;

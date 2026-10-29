@@ -26,7 +26,19 @@ export function setupChart({root=document, id, number, title, unit, controls=[],
   const article=root.querySelector(`[data-chart-id="${id}"]`);
   if (!article) throw new Error(`Missing chart article: ${id}`);
   article.querySelector(".num").textContent=number;
-  article.querySelector("h2").textContent=title;
+  const heading = article.querySelector("h2");
+  // Keep one span around the entire title so spaces animate as a single stroke.
+  const mark = root.createElement("span");
+  mark.className = "title-mark";
+  mark.textContent = title;
+  heading.replaceChildren(mark);
+  // One fresh but stable print-registration variation per page load.
+  // Limit combined extension and shift to avoid an exaggerated overhang.
+  const extension = (Math.random() * .36 - .18);
+  const shift = (Math.random() * .12 - .06);
+  mark.style.setProperty("--mark-extend", `${extension.toFixed(3)}em`);
+  mark.style.setProperty("--mark-shift", `${shift.toFixed(3)}em`);
+  mark.style.setProperty("--mark-angle", `${(Math.random() * 1.2 - .6).toFixed(2)}deg`);
   article.querySelector(".unit").textContent=unit;
   const host=article.querySelector(".chart-controls");
   if (!host) throw new Error(`Missing chart controls: ${id}`);
