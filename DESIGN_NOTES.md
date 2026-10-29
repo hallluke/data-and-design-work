@@ -98,8 +98,6 @@ A record of data, information-design, interaction and engineering decisions in t
 | Proximity and grouping | Related labels, controls, legends and values are placed together. | Gestalt proximity; perceptual grouping |
 | Visual continuity | Layout patterns and styling are reused while allowing chart-specific structures. | Design-system consistency |
 
-**Terminology:** Responsive layouts adapt to screen size; adaptive controls change the available choices according to the data and current selection.
-
 ## 6. Engineering and maintainability
 
 | Decision | Action and rationale | Principle / summary phrase |
