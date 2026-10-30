@@ -5,9 +5,9 @@ const MULTI_COLUMN_MEDIA = "(min-width: 581px)";
 const cssColour = (token, fallback) =>
   getComputedStyle(document.documentElement).getPropertyValue(token).trim() || fallback;
 const ATLAS_COLOURS = Object.freeze({
-  dark:cssColour("--chart-dark", "#48443f"),
-  light:cssColour("--chart-light", "#c9c2b9"),
-  empty:cssColour("--chart-empty", "#e5e0d9")
+  dark:cssColour("--chart-dark"),
+  light:cssColour("--chart-light"),
+  empty:cssColour("--chart-empty")
 });
 function atlasPalette(count) {
   return count <= 1 ? [ATLAS_COLOURS.dark] :

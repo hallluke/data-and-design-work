@@ -166,7 +166,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
     const svg = Plot.plot({
       width, height: 250, marginLeft: 35, marginRight: 10, marginTop: 5, marginBottom: 43,
       style: { background: "transparent", fontFamily: "Source Sans 3, Arial, Helvetica, sans-serif",
-        fontSize: "10px", color: "#66645f" },
+        fontSize: "10px", color: "var(--muted)" },
       x: { type: "band", domain: data.months, axis: "bottom", tickSize: 0,
         tickPadding: 7, tickFormat: monthInitial, label: null, padding: 0.18 },
       y: { domain: [0, maxY], grid: true, ticks: 4, label: null, tickSize: 0 },

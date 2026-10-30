@@ -146,32 +146,32 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       {year:years[0],lo:row.earlier,hi:row.earlier},
       {year:years[1],lo:row.low,hi:row.high}
     ]);
-    if (fan.length) marks.push(Plot.areaY(fan, {x:"year",y1:"lo",y2:"hi",fill:cssColour("--chart-mid", "#888"),fillOpacity:.24}));
+    if (fan.length) marks.push(Plot.areaY(fan, {x:"year",y1:"lo",y2:"hi",fill:cssColour("--chart-mid"),fillOpacity:.24}));
     // Every line, endpoint, leader and label is an Observable Plot mark.
     // Separate line marks make it possible to highlight the active series.
     rows.forEach((row,i)=>{
       const series=[{year:years[0],kg:row.earlier},{year:years[1],kg:row.current}];
-      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:cssColour("--chart-dark", "#5c5b59"),strokeWidth:2.2,
+      marks.push(Plot.line(series,{x:"year",y:"kg",stroke:cssColour("--chart-dark"),strokeWidth:2.2,
         strokeDasharray:row.projected?"5 3":undefined,className:`compare-series compare-series-${i}`}));
-      marks.push(Plot.dot(series,{x:"year",y:"kg",r:2.8,fill:cssColour("--chart-dark", "#4b4b4b"),className:`compare-series compare-series-${i}`}));
+      marks.push(Plot.dot(series,{x:"year",y:"kg",r:2.8,fill:cssColour("--chart-dark"),className:`compare-series compare-series-${i}`}));
       marks.push(Plot.link([{x1:years[1],y1:row.current,x2:labelX-.025,y2:labelKg(row.name)}],{
-        x1:"x1",y1:"y1",x2:"x2",y2:"y2",stroke:cssColour("--chart-mid", "#999"),strokeWidth:.75,
+        x1:"x1",y1:"y1",x2:"x2",y2:"y2",stroke:cssColour("--chart-mid"),strokeWidth:.75,
         className:`compare-series compare-series-${i}`}));
       marks.push(Plot.text([{x:labelX,y:labelKg(row.name),name:row.name}],{
-        x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:cssColour("--chart-dark", "#454545"),
+        x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:cssColour("--chart-dark"),
         className:`compare-series compare-series-${i}`}));
     });
     // Explicit Plot rules limit horizontal guides to the two year positions,
     // unlike a full-width axis grid. Tick labels remain readable in kg.
     const tickValues = d3.ticks(yDomain[0],yDomain[1],4);
     const guides = tickValues.map(kg=>({kg,x1:years[0],x2:years[1]}));
-    marks.unshift(Plot.ruleY(guides,{y:"kg",x1:"x1",x2:"x2",stroke:cssColour("--chart-light", "#c8c5bf"),strokeOpacity:.65}));
+    marks.unshift(Plot.ruleY(guides,{y:"kg",x1:"x1",x2:"x2",stroke:cssColour("--chart-light"),strokeOpacity:.65}));
     marks.push(Plot.text(guides,{x:years[0],y:"kg",text:d=>Number(d.kg.toFixed(1)).toString(),
-      textAnchor:"end",dx:-7,fontSize:10,fill:cssColour("--muted", "#66645f")}));
+      textAnchor:"end",dx:-7,fontSize:10,fill:cssColour("--muted")}));
     marks.push(Plot.axisX({anchor:"bottom",ticks:years,tickFormat:String,
       tickSize:0,tickPadding:8,label:null}));
     const svg = Plot.plot({width,height,marginLeft:left,marginRight:right,marginTop:top,marginBottom:bottom,
-      style:{background:"transparent",fontFamily:"Source Sans 3, Arial, sans-serif",fontSize:"10px",color:cssColour("--muted", "#66645f")},
+      style:{background:"transparent",fontFamily:"Source Sans 3, Arial, sans-serif",fontSize:"10px",color:cssColour("--muted")},
       x:{domain:xDomain,axis:null,label:null},
       y:{domain:yDomain,axis:null,grid:false,ticks:4,label:null,tickSize:0},
       marks});
@@ -197,8 +197,8 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
     const selectionDots = [0,1].map(() => {
       const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       dot.setAttribute("r", "5");
-      dot.setAttribute("fill", cssColour("--chart-selection", "#202020"));
-      dot.setAttribute("stroke", cssColour("--white", "#fff"));
+      dot.setAttribute("fill", cssColour("--chart-selection"));
+      dot.setAttribute("stroke", cssColour("--white"));
       dot.setAttribute("stroke-width", "1.5");
       return dot;
     });
@@ -235,12 +235,12 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       svgRoot.querySelectorAll(".compare-series").forEach(el => {
         const selected = active !== null && el.classList.contains(`compare-series-${active}`);
         el.style.opacity = active === null ? "" : selected ? "1" : ".22";
-        el.style.stroke = selected && el.tagName.toLowerCase() === "path" ? cssColour("--chart-selection", "#171717") : "";
+        el.style.stroke = selected && el.tagName.toLowerCase() === "path" ? cssColour("--chart-selection") : "";
       });
       // Use the same visible slope styling for keyboard focus and mouse hover.
       // The touch-only overlay remains independent of that common highlight.
       lines.forEach((line,i) => {
-        line.style.stroke = active === i ? cssColour("--chart-selection", "#171717") : "";
+        line.style.stroke = active === i ? cssColour("--chart-selection") : "";
       });
       // Only this renderer may show/hide the overlay. It is never an input target.
       overlay.hidden = active === null || inputMode !== "touch";

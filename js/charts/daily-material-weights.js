@@ -209,7 +209,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
          tickFormat:i=>{const d=monthStarts.find(x=>x.i===i)?.d || weeks[i];const m=d.toLocaleDateString("en-GB",{month:"short",timeZone:"UTC"});return d.getUTCMonth()===0?`${m}-${String(d.getUTCFullYear()).slice(-2)}`:m;},tickSize:0,tickPadding:7},
       y:{type:"band",domain:d3.range(7),axis:null,padding:0},
       marks:[Plot.cell(cells,{x:"week",y:"weekday",inset:1.5,
-        fill:d=>d.kg>0?intensity(d.kg):ATLAS_COLOURS.empty,stroke:cssColour("--chart-cell-stroke", "#d8d1c8"),strokeWidth:0.35})]
+        fill:d=>d.kg>0?intensity(d.kg):ATLAS_COLOURS.empty,stroke:cssColour("--chart-cell-stroke"),strokeWidth:0.35})]
     });
     plot.setAttribute("aria-label","Recorded weight by day, Monday to Sunday, from "+fmtDate(firstISO)+" to "+fmtDate(lastISO));
     container.replaceChildren(plot);

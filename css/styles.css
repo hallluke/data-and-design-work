@@ -1,43 +1,73 @@
 /* 01 — DESIGN TOKENS & SITE STYLES
    Shared layout classes are independent of Figure 01.
    To extract later, move this block into styles.css unchanged. */
+/* Colour system — edit these values to retheme the publication. */
 :root {
+  /* Paper, text and rules */
   --paper: #faf9f6;
-  --ink: #272727;
-  --muted: #66645f;
-  --line: #d5d2cc;
-  --pale: #e9e7e2;
+  --ink: #302d29;
+  --muted: #706960;
+  --line: #d6d0c7;
+  --pale: #ebe7e0;
+  --white: #ffffff;
 
+  /* Editorial annotations */
   --accent-blue: #367bc0;
   --accent-orange: #e58b4b;
   --highlight-opacity: 40%;
   --highlight-height: 40%;
   --highlight-duration: 320ms;
-  --tone-01: #333;
-  --tone-02: #444;
-  --tone-03: #777;
-  --white: #fff;
-  --tone-04: #0002;
-  --chart-selection: #202020;
-  --tone-05: #272727;
-  --tone-06: #292929;
+
+  /* Data palette: charcoal → taupe → stone → beige-grey */
   --chart-dark: #48443f;
+  --chart-deep-mid: #69635c;
   --chart-mid: #898179;
-  --chart-cell-stroke: #d8d1c8;
-  --tone-07: #6c3535;
-  --tone-08: #85837f;
-  --tone-09: #bcbab5;
+  --chart-soft-mid: #a9a198;
   --chart-light: #c9c2b9;
-  --publication-edge: #d3d0ca;
-  --tone-10: #d5d2cc;
-  --tone-11: #d6d6d6;
-  --tone-12: #d8d6d2;
-  --tone-13: #dedede;
+  --chart-empty: #e5e0d9;
+  --chart-cell-stroke: #d8d1c8;
+  --chart-selection: #302d29;
+
+  /* Interface states and supporting marks */
+  --ui-disabled-text: #898179;
+  --ui-disabled-fill: #e5e3de;
+  --ui-disabled-edge: #d3d0ca;
+  --ui-error: #824d46;
+  --ui-legend-muted: #bcb4a9;
+  --ui-rule-light: #d8d1c8;
+  --ui-shadow: #00000022;
+  --ui-hover-ink: #48443f;
+
+  /* Tooltip colours */
+  --tooltip-background: #38332e;
+  --tooltip-text: #ffffff;
+  --tooltip-muted: #e2dbd2;
+  --tooltip-rule: #ffffff29;
+  --tooltip-rule-strong: #ffffff66;
+  --tooltip-rule-footer: #ffffff77;
+
+  /* Publication band: intentionally retained for a later appraisal */
   --publication-fill: #e5e3de;
-  --tone-14: #e9e7e2;
-  --tone-15: #ffffff29;
-  --tone-16: #ffffff66;
-  --tone-17: #ffffff77;
+  --publication-edge: #d3d0ca;
+
+  /* Compatibility aliases for existing styles */
+  --tone-01: var(--chart-dark);
+  --tone-02: var(--chart-deep-mid);
+  --tone-03: var(--chart-mid);
+  --tone-04: var(--ui-shadow);
+  --tone-05: var(--ink);
+  --tone-06: var(--tooltip-background);
+  --tone-07: var(--ui-error);
+  --tone-08: var(--ui-disabled-text);
+  --tone-09: var(--ui-legend-muted);
+  --tone-10: var(--line);
+  --tone-11: var(--tooltip-muted);
+  --tone-12: var(--ui-rule-light);
+  --tone-13: var(--tooltip-muted);
+  --tone-14: var(--pale);
+  --tone-15: var(--tooltip-rule);
+  --tone-16: var(--tooltip-rule-strong);
+  --tone-17: var(--tooltip-rule-footer);
 }
 * {
   box-sizing: border-box;
@@ -174,7 +204,7 @@ h2 {
 }
 .choices button[aria-pressed=true] {
   background: var(--chart-dark);
-  color: white;
+  color: var(--white);
   border-color: var(--chart-dark);
 }
 select {
