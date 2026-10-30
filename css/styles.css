@@ -1,6 +1,5 @@
 /* 01 — DESIGN TOKENS & SITE STYLES
-   Shared layout classes are independent of Figure 01.
-   To extract later, move this block into styles.css unchanged. */
+   Base and derived colours for the household waste dashboard. */
 /* Nine editable base colours; all other colours are aliases or derived. */
 :root {
   /* Page: paper, text, supporting text, rules */
@@ -26,7 +25,6 @@
   --pale: color-mix(in srgb, var(--ink) 5%, var(--paper));
   --chart-selection: var(--ink);
   --chart-cell-stroke: var(--line);
-  --ui-hover-ink: var(--chart-dark);
   --ui-disabled-text: color-mix(in srgb, var(--ink) 55%, var(--paper));
   --ui-disabled-fill: var(--pale);
   --ui-disabled-edge: var(--line);
@@ -236,9 +234,6 @@ button:focus-visible,select:focus-visible,summary:focus-visible,.chart svg rect:
 
 
 
-.details-row {
-  grid-column: 1/-1;
-}
 .details-layout {
   display: grid;
   grid-template-columns: max-content minmax(0,1fr);
@@ -252,13 +247,6 @@ button:focus-visible,select:focus-visible,summary:focus-visible,.chart svg rect:
 .details-layout .method-copy {
   grid-column: 2;
   grid-row: 1;
-}
-.details-row details {
-  font-size: 12px;
-  color: var(--muted);
-  border-top: 1px solid var(--line);
-  margin-top: -9px;
-  padding-top: 5px;
 }
 summary {
   cursor: pointer;
@@ -516,22 +504,13 @@ select:disabled {
 }
 
 /* 05 — FIGURE 02 — controls share the Figure 01 button/select components. */
-.comparison-controls { margin-bottom: 9px; }
-.comparison-controls .control-row { gap: 7px; min-height: 33px; }
-.comparison-controls .control-label,.comparison-controls label { min-width: 72px; }
-.comparison-controls .choices { flex-wrap: nowrap; width: 168px; }
-.comparison-controls .choices button { flex: 1; padding: 5px 7px; }
-.comparison-controls select { width: 168px; min-width: 168px; max-width: 168px; }
 [data-chart-id="yearly-material-comparison"] .chart { min-height: 250px; }
 [data-chart-id="yearly-material-comparison"] .chart svg { display: block; }
 [data-chart-id="yearly-material-comparison"] .chart .compare-series { transition: opacity .12s ease; }
 [data-chart-id="yearly-material-comparison"] .chart .comparison-focus-line:focus-visible { outline: none; }
-.comparison-key { font-size: 10px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
-.comparison-key .line-sample { display: inline-block; width: 18px; border-top: 2px dashed var(--chart-mid); vertical-align: middle; margin-right: 5px; }
 [data-chart-id="yearly-material-comparison"] .tooltip { min-width: 170px; max-width: 270px; }
 [data-chart-id="yearly-material-comparison"] .tip-table { margin-top: 5px; }
 @media(max-width:430px) {
-  .comparison-controls .choices,.comparison-controls select { width: 148px; min-width: 148px; max-width: 148px; }
 }
 
 /* Figure 02 tooltip overlays the right-hand label gutter, not the slopes. */
@@ -540,15 +519,11 @@ select:disabled {
 [data-chart-id="yearly-material-comparison"] .tip-range { color: var(--tooltip-muted); font-size: 10px; }
 /* Tablet: do not let the category selector exceed its column. */
 @media (min-width: 781px) and (max-width: 900px) {
-  .comparison-controls .control-row { min-width: 0; }
-  .comparison-controls select { width: min(168px, 100%); min-width: 0; max-width: 100%; }
-  .comparison-controls label, .comparison-controls .control-label { min-width: 0; }
 }
 /* Mobile: preserve the same compact vertical rhythm as desktop. */
 @media (max-width: 750px) { .control-row { padding-top: 0; padding-bottom: 0; } }
 
 /* 06 — SHARED ACCESSIBLE DISCLOSURES */
-.disclosure-row { margin-top: -16px; }
 
 .disclosure-toggle { display: inline-flex; align-items: center; gap: 5px; justify-self: start; border: 0; border-radius: 0; padding: 7px 0; margin: 0; background: transparent; color: var(--muted); font: 12px "Source Sans 3",Arial,sans-serif; cursor: pointer; text-align: left; }
 .disclosure-toggle:nth-child(2) { justify-self: end; }
@@ -576,7 +551,6 @@ select:disabled {
   
 }
 @media (max-width: 780px) {
-  .disclosure-row { margin-top: -12px; }
   
   .disclosure-toggle { font-size: 11px; }
   .disclosure-panel .details-layout { grid-template-columns: 1fr; gap: 3px; }
@@ -600,9 +574,6 @@ select:disabled {
 
 /* Prevent Figure 02 controls colliding with the Measurement label at tablet widths. */
 @media (min-width: 781px) and (max-width: 1050px) {
-  .comparison-controls .control-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,148px); gap: 5px; min-width: 0; }
-  .comparison-controls .choices, .comparison-controls select { width: 100%; min-width: 0; max-width: 100%; }
-  .comparison-controls .choices button { padding-inline: 4px; }
 }
 
 /* v15: chart and disclosure elements share one grid, allowing responsive ordering. */
@@ -654,10 +625,6 @@ select:disabled {
 .disclosure-panel .table-scroll { margin-top: 1px; }
 
 /* Figure 03: reuse the established selector and disclosure styling. */
-.recycling-controls { margin-bottom: 12px; }
-.recycling-controls .control-row { min-height: 33px; gap: 7px; }
-.recycling-controls label { min-width: 72px; }
-.recycling-controls select { width: 168px; min-width: 168px; max-width: 168px; }
 [data-chart-id="overall-recycling-rate"] .chart { min-height: 250px; display: flex; justify-content: center; align-items: center; }
 [data-chart-id="overall-recycling-rate"] .chart svg { width: min(100%, 260px); height: auto; overflow: visible; }
 [data-chart-id="overall-recycling-rate"] .chart .rate-value { fill: var(--ink); font-size: 30px; font-weight: 400; letter-spacing: -.045em; }
@@ -668,7 +635,6 @@ select:disabled {
 
 
 @media (max-width: 780px) {
- .recycling-controls select { width: 168px; min-width: 0; max-width: 100%; }
  
 }
 
@@ -689,8 +655,6 @@ select:disabled {
 .calendar-scroll:focus-visible { outline:2px solid var(--chart-dark); outline-offset:2px; }
 [data-chart-id="daily-material-weights"] .chart { width:max-content; }
 [data-chart-id="daily-material-weights"] .chart svg { display:block; max-width:none; height:auto; font-family:"Source Sans 3",Arial,sans-serif; }
-.calendar-disclosure-wrap { margin-top:-1px; margin-bottom:28px; border-top:1px solid var(--line); }
-.calendar-disclosure-wrap .disclosure-trigger { border-top:0; }
 #calendar-table th:last-child, #calendar-table td:last-child { text-align:right; }
 @media (max-width:780px) { .calendar-controls .control-row { flex-direction:row; } }
 
@@ -872,11 +836,8 @@ select:disabled {
 [data-chart-id="daily-material-weights"] svg rect.is-selected { stroke: var(--ink, var(--chart-selection)); stroke-width: 2px; }
 .disclosure-panel .table-scroll:focus-visible { outline: 2px solid var(--ink, var(--chart-selection)); outline-offset: 2px; }
 @media (max-width: 780px) {
-  .comparison-controls .choices, .comparison-controls select { width: 168px; min-width: 0; max-width: 100%; box-sizing: border-box; }
-  .comparison-controls .choices button { min-width: 0; }
 }
 @media (max-width: 430px) {
-  .comparison-controls .choices, .comparison-controls select { width: 168px; min-width: 0; max-width: 100%; }
 }
 
 /* The monthly selection follows the plotted bar, not its full-height hit target. */
@@ -887,9 +848,6 @@ select:disabled {
 [data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible svg rect.is-selected { stroke-width: 2; }
 
 @media (max-width: 780px) {
-  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices,
-  [data-chart-id="yearly-material-comparison"] .comparison-controls select { width: 100%; min-width: 0; max-width: none; box-sizing: border-box; }
-  [data-chart-id="yearly-material-comparison"] .comparison-controls .choices button { flex: 1 1 0; min-width: 0; }
 }
 
 /* Chart 1: compact tooltip; stabilise only the numeric column. */
