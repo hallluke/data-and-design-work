@@ -91,6 +91,74 @@ h1 {
   font-size: 11px;
   line-height: 1.7;
 }
+/* 03 — PUBLICATION BAND (self-contained; mobile rules kept adjacent) */
+/* Publication record */
+.publication-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 0;
+  margin: 0 0 18px;
+  padding: 7px 0;
+  background: var(--publication-fill);
+  color: var(--ink);
+  font: 11px "Source Sans 3", Arial, sans-serif;
+  border-left: 2px solid var(--publication-edge);
+  border-right: 2px solid var(--publication-edge);
+}
+
+.publication-band[hidden] {
+  display: none;
+}
+
+.publication-band-cell {
+  min-width: 0;
+  padding: 0 13px;
+  white-space: nowrap;
+}
+
+.publication-band-cell:nth-child(1) {
+  text-align: left;
+}
+
+.publication-band-cell:nth-child(2) {
+  text-align: center;
+}
+
+.publication-band-cell:nth-child(3) {
+  text-align: right;
+}
+
+.publication-band-heading {
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.publication-label {
+  color: var(--muted);
+}
+
+.publication-band strong {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+@media (max-width: 780px) {
+  .publication-band {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    margin: 0 0 18px;
+    padding: 8px 0;
+  }
+
+  .publication-band-cell {
+    text-align: left !important;
+  }
+}
+
 .atlas-row {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
@@ -430,7 +498,7 @@ select:disabled {
   border-bottom: 0;
 }
 
-/* 04 — RESPONSIVE RULES (cascade order preserved) */
+/* RESPONSIVE OVERRIDES — existing cascade order intentionally preserved. */
 @media (max-width:750px) {
 .details-layout {
   grid-template-columns: 1fr;
@@ -611,7 +679,7 @@ select:disabled {
   .chart-disclosure-grid > .disclosure-panel-2 { grid-column: 1; grid-row: 6; }
 }
 
-/* 07 — MASTHEAD INTRODUCTION:  one continuous paragraph balanced across newspaper-style columns. */
+/* INTRODUCTION — initial styles; later grid refinement retained in cascade position. */
 .intro {
   column-count: 3;
   column-gap: 28px;
@@ -644,9 +712,6 @@ select:disabled {
 
 
 
-@media (max-width: 780px) {
- 
-}
 
 /* Figure 03: numeric data and headings use the shared right-alignment convention. */
 #recycling-table th:not(:first-child), #recycling-table td:not(:first-child) { text-align: right; }
@@ -744,72 +809,6 @@ select:disabled {
   .foot-left, .foot-right { width:100%; text-align:center; }
 }
 
-/* Publication record */
-.publication-band {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: center;
-  gap: 0;
-  margin: 0 0 18px;
-  padding: 7px 0;
-  background: var(--publication-fill);
-  color: var(--ink);
-  font: 11px "Source Sans 3", Arial, sans-serif;
-  border-left: 2px solid var(--publication-edge);
-  border-right: 2px solid var(--publication-edge);
-}
-
-.publication-band[hidden] {
-  display: none;
-}
-
-.publication-band-cell {
-  min-width: 0;
-  padding: 0 13px;
-  white-space: nowrap;
-}
-
-.publication-band-cell:nth-child(1) {
-  text-align: left;
-}
-
-.publication-band-cell:nth-child(2) {
-  text-align: center;
-}
-
-.publication-band-cell:nth-child(3) {
-  text-align: right;
-}
-
-.publication-band-heading {
-  font-size: 10px;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.publication-label {
-  color: var(--muted);
-}
-
-.publication-band strong {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  text-transform: uppercase;
-}
-
-@media (max-width: 780px) {
-  .publication-band {
-    grid-template-columns: 1fr;
-    gap: 5px;
-    margin: 0 0 18px;
-    padding: 8px 0;
-  }
-
-  .publication-band-cell {
-    text-align: left !important;
-  }
-}
 /* Initial chart placeholder; reused for errors by showChartError. */
 .chart-status { font: 12px/1.5 "Source Sans 3",Arial,sans-serif; color: var(--muted); padding: 15px 0; }
 .chart-status.error { color: var(--ui-error); }
