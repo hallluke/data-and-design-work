@@ -830,7 +830,6 @@ select:disabled {
 [data-chart-id="monthly-material-weights"] svg rect.is-selected { fill: transparent; }
 [data-chart-id="overall-recycling-rate"] svg path.is-selected { stroke: none; }
 [data-chart-id="overall-recycling-rate"] svg path:focus-visible { outline: 2px solid var(--ink, var(--chart-selection)); outline-offset: 2px; }
-[data-chart-id="daily-material-weights"] svg rect.is-selected { stroke: var(--ink, var(--chart-selection)); stroke-width: 2px; }
 .disclosure-panel .table-scroll:focus-visible { outline: 2px solid var(--ink, var(--chart-selection)); outline-offset: 2px; }
 
 /* The monthly selection follows the plotted bar, not its full-height hit target. */

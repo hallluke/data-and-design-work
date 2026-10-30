@@ -3,11 +3,13 @@
 // Shared chart palette and responsive layout breakpoint.
 const MULTI_COLUMN_MEDIA = "(min-width: 581px)";
 const cssColour = (token, fallback) =>
-  getComputedStyle(document.documentElement).getPropertyValue(token).trim() || fallback;
+  (typeof document !== "undefined" && typeof getComputedStyle === "function"
+    ? getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+    : "") || fallback;
 const ATLAS_COLOURS = Object.freeze({
-  dark:cssColour("--chart-dark"),
-  light:cssColour("--chart-light"),
-  empty:cssColour("--chart-empty")
+  dark:cssColour("--chart-dark", "#48443f"),
+  light:cssColour("--chart-light", "#c9c2b9"),
+  empty:cssColour("--chart-empty", "#f1eee9")
 });
 function atlasColourAt(t) {
   return d3.interpolateLab(ATLAS_COLOURS.dark, ATLAS_COLOURS.light)(t);

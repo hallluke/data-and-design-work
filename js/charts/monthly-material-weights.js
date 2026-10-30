@@ -202,7 +202,8 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
       highlight.setAttribute("height", String(Math.max(1, Math.abs(base - y))));
       highlight.setAttribute("visibility", "visible");
     };
-    clearSelection = () => highlight.setAttribute("visibility", "hidden");
+    let touchedMonth = -1;
+    clearSelection = () => { touchedMonth = -1; highlight.setAttribute("visibility", "hidden"); };
     overlay.setAttribute("aria-label", "Monthly values");
     totals.forEach((datum, i) => {
       const rect = document.createElementNS(ns, "rect");
@@ -218,9 +219,15 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
         (state.basis === "imputed" && !datum.complete ? ", provisional" : ""));
       // Mouse tracking is handled by the plot-wide listener, including gaps.
       rect.addEventListener("pointerdown", event => { if (event.pointerType === "mouse") event.preventDefault(); });
-      rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) { selectBar(i, datum); showTip(event, datum); } });
+      rect.addEventListener("pointerup", event => { if (isTouchPointer(event)) {
+        if (touchedMonth === i && !tip.hidden) return;
+        touchedMonth = i;
+        selectBar(i, datum);
+        showTip(event, datum);
+      } });
 
       rect.addEventListener("focus", () => {
+        if (touchedMonth === i && !tip.hidden) return;
         selectBar(i, datum);
         const bounds = rect.getBoundingClientRect();
         showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);
