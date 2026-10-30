@@ -1,4 +1,4 @@
-import { cssColour } from "../chart-style.js";
+import { cssColour, atlasColourAt } from "../chart-style.js";
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { nearestSlope } from "../slope-proximity.js";
 import { showTooltip, hideTooltip, renderTableRows, setDisclosureContent,
@@ -146,7 +146,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
       {year:years[0],lo:row.earlier,hi:row.earlier},
       {year:years[1],lo:row.low,hi:row.high}
     ]);
-    if (fan.length) marks.push(Plot.areaY(fan, {x:"year",y1:"lo",y2:"hi",fill:cssColour("--chart-mid"),fillOpacity:.24}));
+    if (fan.length) marks.push(Plot.areaY(fan, {x:"year",y1:"lo",y2:"hi",fill:atlasColourAt(0.5),fillOpacity:.24}));
     // Every line, endpoint, leader and label is an Observable Plot mark.
     // Separate line marks make it possible to highlight the active series.
     rows.forEach((row,i)=>{
@@ -155,7 +155,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
         strokeDasharray:row.projected?"5 3":undefined,className:`compare-series compare-series-${i}`}));
       marks.push(Plot.dot(series,{x:"year",y:"kg",r:2.8,fill:cssColour("--chart-dark"),className:`compare-series compare-series-${i}`}));
       marks.push(Plot.link([{x1:years[1],y1:row.current,x2:labelX-.025,y2:labelKg(row.name)}],{
-        x1:"x1",y1:"y1",x2:"x2",y2:"y2",stroke:cssColour("--chart-mid"),strokeWidth:.75,
+        x1:"x1",y1:"y1",x2:"x2",y2:"y2",stroke:atlasColourAt(0.5),strokeWidth:.75,
         className:`compare-series compare-series-${i}`}));
       marks.push(Plot.text([{x:labelX,y:labelKg(row.name),name:row.name}],{
         x:"x",y:"y",text:"name",textAnchor:"start",fontSize:12,fill:cssColour("--chart-dark"),

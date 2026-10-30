@@ -1,15 +1,18 @@
 /* 01 — DESIGN TOKENS & SITE STYLES
    Shared layout classes are independent of Figure 01.
    To extract later, move this block into styles.css unchanged. */
-/* Colour system — edit these values to retheme the publication. */
+/* Nine editable base colours; all other colours are aliases or derived. */
 :root {
-  /* Paper, text and rules */
+  /* Page: paper, text, supporting text, rules */
   --paper: #faf9f6;
   --ink: #302d29;
   --muted: #706960;
   --line: #d6d0c7;
-  --pale: #ebe7e0;
-  --white: #ffffff;
+
+  /* Data: interpolation endpoints and a distinct no-data state */
+  --chart-dark: #48443f;
+  --chart-light: #c9c2b9;
+  --chart-empty: #f1eee9;
 
   /* Editorial annotations */
   --accent-blue: #367bc0;
@@ -18,57 +21,30 @@
   --highlight-height: 40%;
   --highlight-duration: 320ms;
 
-  /* Data palette: charcoal → taupe → stone → beige-grey */
-  --chart-dark: #48443f;
-  --chart-deep-mid: #69635c;
-  --chart-mid: #898179;
-  --chart-soft-mid: #a9a198;
-  --chart-light: #c9c2b9;
-  --chart-empty: #e5e0d9;
-  --chart-cell-stroke: #d8d1c8;
-  --chart-selection: #302d29;
-
-  /* Interface states and supporting marks */
-  --ui-disabled-text: #898179;
-  --ui-disabled-fill: #e5e3de;
-  --ui-disabled-edge: #d3d0ca;
-  --ui-error: #824d46;
-  --ui-legend-muted: #bcb4a9;
-  --ui-rule-light: #d8d1c8;
-  --ui-shadow: #00000022;
-  --ui-hover-ink: #48443f;
-
-  /* Tooltip colours */
-  --tooltip-background: #38332e;
-  --tooltip-text: #ffffff;
-  --tooltip-muted: #e2dbd2;
-  --tooltip-rule: #ffffff29;
-  --tooltip-rule-strong: #ffffff66;
-  --tooltip-rule-footer: #ffffff77;
-
-  /* Publication band: intentionally retained for a later appraisal */
-  --publication-fill: #e5e3de;
-  --publication-edge: #d3d0ca;
-
-  /* Compatibility aliases for existing styles */
-  --tone-01: var(--chart-dark);
-  --tone-02: var(--chart-deep-mid);
-  --tone-03: var(--chart-mid);
-  --tone-04: var(--ui-shadow);
-  --tone-05: var(--ink);
-  --tone-06: var(--tooltip-background);
-  --tone-07: var(--ui-error);
-  --tone-08: var(--ui-disabled-text);
-  --tone-09: var(--ui-legend-muted);
-  --tone-10: var(--line);
-  --tone-11: var(--tooltip-muted);
-  --tone-12: var(--ui-rule-light);
-  --tone-13: var(--tooltip-muted);
-  --tone-14: var(--pale);
-  --tone-15: var(--tooltip-rule);
-  --tone-16: var(--tooltip-rule-strong);
-  --tone-17: var(--tooltip-rule-footer);
+  /* Derived roles: not independently selected colours */
+  --white: var(--paper);
+  --pale: color-mix(in srgb, var(--ink) 5%, var(--paper));
+  --chart-selection: var(--ink);
+  --chart-cell-stroke: var(--line);
+  --ui-hover-ink: var(--chart-dark);
+  --ui-disabled-text: color-mix(in srgb, var(--ink) 55%, var(--paper));
+  --ui-disabled-fill: var(--pale);
+  --ui-disabled-edge: var(--line);
+  --ui-legend-muted: var(--chart-light);
+  --ui-rule-light: var(--line);
+  --ui-shadow: rgb(0 0 0 / 13%);
+  --ui-error: #824d46; /* Reserved semantic error colour */
+  --tooltip-background: var(--ink);
+  --tooltip-text: var(--paper);
+  --tooltip-muted: color-mix(in srgb, var(--paper) 75%, var(--ink));
+  --tooltip-rule: color-mix(in srgb, var(--paper) 20%, transparent);
+  --tooltip-rule-strong: color-mix(in srgb, var(--paper) 40%, transparent);
+  --tooltip-rule-footer: var(--tooltip-rule-strong);
+  --publication-fill: var(--pale);
+  --publication-edge: var(--line);
+  --chart-mid: color-mix(in lab, var(--chart-dark) 50%, var(--chart-light));
 }
+
 * {
   box-sizing: border-box;
 }
@@ -195,16 +171,16 @@ h2 {
 }
 .choices button:disabled {
   cursor: not-allowed;
-  color: var(--tone-08);
-  border-color: var(--publication-edge);
-  background: repeating-linear-gradient(135deg,var(--publication-fill) 0,var(--publication-fill) 3px,var(--publication-edge) 3px,var(--publication-edge) 4px);
+  color: var(--ui-disabled-text);
+  border-color: var(--ui-disabled-edge);
+  background: repeating-linear-gradient(135deg,var(--ui-disabled-fill) 0,var(--ui-disabled-fill) 3px,var(--ui-disabled-edge) 3px,var(--ui-disabled-edge) 4px);
 }
 .choices button:disabled:hover {
   border-color: var(--publication-edge);
 }
 .choices button[aria-pressed=true] {
   background: var(--chart-dark);
-  color: var(--white);
+  color: white;
   border-color: var(--chart-dark);
 }
 select {
@@ -213,10 +189,10 @@ select {
   min-width: 115px;
 }
 button:hover,select:hover {
-  border-color: var(--tone-03);
+  border-color: var(--chart-mid);
 }
 button:focus-visible,select:focus-visible,summary:focus-visible,.chart svg rect:focus-visible {
-  outline: 2px solid var(--tone-01);
+  outline: 2px solid var(--chart-dark);
   outline-offset: 3px;
 }
 .chart {
@@ -242,12 +218,12 @@ button:focus-visible,select:focus-visible,summary:focus-visible,.chart svg rect:
   position: absolute;
   pointer-events: none;
   z-index: 10;
-  background: var(--tone-06);
-  color: var(--white);
+  background: var(--tooltip-background);
+  color: var(--tooltip-text);
   padding: 8px 10px;
   font-size: 11px;
   line-height: 1.5;
-  box-shadow: 0 2px 9px var(--tone-04);
+  box-shadow: 0 2px 9px var(--ui-shadow);
   max-width: 340px;
   min-width: 175px;
 }
@@ -330,7 +306,7 @@ th {
 }
 .error {
   font: 12px/1.5 "Source Sans 3",Arial,sans-serif;
-  color: var(--tone-07);
+  color: var(--ui-error);
   padding: 15px 0;
 }
 .legend {
@@ -346,11 +322,11 @@ th {
   width: 9px;
   height: 9px;
   margin-right: 5px;
-  background: var(--tone-02);
+  background: var(--chart-dark);
   vertical-align: middle;
 }
 .swatch.provisional {
-  background: var(--tone-09);
+  background: var(--ui-legend-muted);
 }
 .filter-layout {
   display: grid;
@@ -401,8 +377,8 @@ th {
 }
 select:disabled {
   cursor: not-allowed;
-  color: var(--tone-08);
-  background: repeating-linear-gradient(135deg,var(--publication-fill) 0,var(--publication-fill) 3px,var(--publication-edge) 3px,var(--publication-edge) 4px);
+  color: var(--ui-disabled-text);
+  background: repeating-linear-gradient(135deg,var(--ui-disabled-fill) 0,var(--ui-disabled-fill) 3px,var(--ui-disabled-edge) 3px,var(--ui-disabled-edge) 4px);
 }
 .filter-layout .choices button {
   flex: 1 1 0;
@@ -425,24 +401,24 @@ select:disabled {
   width: auto;
   max-width: none;
   margin: 6px 0 2px;
-  color: var(--white);
+  color: var(--tooltip-text);
   font: 11px/1.45 "Source Sans 3",Arial,Helvetica,sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .tip-table th,.tip-table td {
   border: 0;
-  border-bottom: 1px solid var(--tone-15);
+  border-bottom: 1px solid var(--tooltip-rule);
   background: transparent;
   padding: 3px 9px 3px 0;
-  color: var(--white);
+  color: var(--tooltip-text);
   font-weight: 400;
   position: static;
   white-space: nowrap;
 }
 .tip-table thead th {
   font-size: 10px;
-  color: var(--tone-13);
-  border-bottom: 1px solid var(--tone-16);
+  color: var(--tooltip-muted);
+  border-bottom: 1px solid var(--tooltip-rule-strong);
 }
 .tip-table th:first-child,.tip-table td:first-child {
   text-align: left;
@@ -453,7 +429,7 @@ select:disabled {
 }
 .tip-table tfoot td {
   font-weight: 600;
-  border-top: 1px solid var(--tone-17);
+  border-top: 1px solid var(--tooltip-rule-footer);
   border-bottom: 0;
 }
 
@@ -551,7 +527,7 @@ select:disabled {
 [data-chart-id="yearly-material-comparison"] .chart .compare-series { transition: opacity .12s ease; }
 [data-chart-id="yearly-material-comparison"] .chart .comparison-focus-line:focus-visible { outline: none; }
 .comparison-key { font-size: 10px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
-.comparison-key .line-sample { display: inline-block; width: 18px; border-top: 2px dashed var(--tone-03); vertical-align: middle; margin-right: 5px; }
+.comparison-key .line-sample { display: inline-block; width: 18px; border-top: 2px dashed var(--chart-mid); vertical-align: middle; margin-right: 5px; }
 [data-chart-id="yearly-material-comparison"] .tooltip { min-width: 170px; max-width: 270px; }
 [data-chart-id="yearly-material-comparison"] .tip-table { margin-top: 5px; }
 @media(max-width:430px) {
@@ -561,7 +537,7 @@ select:disabled {
 /* Figure 02 tooltip overlays the right-hand label gutter, not the slopes. */
 [data-chart-id="yearly-material-comparison"] .tooltip { position: fixed; z-index: 100; pointer-events: none; max-width: min(340px, calc(100vw - 12px)); }
 [data-chart-id="yearly-material-comparison"] .tip-table td:last-child { text-align: right; }
-[data-chart-id="yearly-material-comparison"] .tip-range { color: var(--tone-11); font-size: 10px; }
+[data-chart-id="yearly-material-comparison"] .tip-range { color: var(--tooltip-muted); font-size: 10px; }
 /* Tablet: do not let the category selector exceed its column. */
 @media (min-width: 781px) and (max-width: 900px) {
   .comparison-controls .control-row { min-width: 0; }
@@ -704,7 +680,7 @@ select:disabled {
 .calendar-controls .control-row { flex-direction:row; align-items:center; gap:9px; }
 .calendar-controls select { max-width:190px; }
 .calendar-key { display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:10px; color:var(--muted); margin:9px 0 5px; }
-.calendar-key .swatch { display:inline-block; width:13px; height:13px; border:1px solid var(--tone-12); }
+.calendar-key .swatch { display:inline-block; width:13px; height:13px; border:1px solid var(--ui-rule-light); }
 .calendar-key .key-gap { width:8px; }
 .calendar-layout { display:grid; grid-template-columns:37px minmax(0,1fr); align-items:start; min-width:0; }
 .calendar-weekdays { display:grid; grid-template-rows: 29px repeat(7, 17px); font-size:11px; color:var(--muted); line-height:17px; }
@@ -874,7 +850,7 @@ select:disabled {
 }
 /* Initial chart placeholder; reused for errors by showChartError. */
 .chart-status { font: 12px/1.5 "Source Sans 3",Arial,sans-serif; color: var(--muted); padding: 15px 0; }
-.chart-status.error { color: var(--tone-07); }
+.chart-status.error { color: var(--ui-error); }
 
 /* Shared chart shell: static heading, JS controls, status/visualisation. */
 .module > .chart-controls { min-width: 0; }

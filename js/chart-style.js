@@ -9,8 +9,11 @@ const ATLAS_COLOURS = Object.freeze({
   light:cssColour("--chart-light"),
   empty:cssColour("--chart-empty")
 });
+function atlasColourAt(t) {
+  return d3.interpolateLab(ATLAS_COLOURS.dark, ATLAS_COLOURS.light)(t);
+}
 function atlasPalette(count) {
   return count <= 1 ? [ATLAS_COLOURS.dark] :
     d3.quantize(d3.interpolateLab(ATLAS_COLOURS.dark,ATLAS_COLOURS.light),count);
 }
-export { MULTI_COLUMN_MEDIA, ATLAS_COLOURS, atlasPalette, cssColour };
+export { MULTI_COLUMN_MEDIA, ATLAS_COLOURS, atlasPalette, atlasColourAt, cssColour };
