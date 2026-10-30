@@ -138,7 +138,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
 
   const table = root.querySelector("#calendar-table tbody");
   setDisclosureContent({root, methodId: "calendar-method", tableId: "calendar-table",
-    methodology: "Each square represents a calendar day. Darker squares indicate more weight recorded for the selected material; pale squares have no recorded weight. Weights are assigned to the date logged, not spread across the days when waste accumulated. The colour scale adjusts to the selected material.",
+    methodology: "Each weighed collection or disposal is assigned to the date recorded, without imputation. The calendar keeps individual days in view instead of combining them into monthly totals, revealing the timing and spacing of records. Each square represents one day; darker squares show more recorded weight and the colour scale adapts to the selected material. A pale square means no weight was recorded on that day, not necessarily that no waste was generated. The controls let you inspect materials and navigate dates.",
     columns: ["Measure", "Value"]});
 
   const records = rows.map(r => ({...r, day:r.date}));

@@ -259,11 +259,7 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
     renderLegend(chartGroups);
     updateControls();
     setDisclosureContent({root, methodId: "method", tableId: "data-table",
-      methodology: "Recorded weights are attributed to their collection month. Imputed weights " +
-      "are spread evenly over days since the previous collection of the same material " +
-      "(first interval starts " + data.metadata.imputationStart + "). " +
-      "Batteries are included only in recorded totals. Imputed months after " +
-      formatMonth(completeThrough) + " are provisional because not all streams have subsequent collections."});
+      methodology: "I weigh each material when it is collected or taken for disposal. Recorded mode places that weight on its collection date; imputation estimates when it accumulated by spreading it evenly across the interval since the previous collection (starting " + data.metadata.imputationStart + "). The monthly bars make totals and material composition comparable across time. Batteries appear only in recorded totals. Imputed months after " + formatMonth(completeThrough) + " are provisional until subsequent collections establish the full intervals; even completed imputed months assume a steady daily accumulation."});
   }
 
   function rerender() {

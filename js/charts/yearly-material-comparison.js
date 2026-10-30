@@ -338,7 +338,7 @@ function createYearlyMaterialComparisonChart({ container, data, detail, comparis
 
     period.textContent="Jan—"+labelMonth;
     setDisclosureContent({root, methodId: "comparison-method", tableId: "comparison-table",
-      methodology: {html: "Both years cover January through Sept. The cut-off is the latest fully covered month for regularly collected materials (excluding residual waste and batteries). Imputed weights are distributed across collection intervals as in Figure 01. For residual waste, the days after the last recorded weight are extrapolated using the pooled historical daily rate from the recording intervals. The low/high range uses the minimum and maximum observed interval rates. This is a sensitivity range, <strong>not</strong> a calibrated prediction interval or probability statement. Recorded mode sums weights by collection date without projection; batteries appear there only."}});
+      methodology: {html: "Weights are grouped by material and compared from January to the latest fully covered month for regularly collected materials, excluding residual waste and batteries. Both years use the same calendar cut-off. Imputed mode distributes collections across their intervals (as in Figure 01); recorded mode uses collection dates, with batteries included only there. The slope chart draws attention to the size and direction of each material’s change. For residual waste, the uncollected portion is estimated using the pooled historical daily rate; the low/high bounds reflect the smallest and largest observed interval rates. These bounds show sensitivity to the assumption, <strong>not</strong> a probability or prediction interval."}});
     renderTable(rows);
     controls.sync();
   }

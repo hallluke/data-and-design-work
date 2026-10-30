@@ -48,11 +48,12 @@
 }
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--chart-empty);
   color: var(--ink);
   font-family: "Source Serif 4",Georgia,serif;
 }
 .page {
+  background: var(--paper);
   max-width: 1150px;
   margin: auto;
   padding: 40px clamp(18px,4.5vw,60px) 65px;
@@ -935,3 +936,26 @@ select:disabled {
  .heading h2 .title-mark::before,.disclosure-toggle .disclosure-label,.foot a {transition:none;}
 }
 
+
+/* Editorial refresh: a shared three-column grid, equal-weight copy, and quiet figure observations. */
+.mast .meta { align-items: center; justify-content: flex-end; gap: 12px; }
+.mast .meta .recycling-icon { margin: 0; flex: none; }
+.mast .meta-stack { text-align: right; align-items: flex-end; line-height: 1.55; }
+.mast .meta-stack strong { font-weight: 600; color: var(--ink); }
+.intro { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px;
+  margin: 0 0 29px; padding: 27px 0 0; color: var(--ink);
+  font: 13px/1.55 "Source Sans 3",Arial,sans-serif; }
+.intro p { margin: 0; min-width: 0; }
+.figure-observation { margin: 14px 0 2px; padding: 9px 0 0;
+  border-top: 1px solid var(--line); color: var(--muted);
+  font: 12px/1.5 "Source Sans 3",Arial,sans-serif; }
+.observation-label { font-weight: 600; color: var(--ink); margin-right: .4em; }
+.module-header { padding-top: 10px; padding-bottom: 10px; }
+@media (max-width:780px) {
+  .intro { grid-template-columns: 1fr; gap: 12px; padding-top: 22px; margin-bottom: 25px; }
+}
+@media (max-width:430px) {
+  .mast .meta { display: flex; gap: 7px; }
+  .mast .meta .recycling-icon { width: 19px; height: 19px; }
+  .mast .meta-stack { font-size: 10px; white-space: normal; }
+}

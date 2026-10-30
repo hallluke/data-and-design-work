@@ -8,8 +8,7 @@ function formatDate(isoDate) {
 }
 
 export function initFreshness(data) {
-  const band = document.getElementById("publication-band");
-  if (!band) return;
+  if (!document.getElementById("stamp-filed") || !document.getElementById("stamp-checked")) return;
   const refreshDate = new Date(data?.refresh?.last_refreshed ?? NaN);
   const dates = Array.isArray(data?.collections)
     ? data.collections.map(row => row.date).filter(date => typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date))

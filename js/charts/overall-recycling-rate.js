@@ -12,7 +12,7 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
 
   const table = root.querySelector("#recycling-table tbody");
   setDisclosureContent({root, methodId: "recycling-method", tableId: "recycling-table",
-    methodology: "Recycling rate is the share of all recorded weight collected for recycling, including food recycling, soft plastics and batteries. General waste counts towards the total but not the recycled amount. Figures use collection dates, with no estimates. Rolling periods are measured back from today; calendar years may be incomplete.",
+    methodology: "I group recorded weights into material sent for recycling (including food waste, soft plastics and batteries) and general waste. The recycling rate is the first group’s share of the combined weight, not a count of items; no imputed values are used. The circular chart emphasises the part-to-whole relationship, and the period selector allows different date ranges to be compared. Rolling periods are counted back from today and calendar years may be incomplete. This measures what I put out for recycling, not what was ultimately recovered by processors.",
     columns: ["Category", "Weight (kg)", "Share"]});
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   let clearSelection = () => {};
