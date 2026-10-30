@@ -1,6 +1,6 @@
 import { installTouchDismissal, isTouchPointer, bindChartEvent } from "../chart-interaction.js";
 import { showTooltip, hideTooltip, positionFixedTooltip, renderTableRows,
-  setDisclosureContent, positionChartTooltip, formatWeight } from "../chart-display.js";
+  setDisclosureContent, positionChartTooltip, formatWeight, elementTooltipAnchor } from "../chart-display.js";
 import { populateMaterialSelect, sourceMatchesSelection, materialLabel, materialIdFromSource } from "../materials.js";
 import { setupChart } from "../chart-core.js";
 import { ATLAS_COLOURS, cssColour } from "../chart-style.js";
@@ -230,7 +230,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
       rects.forEach((rect,i)=>{
         rect.setAttribute("aria-label",`${fmtDate(cells[i].date)}: ${cells[i].records.length?cells[i].kg.toFixed(2)+" kilograms":"no recorded weight"}`);
         rect.addEventListener("pointerenter",e=>{if(!isTouchPointer(e)){showTip(cells[i]);moveTip(e);}});
-        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e) && touchOrigin && Math.hypot(e.clientX-touchOrigin.x,e.clientY-touchOrigin.y)<7){if(selectedDate===cells[i].date && !tip.hidden)return;keyboardDate=null;selectedDate=cells[i].date;showTip(cells[i]);moveTip(e);updateSelected();}});
+        rect.addEventListener("pointerup",e=>{if(isTouchPointer(e) && touchOrigin && Math.hypot(e.clientX-touchOrigin.x,e.clientY-touchOrigin.y)<7){if(selectedDate===cells[i].date && !tip.hidden)return;keyboardDate=null;selectedDate=cells[i].date;showTip(cells[i]);moveTip(elementTooltipAnchor(rect));updateSelected();}});
       });
     }
     updateSelected();

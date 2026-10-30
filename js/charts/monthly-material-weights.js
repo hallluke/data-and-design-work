@@ -1,6 +1,6 @@
 import { installTouchDismissal, isTouchPointer } from "../chart-interaction.js";
 import { showTooltip, hideTooltip, renderTableRows, setDisclosureContent,
-  formatWeight, formatMonth, monthInitial, positionChartTooltip } from "../chart-display.js";
+  formatWeight, formatMonth, monthInitial, positionChartTooltip, elementTooltipAnchor } from "../chart-display.js";
 import { normalizeMonthlyGroups, populateMaterialSelect, groupLabels,
   materialLabel, materialIdFromLabel } from "../materials.js";
 import { setupChart, showChartError, clearChartStatus } from "../chart-core.js";
@@ -223,14 +223,14 @@ function createMonthlyMaterialWeightsChart({ container, data, detail, root = doc
         if (touchedMonth === i && !tip.hidden) return;
         touchedMonth = i;
         selectBar(i, datum);
-        showTip(event, datum);
+        // Anchor touch selection to the bar, never to the tap location.
+        showTip(elementTooltipAnchor(rect, 30), datum);
       } });
 
       rect.addEventListener("focus", () => {
         if (touchedMonth === i && !tip.hidden) return;
         selectBar(i, datum);
-        const bounds = rect.getBoundingClientRect();
-        showTip({ clientX: bounds.left + bounds.width / 2, clientY: bounds.top + 30 }, datum);
+        showTip(elementTooltipAnchor(rect, 30), datum);
       });
       rect.addEventListener("blur", () => { hideTooltip(tip); clearSelection(); });
       overlay.append(rect);

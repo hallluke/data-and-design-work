@@ -2,14 +2,15 @@
 
 // Shared chart palette and responsive layout breakpoint.
 const MULTI_COLUMN_MEDIA = "(min-width: 581px)";
-const cssColour = (token, fallback) =>
-  (typeof document !== "undefined" && typeof getComputedStyle === "function"
-    ? getComputedStyle(document.documentElement).getPropertyValue(token).trim()
-    : "") || fallback;
+// Resolve CSS tokens when a chart actually renders, not when modules import.
+// CSS remains the only source of palette values; Node imports need no DOM.
+function cssColour(token) {
+  return getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+}
 const ATLAS_COLOURS = Object.freeze({
-  dark:cssColour("--chart-dark", "#48443f"),
-  light:cssColour("--chart-light", "#c9c2b9"),
-  empty:cssColour("--chart-empty", "#f1eee9")
+  get dark() { return cssColour("--chart-dark"); },
+  get light() { return cssColour("--chart-light"); },
+  get empty() { return cssColour("--chart-empty"); }
 });
 function atlasColourAt(t) {
   return d3.interpolateLab(ATLAS_COLOURS.dark, ATLAS_COLOURS.light)(t);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {showTooltip, hideTooltip, positionFixedTooltip} from '../js/chart-display.js';
+import {showTooltip, hideTooltip, positionFixedTooltip, elementTooltipAnchor} from '../js/chart-display.js';
 
 test('tooltip visibility can change without replacing content', () => {
   const tip = {hidden:true, innerHTML:'old'};
@@ -23,4 +23,10 @@ test('fixed tooltip follows pointer and clamps within viewport', () => {
   assert.equal(tip.style.left, '194px');
   assert.equal(tip.style.top, '6px');
   delete globalThis.window;
+});
+
+test("element anchor is stable regardless of tap position", () => {
+  const element = {getBoundingClientRect: () => ({left:100,top:40,width:20,height:16})};
+  assert.deepEqual(elementTooltipAnchor(element), {clientX:110,clientY:48});
+  assert.deepEqual(elementTooltipAnchor(element,30), {clientX:110,clientY:70});
 });

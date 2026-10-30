@@ -43,6 +43,13 @@ function positionChartTooltip(tooltip, event, container, { gap = 12, edge = 3, v
 }
 export { positionChartTooltip };
 
+// Stable tooltip anchor for touch selection; independent of tap coordinates.
+export function elementTooltipAnchor(element, verticalOffset = null) {
+  const bounds = element.getBoundingClientRect();
+  return {clientX: bounds.left + bounds.width / 2,
+    clientY: bounds.top + (verticalOffset === null ? bounds.height / 2 : verticalOffset)};
+}
+
 // Formatting.
 "use strict";
 
