@@ -16,6 +16,9 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
     columns: ["Category", "Weight (kg)", "Share"]});
   const tip = container.closest(".chart-content").querySelector(".chart-tooltip");
   let clearSelection = () => {};
+  // A pointer press on another arc blurs the old arc before pointerup.
+  // That blur must not hide the tooltip already controlled by pointer hover.
+  let pointerFocusTransfer = false;
   const removeTouchDismissal = installTouchDismissal(container, tip, {clear: () => clearSelection()});
   const years = [...new Set(rows.map(d => d.date.slice(0, 4)))].sort();
   const state={period:"all"};
@@ -84,11 +87,13 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
         this.setAttribute("aria-label", `${d.data.name}: ${number(d.data.value)} kilograms`);
         // A pressed mouse button must not reposition a tooltip; only free pointer movement does.
         this.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !event.buttons)inspect(event);});
-        this.addEventListener("pointerup",event=>{if(isTouchPointer(event))inspect(event);});
+        this.addEventListener("pointerdown",event=>{if(!isTouchPointer(event))pointerFocusTransfer=true;});
+        this.addEventListener("pointerup",event=>{pointerFocusTransfer=false;if(isTouchPointer(event))inspect(event);});
+        this.addEventListener("pointercancel",()=>{pointerFocusTransfer=false;});
         this.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))hideTooltip(tip);});
         // Pointer clicks can focus an arc; only keyboard-visible focus may place the tooltip.
         this.addEventListener("focus",()=>{if(!this.matches(":focus-visible"))return;const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
-        this.addEventListener("blur",()=>{hideTooltip(tip);clearSelection();});
+        this.addEventListener("blur",()=>{if(pointerFocusTransfer)return;hideTooltip(tip);clearSelection();});
         this.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}});
       });
     svg.append("text").attr("class", "rate-value").attr("x", cx).attr("y", cy + 3)
