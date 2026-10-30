@@ -556,6 +556,15 @@ select:disabled {
 .disclosure-panel .method-copy { grid-column: 1; grid-row: 1; min-width: 0; font: 12px/1.6 "Source Sans 3",Arial,sans-serif; color: var(--muted); }
 .disclosure-panel .method-copy p { margin: 7px 0; max-width: none; }
 .disclosure-panel .table-scroll { grid-column: 2; grid-row: 1; min-width: 0; margin: 7px 0; max-height: 205px; }
+/* Keep the scrolling box beside its content, without changing the 1:2 grid tracks. */
+.disclosure-panel .table-scroll {
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  scrollbar-gutter: stable;
+}
+
 @media (max-width: 750px) {
   .disclosure-panel .details-layout { grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: 14px; }
   
