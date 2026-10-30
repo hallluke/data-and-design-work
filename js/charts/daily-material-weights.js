@@ -61,6 +61,8 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
   const tip = tooltip;
   let selectedDate = null;
   let keyboardDate = null;
+  // A keyboard-dismissed tooltip stays hidden while navigation scrolls cells under the pointer.
+  let keyboardTipDismissed = false;
   let calendarCells = [];
   let cellRects = [];
   const removeTouchDismissal = installTouchDismissal(content, tip, {preserveKeyboardScroll:true, preserveKeyboardFocus:true, clear: () => {selectedDate=null; keyboardDate=null; updateSelected();}});
@@ -89,12 +91,13 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(key==="Escape") {
       event.preventDefault();
       hideTip();
+      keyboardTipDismissed=true;
       // Keep the current cell highlighted while the calendar retains keyboard focus.
       return;
     }
     if(key==="Enter"||key===" ") {
       event.preventDefault();const cell=calendarCells.find(d=>d.date===keyboardDate);
-      if(cell) {if(!tip.hidden && activeTipDate===cell.date)hideTip();else {showTip(cell);const b=cellRects[calendarCells.indexOf(cell)].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}}return;
+      if(cell) {if(!tip.hidden && activeTipDate===cell.date){hideTip();keyboardTipDismissed=true;}else {keyboardTipDismissed=false;showTip(cell);const b=cellRects[calendarCells.indexOf(cell)].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}}return;
     }
     if(!calendarCells.length)return;
     const index=calendarCells.findIndex(d=>d.date===keyboardDate);
@@ -130,7 +133,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(!tip.hidden) {showTip(target);const b=cellRects[targetIndex].getBoundingClientRect();moveTip({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}
   }
   on(scroll,"keydown",navigateCalendar);
-  on(scroll,"blur",()=>{keyboardDate=null;selectedDate=null;hideTip();updateSelected();});
+  on(scroll,"blur",()=>{keyboardTipDismissed=false;keyboardDate=null;selectedDate=null;hideTip();updateSelected();});
   on(scroll,"focus",()=>{if(!keyboardDate&&calendarCells.length && scroll.matches(":focus-visible")){keyboardDate=calendarCells[0].date;updateSelected();ensureVisible(0,"edge",-1);}});
 
   const table = root.querySelector("#calendar-table tbody");
@@ -229,7 +232,7 @@ function createDailyMaterialWeightsChart({container, rows, root = document}) {
     if(rects.length===cells.length){
       rects.forEach((rect,i)=>{
         rect.setAttribute("aria-label",`${fmtDate(cells[i].date)}: ${cells[i].records.length?cells[i].kg.toFixed(2)+" kilograms":"no recorded weight"}`);
-        rect.addEventListener("pointerenter",e=>{if(!isTouchPointer(e)){showTip(cells[i]);moveTip(e);}});
+        rect.addEventListener("pointerenter",e=>{if(!isTouchPointer(e) && !(keyboardTipDismissed && scroll.matches(":focus"))){showTip(cells[i]);moveTip(e);}});
         rect.addEventListener("pointerup",e=>{if(isTouchPointer(e) && touchOrigin && Math.hypot(e.clientX-touchOrigin.x,e.clientY-touchOrigin.y)<7){if(selectedDate===cells[i].date && !tip.hidden)return;keyboardDate=null;selectedDate=cells[i].date;showTip(cells[i]);moveTip(elementTooltipAnchor(rect));updateSelected();}});
       });
     }

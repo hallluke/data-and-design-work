@@ -86,7 +86,8 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
         this.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !event.buttons)inspect(event);});
         this.addEventListener("pointerup",event=>{if(isTouchPointer(event))inspect(event);});
         this.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))hideTooltip(tip);});
-        this.addEventListener("focus",()=>{const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
+        // Pointer clicks can focus an arc; only keyboard-visible focus may place the tooltip.
+        this.addEventListener("focus",()=>{if(!this.matches(":focus-visible"))return;const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});});
         this.addEventListener("blur",()=>{hideTooltip(tip);clearSelection();});
         this.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}});
       });
