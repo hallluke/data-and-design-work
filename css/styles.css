@@ -646,9 +646,8 @@ select:disabled {
 .calendar-controls { display:flex; flex-wrap:wrap; gap: 4px 20px; padding-top:10px; }
 .calendar-controls .control-row { flex-direction:row; align-items:center; gap:9px; }
 .calendar-controls select { max-width:190px; }
-.calendar-key { display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:10px; color:var(--muted); margin:9px 0 5px; }
-.calendar-key .swatch { display:inline-block; width:13px; height:13px; border:1px solid var(--ui-rule-light); }
-.calendar-key .key-gap { width:8px; }
+.calendar-key { display:flex; align-items:center; flex-wrap:wrap; font-size:10px; color:var(--muted); margin:9px 0 5px; }
+.calendar-key .swatch { display:inline-block; border:1px solid var(--ui-rule-light); }
 .calendar-layout { display:grid; grid-template-columns:37px minmax(0,1fr); align-items:start; min-width:0; }
 .calendar-weekdays { display:grid; grid-template-rows: 29px repeat(7, 17px); font-size:11px; color:var(--muted); line-height:17px; }
 .calendar-weekdays span { white-space:nowrap; }
@@ -702,7 +701,7 @@ select:disabled {
 .calendar-controls .control-row { gap:7px; min-height:33px; justify-content:space-between; }
 .calendar-controls .control-row label { min-width:72px; }
 .calendar-controls select { width:168px; min-width:168px; max-width:168px; }
-.calendar-key .swatch { width:9px; height:9px; border:0; margin-right:0; flex:0 0 9px; }
+.calendar-key .swatch { border:0; margin-right:0; flex-grow:0; flex-shrink:0; }
 @media (max-width:780px) {
  .calendar-controls select { min-width:0; max-width:100%; }
 }
@@ -835,10 +834,6 @@ select:disabled {
 [data-chart-id="overall-recycling-rate"] svg path:focus-visible { outline: 2px solid var(--ink, var(--chart-selection)); outline-offset: 2px; }
 [data-chart-id="daily-material-weights"] svg rect.is-selected { stroke: var(--ink, var(--chart-selection)); stroke-width: 2px; }
 .disclosure-panel .table-scroll:focus-visible { outline: 2px solid var(--ink, var(--chart-selection)); outline-offset: 2px; }
-@media (max-width: 780px) {
-}
-@media (max-width: 430px) {
-}
 
 /* The monthly selection follows the plotted bar, not its full-height hit target. */
 [data-chart-id="monthly-material-weights"] .bar-selection { stroke: var(--ink, var(--chart-selection)); stroke-width: 2; vector-effect: non-scaling-stroke; }
@@ -847,8 +842,6 @@ select:disabled {
 [data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible { outline: none; }
 [data-chart-id="daily-material-weights"] .calendar-scroll:focus-visible svg rect.is-selected { stroke-width: 2; }
 
-@media (max-width: 780px) {
-}
 
 /* Chart 1: compact tooltip; stabilise only the numeric column. */
 [data-chart-id="monthly-material-weights"] .chart-tooltip .tip-table {
