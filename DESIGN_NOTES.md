@@ -53,6 +53,7 @@ A record of data, information-design, interaction and engineering decisions in t
 | Immediate updates | Charts update following control changes so the effect of each selection is apparent. | Visibility of system status; immediate feedback |
 | Context-sensitive legends | Legends reflect the current view rather than listing irrelevant categories. | Relevant information at the point of use |
 | Progressive disclosure | Data tables and methodology are available on demand without crowding the charts. | Layered information; overview first, detail on demand |
+| Disclosure emphasis | Chart titles remain visually prominent while methodology and supporting explanations use more restrained styling, allowing readers to distinguish primary findings from optional detail. | Information hierarchy; progressive disclosure; visual salience |
 | Scrollable data tables | Underlying numerical values can be inspected without requiring a separate page or export. | Multiple representations; access to source figures |
 | Contextual methodology | Calculations are explained alongside the charts where their results appear. | Contextual explanation; interpretability |
 | Avoidance of unnecessary controls | Redundant or meaningless options are omitted for particular selections. | Reduced cognitive load; simplified choices |
@@ -74,7 +75,10 @@ A record of data, information-design, interaction and engineering decisions in t
 | Keyboard slope order | Focus order follows plotted values rather than arbitrary source-data order. | Logical navigation order |
 | Calendar arrow-key navigation | Spatial navigation supports movement between calendar dates. | Efficient keyboard interaction |
 | Calendar month/week navigation | Additional navigation and scrolling support exploration of a large calendar. | Efficient navigation; spatial orientation |
+| Reversible calendar navigation | Restoring the original fifth weekday after a month jump was considered to make immediately reversed navigation more intuitive. The existing ordinal-based behaviour was retained because its consistent rules were considered more valuable than accommodating an uncommon exception. | Predictability vs reversibility; spatial mental models |
 | Persistent selection highlighting | Inspected marks remain identifiable while their details are shown. | Clear feedback; focus–context relationship |
+| Independent focus and inspection | Keyboard navigation can move between data points without automatically reopening dismissed details. Users can choose when to inspect a value while retaining their position in the visualisation. | User control; separation of navigation and exploration |
+| Stable contextual information | Tooltips use predictable placement appropriate to the input method, avoiding unnecessary movement or obscuring small chart areas during inspection. | Spatial stability; reduced cognitive load; focus–context relationship |
 | Tooltips near marks | Contextual values appear close to the corresponding data points. | Spatial proximity; reduced visual search |
 | Tooltip boundary handling | Tooltip placement accounts for chart and viewport edges. | Robust responsive interaction |
 | <abbr title="Accessible Rich Internet Applications">ARIA</abbr> labels | Chart regions and interactive elements receive descriptive accessible names. | Programmatic accessibility; accessible names |
@@ -95,6 +99,7 @@ A record of data, information-design, interaction and engineering decisions in t
 | Consistent spacing | Gaps, alignment and widths are coordinated across the interface. | Alignment; visual rhythm |
 | Clear typography | Typographic differences distinguish headings, controls, chart labels and supporting information. | Readability; visual hierarchy |
 | Restrained decoration | Nonessential visual elements are limited so attention remains on the data. | Signal-to-noise ratio |
+| Alternating colours | Blue and orange alternate between charts to create visual rhythm and distinguish adjacent panels without implying differences in the underlying data. The contrasting hues were also chosen for their relative distinguishability and their weaker associations with culturally established valence compared with other common choices, such as red and green. | Visual grouping; perceptual discriminability; colour accessibility; semantic neutrality |
 | Proximity and grouping | Related labels, controls, legends and values are placed together. | Gestalt proximity; perceptual grouping |
 | Visual continuity | Layout patterns and styling are reused while allowing chart-specific structures. | Design-system consistency |
 
