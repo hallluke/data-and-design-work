@@ -553,7 +553,8 @@ select:disabled {
 @media (max-width: 780px) {
   
   .disclosure-toggle { font-size: 11px; }
-  .disclosure-panel .details-layout { grid-template-columns: 1fr; gap: 3px; }
+  /* Allow wide tables to scroll inside the disclosure, not enlarge the mobile grid. */
+  .disclosure-panel .details-layout { grid-template-columns: minmax(0, 1fr); gap: 3px; min-width: 0; }
   .disclosure-panel .method-copy, .disclosure-panel .table-scroll { grid-column: 1; grid-row: auto; }
 }
 /* Compact disclosure tables: keep columns near their intrinsic content width. */
