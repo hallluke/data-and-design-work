@@ -82,7 +82,8 @@ function createOverallRecyclingRateChart({container, rows, root = document}) {
         this.setAttribute("tabindex","0");
         this.setAttribute("role","button");
         this.setAttribute("aria-label", `${d.data.name}: ${number(d.data.value)} kilograms`);
-        this.addEventListener("pointermove",event=>{if(!isTouchPointer(event))inspect(event);});
+        // A pressed mouse button must not reposition a tooltip; only free pointer movement does.
+        this.addEventListener("pointermove",event=>{if(!isTouchPointer(event) && !event.buttons)inspect(event);});
         this.addEventListener("pointerup",event=>{if(isTouchPointer(event))inspect(event);});
         this.addEventListener("pointerleave",event=>{if(!isTouchPointer(event))hideTooltip(tip);});
         this.addEventListener("focus",()=>{const b=this.getBoundingClientRect();inspect({clientX:b.left+b.width/2,clientY:b.top+b.height/2});});

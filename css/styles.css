@@ -163,7 +163,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
   gap: 28px;
-  margin-bottom: 32px;
+  margin-bottom: 22px;
   align-items: stretch;
 }
 .module {
@@ -681,13 +681,15 @@ select:disabled {
 
 /* INTRODUCTION — initial styles; later grid refinement retained in cascade position. */
 .intro {
-  column-count: 3;
-  column-gap: 28px;
-  column-fill: balance;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,2fr);
+  align-items: start;
   margin: -5px 0 33px;
   color: var(--muted);
   font: 12px/1.55 "Source Sans 3", Arial, sans-serif;
 }
+.intro-opening, .intro-explanation { min-width: 0; }
+.intro-explanation { column-count: 2; column-gap: 28px; column-fill: balance; }
 .intro p { margin: 0; }
 /* Match the first methodology text baseline to the table header baseline. */
 /* Header and methodology use the same font metrics and text baseline.
@@ -696,7 +698,8 @@ select:disabled {
 .disclosure-panel .method-copy p,
 .disclosure-panel .method-copy p:first-child { margin-top: 0; }
 @media (max-width: 780px) {
-  .intro { column-count: 1; margin-bottom: 27px; }
+  .intro { display: block; margin-bottom: 27px; }
+  .intro-explanation { column-count: 1; margin-top: 12px; }
 }
 
 /* Small baseline correction without changing table typography. */
@@ -773,22 +776,6 @@ select:disabled {
 .intro p + p { margin-top:9px; }
 .calendar-key .key-gap { width:12px; }
 @media (max-width:780px) { .mast .meta { gap:7px; } .mast .meta .recycling-icon { width:21px; height:21px; } .eyebrow { letter-spacing:.06em; } }
-
-/* Introduction: stable opening column and two-column explanatory text. */
-.intro {
-  display:grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,2fr);
-  column-count:auto;
-  align-items:start;
-}
-.intro-opening, .intro-explanation { min-width:0; }
-.intro-explanation { column-count:2; column-gap:28px; column-fill:balance; }
-/* Reduce the vertical separation between chart rows and above the footer. */
-.atlas-row { margin-bottom:22px; }
-@media (max-width: 780px) {
-  .intro { display:block; }
-  .intro-explanation { column-count:1; margin-top:12px; }
-}
 
 /* Narrow screens: centre both full-width footer sections. */
 @media (max-width:780px) {
