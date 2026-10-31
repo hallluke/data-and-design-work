@@ -14,11 +14,9 @@
   --chart-empty: #f1eee9;
 
   /* Editorial annotations */
- /* --accent-blue: #367bc0;
-  --accent-orange: #e58b4b; */
+  --accent-blue: #367bc0;
+  --accent-orange: #e58b4b;
   --accent-green: #73a581;
-  --accent-blue: var(--accent-green);
-  --accent-orange: var(--accent-green);
   --highlight-opacity: 40%;
   --highlight-height: 40%;
   --highlight-duration: 320ms;
