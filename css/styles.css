@@ -1009,13 +1009,13 @@ select:disabled {
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  height: 0.15em;
+  height: 0.30em;
   clip-path: polygon(0 9%, 98% 0, 100% 88%, 2% 100%);
 }
 .mast h1::before {
   left: -0.01em;
   width: 0.60em;
-  bottom: 0.24em;
+  bottom: 0.40em;
   transform: rotate(-3deg);
   background: color-mix(in srgb, var(--accent-blue) var(--highlight-opacity), transparent);
 }
