@@ -56,7 +56,9 @@ body {
   background: var(--paper);
   max-width: 1150px;
   margin: auto;
-  padding: 40px clamp(18px,4.5vw,60px) 65px;
+  padding: 40px clamp(18px,4vw,48px) 65px;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
 }
 .sans,.eyebrow,.meta,.num,.unit,.controls,.caption,details,.foot,.tooltip {
   font-family: "Source Sans 3",Arial,Helvetica,sans-serif;
@@ -84,7 +86,7 @@ h1 {
   font-weight: 400;
   letter-spacing: -.035em;
   line-height: 1;
-  margin: 8px 0 0;
+  margin: 15px 0 0;
 }
 .meta {
   text-align: right;
@@ -774,7 +776,8 @@ select:disabled {
 }
 
 /* Calendar key and introduction refinements (responsive overrides retained in place). */
-.intro p + p { margin-top:9px; }
+.intro p { margin-bottom: 9px; }
+.intro p:last-child { margin-bottom: 0; }
 .calendar-key .key-gap { width:12px; }
 @media (max-width:780px) { .mast .meta { gap:7px; } .mast .meta .recycling-icon { width:21px; height:21px; } .eyebrow { letter-spacing:.06em; } }
 
@@ -931,7 +934,7 @@ select:disabled {
 .disclosure-toggle.is-keyboard-attended .disclosure-label,
 .foot a:hover,.foot a:focus-visible { background-size:100% var(--highlight-height); }
 .foot a.profile-link { --link-mark-colour:var(--accent-blue); }
-.foot a { text-decoration:none; }
+.foot a { color: var(--ink); text-decoration:underline; text-underline-offset:2px; }
 @media (prefers-reduced-motion:reduce) {
  .heading h2 .title-mark::before,.disclosure-toggle .disclosure-label,.foot a {transition:none;}
 }
@@ -941,15 +944,11 @@ select:disabled {
 .mast .meta { align-items: center; justify-content: flex-end; gap: 12px; }
 .mast .meta .recycling-icon { margin: 0; flex: none; }
 .mast .meta-stack { text-align: right; align-items: flex-end; line-height: 1.55; }
-.mast .meta-stack strong { font-weight: 600; color: var(--ink); }
+.mast .meta-stack { font-weight: 400; }
 .intro { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px;
   margin: 0 0 29px; padding: 27px 0 0; color: var(--ink);
   font: 13px/1.55 "Source Sans 3",Arial,sans-serif; }
 .intro p { margin: 0; min-width: 0; }
-.figure-observation { margin: 14px 0 2px; padding: 9px 0 0;
-  border-top: 1px solid var(--line); color: var(--muted);
-  font: 12px/1.5 "Source Sans 3",Arial,sans-serif; }
-.observation-label { font-weight: 600; color: var(--ink); margin-right: .4em; }
 .module-header { padding-top: 10px; padding-bottom: 10px; }
 @media (max-width:780px) {
   .intro { grid-template-columns: 1fr; gap: 12px; padding-top: 22px; margin-bottom: 25px; }
