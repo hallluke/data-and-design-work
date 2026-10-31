@@ -234,7 +234,7 @@ h2 {
 }
 .choices button,select {
   border: 1px solid var(--line);
-  background: transparent;
+  background-color: #fbfbf8;
   color: var(--ink);
   font: inherit;
   font-size: 11px;
@@ -957,4 +957,13 @@ select:disabled {
   .mast .meta { display: flex; gap: 7px; }
   .mast .meta .recycling-icon { width: 19px; height: 19px; }
   .mast .meta-stack { font-size: 10px; white-space: normal; }
+}
+
+/* Editorial controls and footer refinements. */
+.foot a { text-decoration: none; }
+/* Subtle permanent marker beneath the recycling symbol. */
+.mast .meta .recycling-icon {
+  padding-bottom: 3px;
+  border-bottom: 3px solid color-mix(in srgb, #4d8a65 45%, transparent);
+  box-sizing: content-box;
 }
