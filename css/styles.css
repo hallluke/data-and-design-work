@@ -16,6 +16,7 @@
   /* Editorial annotations */
   --accent-blue: #367bc0;
   --accent-orange: #e58b4b;
+  --accent-green: #4d8a65;
   --highlight-opacity: 40%;
   --highlight-height: 40%;
   --highlight-duration: 320ms;
@@ -961,9 +962,37 @@ select:disabled {
 
 /* Editorial controls and footer refinements. */
 .foot a { text-decoration: none; }
-/* Subtle permanent marker beneath the recycling symbol. */
-.mast .meta .recycling-icon {
-  padding-bottom: 3px;
-  border-bottom: 3px solid color-mix(in srgb, #4d8a65 45%, transparent);
-  box-sizing: content-box;
+/* Broad hand-drawn green marker behind the recycling symbol. */
+.mast .meta .recycling-mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  flex: none;
+  isolation: isolate;
+}
+.mast .meta .recycling-mark::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  left: -2px;
+  right: -2px;
+  top: 2px;
+  height: 23px;
+  background: color-mix(in srgb, var(--accent-green) var(--highlight-opacity), transparent);
+  clip-path: polygon(0 10%, 98% 0, 100% 87%, 3% 100%);
+  transform: rotate(-7deg);
+}
+.mast .meta .recycling-mark .recycling-icon {
+  display: block;
+  margin: 0;
+  width: 23px;
+  height: 23px;
+}
+@media (max-width: 780px) {
+  .mast .meta .recycling-mark { width: 23px; height: 23px; }
+  .mast .meta .recycling-mark::before { height: 21px; top: 1px; }
+  .mast .meta .recycling-mark .recycling-icon { width: 19px; height: 19px; }
 }
