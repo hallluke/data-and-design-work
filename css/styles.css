@@ -16,7 +16,7 @@
   /* Editorial annotations */
   --accent-blue: #367bc0;
   --accent-orange: #e58b4b;
-  --accent-green: #4d8a65;
+  --accent-green: #73a581;
   --highlight-opacity: 40%;
   --highlight-height: 40%;
   --highlight-duration: 320ms;
@@ -979,10 +979,10 @@ select:disabled {
   pointer-events: none;
   left: -2px;
   right: -2px;
-  top: 2px;
+  top: 9px;
   height: 23px;
   background: color-mix(in srgb, var(--accent-green) var(--highlight-opacity), transparent);
-  clip-path: polygon(0 10%, 98% 0, 100% 87%, 3% 100%);
+  clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
   transform: rotate(-7deg);
 }
 .mast .meta .recycling-mark .recycling-icon {
@@ -993,6 +993,36 @@ select:disabled {
 }
 @media (max-width: 780px) {
   .mast .meta .recycling-mark { width: 23px; height: 23px; }
-  .mast .meta .recycling-mark::before { height: 21px; top: 1px; }
+  .mast .meta .recycling-mark::before { height: 21px; top: 8px; }
   .mast .meta .recycling-mark .recycling-icon { width: 19px; height: 19px; }
+}
+
+/* Two subtly offset marker strokes behind the lower part of the initial H. */
+.mast h1 .title-initial {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+}
+.mast h1 .title-initial::before,
+.mast h1 .title-initial::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  height: 25%;
+  clip-path: polygon(0 9%, 98% 0, 100% 88%, 2% 100%);
+}
+.mast h1 .title-initial::before {
+  left: -1px;
+  width: calc(100% + 2px);
+  top: 48%;
+  transform: rotate(-3deg);
+  background: color-mix(in srgb, var(--accent-blue) var(--highlight-opacity), transparent);
+}
+.mast h1 .title-initial::after {
+  left: 1px;
+  width: calc(100% - 1px);
+  top: 70%;
+  transform: rotate(2deg);
+  background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
 }
