@@ -997,32 +997,32 @@ select:disabled {
   .mast .meta .recycling-mark .recycling-icon { width: 19px; height: 19px; }
 }
 
-/* Two subtly offset marker strokes behind the lower part of the initial H. */
-.mast h1 .title-initial {
+/* Two slightly irregular marker strokes behind the first letter of the heading.
+   Widths use em units so no extra markup is needed around the H. */
+.mast h1 {
   position: relative;
   isolation: isolate;
-  display: inline-block;
 }
-.mast h1 .title-initial::before,
-.mast h1 .title-initial::after {
+.mast h1::before,
+.mast h1::after {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  height: 25%;
+  height: 0.15em;
   clip-path: polygon(0 9%, 98% 0, 100% 88%, 2% 100%);
 }
-.mast h1 .title-initial::before {
-  left: -1px;
-  width: calc(100% + 2px);
-  top: 48%;
+.mast h1::before {
+  left: -0.01em;
+  width: 0.60em;
+  bottom: 0.24em;
   transform: rotate(-3deg);
   background: color-mix(in srgb, var(--accent-blue) var(--highlight-opacity), transparent);
 }
-.mast h1 .title-initial::after {
-  left: 1px;
-  width: calc(100% - 1px);
-  top: 70%;
+.mast h1::after {
+  left: 0.02em;
+  width: 0.56em;
+  bottom: 0.09em;
   transform: rotate(2deg);
   background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
 }
