@@ -1027,17 +1027,3 @@ select:disabled {
   background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
   clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
 }
-.mast h1::before {
-  left: -0.01em;
-  width: 0.60em;
-  bottom: 0.40em;
-  transform: rotate(-3deg);
-  background: color-mix(in srgb, var(--accent-blue) var(--highlight-opacity), transparent);
-}
-.mast h1::after {
-  left: 0.02em;
-  width: 0.56em;
-  bottom: 0.09em;
-  transform: rotate(2deg);
-  background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
-}
