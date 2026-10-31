@@ -371,7 +371,11 @@ th {
   color: var(--muted);
 }
 .foot-right { text-align:right; }
-.foot-left { text-transform:uppercase; }
+.foot-left {
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 10px;
+}
 .foot a { color:inherit; text-decoration:underline; text-underline-offset:2px; }
 .error {
   font: 12px/1.5 "Source Sans 3",Arial,sans-serif;
@@ -1026,4 +1030,9 @@ select:disabled {
   transform: rotate(8deg);
   background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
   clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
+}
+
+/* Match the header eyebrow tracking on smaller screens. */
+@media (max-width: 780px) {
+  .foot-left { letter-spacing: .06em; }
 }
