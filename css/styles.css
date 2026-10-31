@@ -1009,8 +1009,23 @@ select:disabled {
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  height: 0.30em;
-  clip-path: polygon(0 9%, 98% 0, 100% 88%, 2% 100%);
+  height: 0.44em;
+}
+.mast h1::before {
+  left: -0.04em;
+  width: 0.86em;
+  bottom: 0.56em;
+  transform: rotate(1deg);
+  background: color-mix(in srgb, var(--accent-blue) var(--highlight-opacity), transparent);
+  clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
+}
+.mast h1::after {
+  left: -0.07em;
+  width: 0.84em;
+  bottom: 0.01em;
+  transform: rotate(8deg);
+  background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
+  clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
 }
 .mast h1::before {
   left: -0.01em;
