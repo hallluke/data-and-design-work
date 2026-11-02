@@ -89,6 +89,40 @@ h1 {
   line-height: 1;
   margin: 15px 0 0;
 }
+.mast h1 span {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+}
+
+.mast h1 span::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -0.03em;
+  right: -0.03em;
+  bottom: 0.02em;
+  height: 0.22em;
+  transform: rotate(-1deg);
+  background: color-mix(
+    in srgb,
+    var(--mark-colour) var(--highlight-opacity),
+    transparent
+  );
+  clip-path: polygon(0 12%, 98% 0, 100% 82%, 2% 100%);
+  pointer-events: none;
+}
+.mast h1 .title-blue {
+  --mark-colour: var(--accent-blue);
+  transform: rotate(1deg);
+}
+.mast h1 .title-orange {
+  --mark-colour: var(--accent-orange);
+}
+.mast h1 .title-green {
+  --mark-colour: var(--accent-green);
+  transform: rotate(-2deg);
+}
 .meta {
   text-align: right;
   color: var(--muted);
