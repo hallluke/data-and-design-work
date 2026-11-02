@@ -94,7 +94,6 @@ h1 {
   display: inline-block;
   z-index: 0;
 }
-
 .mast h1 span::after {
   content: "";
   position: absolute;
@@ -114,6 +113,8 @@ h1 {
 }
 .mast h1 .title-blue {
   --mark-colour: var(--accent-blue);
+}
+.mast h1 .title-blue::after {
   transform: rotate(1deg);
 }
 .mast h1 .title-orange {
@@ -121,6 +122,8 @@ h1 {
 }
 .mast h1 .title-green {
   --mark-colour: var(--accent-green);
+}
+.mast h1 .title-green::after {
   transform: rotate(-2deg);
 }
 .meta {
@@ -1033,40 +1036,4 @@ select:disabled {
   .mast .meta .recycling-mark { width: 23px; height: 23px; }
   .mast .meta .recycling-mark::before { height: 21px; top: 8px; }
   .mast .meta .recycling-mark .recycling-icon { width: 19px; height: 19px; }
-}
-
-/* Two slightly irregular marker strokes behind the first letter of the heading.
-   Widths use em units so no extra markup is needed around the H. */
-.mast h1 {
-  position: relative;
-  isolation: isolate;
-}
-.mast h1::before,
-.mast h1::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
-  height: 0.44em;
-}
-.mast h1::before {
-  left: -0.04em;
-  width: 0.86em;
-  bottom: 0.56em;
-  transform: rotate(1deg);
-  background: color-mix(in srgb, var(--accent-blue) var(--highlight-opacity), transparent);
-  clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
-}
-.mast h1::after {
-  left: -0.07em;
-  width: 0.84em;
-  bottom: 0.01em;
-  transform: rotate(8deg);
-  background: color-mix(in srgb, var(--accent-orange) var(--highlight-opacity), transparent);
-  clip-path: polygon(0 14%, 98% 0, 100% 83%, 3% 100%);
-}
-
-/* Match the header eyebrow tracking on smaller screens. */
-@media (max-width: 780px) {
-  .foot-left { letter-spacing: .06em; }
 }
