@@ -114,13 +114,13 @@ h1 {
   --mark-colour: var(--accent-blue);
 }
 .mast h1 .title-blue::after {
-  transform: rotate(0deg);
+  transform: rotate(2deg);
 }
 .mast h1 .title-orange {
   --mark-colour: var(--accent-orange);
 }
 .mast h1 .title-orange::after {
-  transform: rotate(-4deg);
+  transform: rotate(1deg);
 }
 .mast h1 .title-green {
   --mark-colour: var(--accent-green);
