@@ -100,9 +100,8 @@ h1 {
   z-index: -1;
   left: -0.03em;
   right: -0.03em;
-  bottom: 0.02em;
-  height: 0.22em;
-  transform: rotate(-1deg);
+  bottom: -0.02em;
+  height: 0.4em;
   background: color-mix(
     in srgb,
     var(--mark-colour) var(--highlight-opacity),
@@ -115,10 +114,13 @@ h1 {
   --mark-colour: var(--accent-blue);
 }
 .mast h1 .title-blue::after {
-  transform: rotate(1deg);
+  transform: rotate(0deg);
 }
 .mast h1 .title-orange {
   --mark-colour: var(--accent-orange);
+}
+.mast h1 .title-orange::after {
+  transform: rotate(-4deg);
 }
 .mast h1 .title-green {
   --mark-colour: var(--accent-green);
