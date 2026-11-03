@@ -1,1 +1,0 @@
-Icons use Lucide-style SVG line artwork. Lucide is licensed under the ISC License. See https://lucide.dev/license and https://github.com/lucide-icons/lucide for official icon sources and licence.

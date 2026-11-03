@@ -1,3 +1,8 @@
-# macOS Finder metadata
+# macOS
 .DS_Store
 **/.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
