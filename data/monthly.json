@@ -21,7 +21,8 @@
     "2026-07",
     "2026-08",
     "2026-09",
-    "2026-10"
+    "2026-10",
+    "2026-11"
   ],
   "groups": [
     "Residual waste",
@@ -458,17 +459,37 @@
     {
       "month": "2026-10",
       "group": "Food waste",
-      "kg": 2.73071429
+      "kg": 4.24571429
     },
     {
       "month": "2026-10",
       "group": "Recyclables",
-      "kg": 1.13771429
+      "kg": 3.23133333
     },
     {
       "month": "2026-10",
       "group": "Soft plastics",
       "kg": 0.12342857
+    },
+    {
+      "month": "2026-11",
+      "group": "Residual waste",
+      "kg": 0
+    },
+    {
+      "month": "2026-11",
+      "group": "Food waste",
+      "kg": 0.606
+    },
+    {
+      "month": "2026-11",
+      "group": "Recyclables",
+      "kg": 0.22038095
+    },
+    {
+      "month": "2026-11",
+      "group": "Soft plastics",
+      "kg": 0
     }
   ],
   "recorded": [
@@ -1019,6 +1040,31 @@
     },
     {
       "month": "2026-10",
+      "group": "Batteries",
+      "kg": 0
+    },
+    {
+      "month": "2026-11",
+      "group": "Residual waste",
+      "kg": 0
+    },
+    {
+      "month": "2026-11",
+      "group": "Food waste",
+      "kg": 2.121
+    },
+    {
+      "month": "2026-11",
+      "group": "Recyclables",
+      "kg": 2.314
+    },
+    {
+      "month": "2026-11",
+      "group": "Soft plastics",
+      "kg": 0
+    },
+    {
+      "month": "2026-11",
       "group": "Batteries",
       "kg": 0
     }
