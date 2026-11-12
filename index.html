@@ -1,278 +1,306 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>
-      Household Waste &amp; Recycling — Data &amp; Design
-    </title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="css/styles.css" rel="stylesheet"/>
-<link href="assets/recycling_favicon.svg" rel="icon" type="image/svg+xml"/>
-</head>
-<body>
-<main class="page">
-<header class="mast">
-<div class="mast-left">
-<div class="eyebrow">
-            Data Analysis · Visualisation · Information Design
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <title>Household Waste &amp; Recycling — Data &amp; Design</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link href="css/styles.css" rel="stylesheet" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="/data-and-design-work/assets/favicon.png"
+    />
+  </head>
+  <body>
+    <main class="page">
+      <header class="mast">
+        <div class="mast-left">
+          <div class="eyebrow">Data Analysis · Visualisation · Information Design</div>
+          <h1>
+            <span class="title-blue">Household</span>
+            <span class="title-orange">Waste</span>
+            &amp;
+            <span class="title-green">Recycling</span>
+          </h1>
+        </div>
+        <div class="meta" aria-label="Publication dates">
+          <span class="recycling-mark" aria-hidden="true"
+            ><img
+              alt=""
+              aria-hidden="true"
+              class="recycling-icon"
+              height="23"
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXJlY3ljbGUgcHJldmlldy1pY29uIj48cGF0aCBkPSJNNyAxOUg0LjgxNWExLjgzIDEuODMgMCAwIDEtMS41Ny0uODgxIDEuNzg1IDEuNzg1IDAgMCAxLS4wMDQtMS43ODRMNy4xOTYgOS41Ii8+PHBhdGggZD0iTTExIDE5aDguMjAzYTEuODMgMS44MyAwIDAgMCAxLjU1Ni0uODkgMS43ODQgMS43ODQgMCAwIDAgMC0xLjc3NWwtMS4yMjYtMi4xMiIvPjxwYXRoIGQ9Im0xNCAxNi0zIDMgMyAzIi8+PHBhdGggZD0iTTguMjkzIDEzLjU5NiA3LjE5NiA5LjUgMy4xIDEwLjU5OCIvPjxwYXRoIGQ9Im05LjM0NCA1LjgxMSAxLjA5My0xLjg5MkExLjgzIDEuODMgMCAwIDEgMTEuOTg1IDNhMS43ODQgMS43ODQgMCAwIDEgMS41NDYuODg4bDMuOTQzIDYuODQzIi8+PHBhdGggZD0ibTEzLjM3OCA5LjYzMyA0LjA5NiAxLjA5OCAxLjA5Ny00LjA5NiIvPjwvc3ZnPg=="
+              width="23"
+          /></span>
+          <div class="meta-stack">
+            <span>Filed to <span id="stamp-filed">—</span></span
+            ><span>Refreshed <span id="stamp-checked">—</span></span>
           </div>
-<h1>
-  <span class="title-blue">Household</span>
-  <span class="title-orange">Waste</span>
-  &amp;
-  <span class="title-green">Recycling</span>
-</h1>
-</div>
-<div class="meta" aria-label="Publication dates">
-<span class="recycling-mark" aria-hidden="true"><img alt="" aria-hidden="true" class="recycling-icon" height="23" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXJlY3ljbGUgcHJldmlldy1pY29uIj48cGF0aCBkPSJNNyAxOUg0LjgxNWExLjgzIDEuODMgMCAwIDEtMS41Ny0uODgxIDEuNzg1IDEuNzg1IDAgMCAxLS4wMDQtMS43ODRMNy4xOTYgOS41Ii8+PHBhdGggZD0iTTExIDE5aDguMjAzYTEuODMgMS44MyAwIDAgMCAxLjU1Ni0uODkgMS43ODQgMS43ODQgMCAwIDAgMC0xLjc3NWwtMS4yMjYtMi4xMiIvPjxwYXRoIGQ9Im0xNCAxNi0zIDMgMyAzIi8+PHBhdGggZD0iTTguMjkzIDEzLjU5NiA3LjE5NiA5LjUgMy4xIDEwLjU5OCIvPjxwYXRoIGQ9Im05LjM0NCA1LjgxMSAxLjA5My0xLjg5MkExLjgzIDEuODMgMCAwIDEgMTEuOTg1IDNhMS43ODQgMS43ODQgMCAwIDEgMS41NDYuODg4bDMuOTQzIDYuODQzIi8+PHBhdGggZD0ibTEzLjM3OCA5LjYzMyA0LjA5NiAxLjA5OCAxLjA5Ny00LjA5NiIvPjwvc3ZnPg==" width="23"/></span>
-<div class="meta-stack"><span>Filed to <span id="stamp-filed">—</span></span><span>Refreshed <span id="stamp-checked">—</span></span></div>
-<span id="latest-year" hidden>2026</span>
-</div>
-</header>
-<section aria-label="About this project" class="intro">
-<p>I like data. I also like recycling. So, predictably, I started weighing the waste and recycling I put out at home.</p>
-<p>These four charts look at how much I discard, what goes for recycling and how the amounts and patterns change over time.</p>
-<p>Explore materials, dates and year-on-year differences. Each chart includes a methodology note explaining the measurements and choices behind it.</p>
-</section>
-<div class="atlas-row chart-disclosure-grid">
-<!-- Shared full-width disclosure: independent chart content, one expanded panel at a time. -->
-<article aria-labelledby="title-monthly-material-weights" class="module wide module--monthly-material-weights" data-chart-id="monthly-material-weights">
-<div class="module-header">
-<div class="heading">
-<span class="num">
-                01
-              </span>
-<h2 id="title-monthly-material-weights">
-                Month by month
-              </h2>
-</div>
-<span class="unit">
-</span>
-</div>
-<div aria-label="Monthly chart filters" class="chart-controls controls">
-</div>
-<div class="chart-content">
-<div aria-live="polite" class="chart" id="monthly-material-weights">
-<p class="chart-status" role="status">
-                Chart loading…
-              </p>
-</div>
-<div class="tooltip chart-tooltip" hidden="">
-</div>
-</div>
-</article>
-<div class="disclosure-trigger disclosure-trigger-1">
-<button aria-controls="monthly-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="monthly-disclosure" type="button">
-<span aria-hidden="true" class="disclosure-chevron">
-              ▸
-            </span>
+          <span id="latest-year" hidden>2026</span>
+        </div>
+      </header>
+      <section aria-label="About this project" class="intro">
+        <p>
+          I like data. I also like recycling. So, predictably, I started weighing the waste and
+          recycling I put out at home.
+        </p>
+        <p>
+          These four charts look at how much I discard, what goes for recycling and how the amounts
+          and patterns change over time.
+        </p>
+        <p>
+          Explore materials, dates and year-on-year differences. Each chart includes a methodology
+          note explaining the measurements and choices behind it.
+        </p>
+      </section>
+      <div class="atlas-row chart-disclosure-grid">
+        <!-- Shared full-width disclosure: independent chart content, one expanded panel at a time. -->
+        <article
+          aria-labelledby="title-monthly-material-weights"
+          class="module wide module--monthly-material-weights"
+          data-chart-id="monthly-material-weights"
+        >
+          <div class="module-header">
+            <div class="heading">
+              <span class="num"> 01 </span>
+              <h2 id="title-monthly-material-weights">Month by month</h2>
+            </div>
+            <span class="unit"> </span>
+          </div>
+          <div aria-label="Monthly chart filters" class="chart-controls controls"></div>
+          <div class="chart-content">
+            <div aria-live="polite" class="chart" id="monthly-material-weights">
+              <p class="chart-status" role="status">Chart loading…</p>
+            </div>
+            <div class="tooltip chart-tooltip" hidden=""></div>
+          </div>
+        </article>
+        <div class="disclosure-trigger disclosure-trigger-1">
+          <button
+            aria-controls="monthly-disclosure"
+            aria-expanded="false"
+            class="disclosure-toggle"
+            data-disclosure="monthly-disclosure"
+            type="button"
+          >
+            <span aria-hidden="true" class="disclosure-chevron"> ▸ </span>
             01 · <span class="disclosure-label">Data &amp; methodology</span>
-</button>
-</div>
-<div aria-label="Figure 01 data &amp; methodology" class="disclosure-panel disclosure-panel-1" hidden="" id="monthly-disclosure" role="region">
-<div class="details-layout">
-<div class="method-copy">
-<p id="method">
-</p>
-</div>
-<div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
-<table id="data-table">
-<thead>
-</thead>
-<tbody>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<article aria-labelledby="title-yearly-material-comparison" class="module narrow module--yearly-material-comparison" data-chart-id="yearly-material-comparison">
-<div class="module-header">
-<div class="heading">
-<span class="num">
-                02
-              </span>
-<h2 id="title-yearly-material-comparison">
-                A year apart
-              </h2>
-</div>
-<span class="unit">
-</span>
-</div>
-<div aria-label="Year-on-year comparison filters" class="chart-controls controls">
-</div>
-<div class="chart-content">
-<div aria-live="polite" class="chart" id="yearly-material-comparison">
-<p class="chart-status" role="status">
-                Chart loading…
-              </p>
-</div>
-<div class="tooltip chart-tooltip" hidden="">
-</div>
-</div>
-</article>
-<div class="disclosure-trigger disclosure-trigger-2">
-<button aria-controls="comparison-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="comparison-disclosure" type="button">
-<span aria-hidden="true" class="disclosure-chevron">
-              ▸
-            </span>
+          </button>
+        </div>
+        <div
+          aria-label="Figure 01 data &amp; methodology"
+          class="disclosure-panel disclosure-panel-1"
+          hidden=""
+          id="monthly-disclosure"
+          role="region"
+        >
+          <div class="details-layout">
+            <div class="method-copy">
+              <p id="method"></p>
+            </div>
+            <div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
+              <table id="data-table">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <article
+          aria-labelledby="title-yearly-material-comparison"
+          class="module narrow module--yearly-material-comparison"
+          data-chart-id="yearly-material-comparison"
+        >
+          <div class="module-header">
+            <div class="heading">
+              <span class="num"> 02 </span>
+              <h2 id="title-yearly-material-comparison">A year apart</h2>
+            </div>
+            <span class="unit"> </span>
+          </div>
+          <div aria-label="Year-on-year comparison filters" class="chart-controls controls"></div>
+          <div class="chart-content">
+            <div aria-live="polite" class="chart" id="yearly-material-comparison">
+              <p class="chart-status" role="status">Chart loading…</p>
+            </div>
+            <div class="tooltip chart-tooltip" hidden=""></div>
+          </div>
+        </article>
+        <div class="disclosure-trigger disclosure-trigger-2">
+          <button
+            aria-controls="comparison-disclosure"
+            aria-expanded="false"
+            class="disclosure-toggle"
+            data-disclosure="comparison-disclosure"
+            type="button"
+          >
+            <span aria-hidden="true" class="disclosure-chevron"> ▸ </span>
             02 · <span class="disclosure-label">Data &amp; methodology</span>
-</button>
-</div>
-<div aria-label="Figure 02 data &amp; methodology" class="disclosure-panel disclosure-panel-2" hidden="" id="comparison-disclosure" role="region">
-<div class="details-layout">
-<div class="method-copy">
-<p id="comparison-method">
-</p>
-</div>
-<div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
-<table id="comparison-table">
-<thead>
-</thead>
-<tbody>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="atlas-row chart-disclosure-grid chart-disclosure-grid-secondary">
-<article aria-labelledby="title-overall-recycling-rate" class="module narrow module--overall-recycling-rate" data-chart-id="overall-recycling-rate">
-<div class="module-header">
-<div class="heading">
-<span class="num">
-                03
-              </span>
-<h2 id="title-overall-recycling-rate">
-                Recycling rate
-              </h2>
-</div>
-<span class="unit">
-</span>
-</div>
-<div aria-label="Recycling rate filters" class="chart-controls controls">
-</div>
-<div class="chart-content">
-<div aria-live="polite" class="chart" id="overall-recycling-rate">
-<p class="chart-status" role="status">
-                Chart loading…
-              </p>
-</div>
-<div class="tooltip chart-tooltip" hidden="">
-</div>
-</div>
-</article>
-<div class="disclosure-trigger disclosure-trigger-3">
-<button aria-controls="recycling-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="recycling-disclosure" type="button">
-<span aria-hidden="true" class="disclosure-chevron">
-              ▸
-            </span>
+          </button>
+        </div>
+        <div
+          aria-label="Figure 02 data &amp; methodology"
+          class="disclosure-panel disclosure-panel-2"
+          hidden=""
+          id="comparison-disclosure"
+          role="region"
+        >
+          <div class="details-layout">
+            <div class="method-copy">
+              <p id="comparison-method"></p>
+            </div>
+            <div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
+              <table id="comparison-table">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atlas-row chart-disclosure-grid chart-disclosure-grid-secondary">
+        <article
+          aria-labelledby="title-overall-recycling-rate"
+          class="module narrow module--overall-recycling-rate"
+          data-chart-id="overall-recycling-rate"
+        >
+          <div class="module-header">
+            <div class="heading">
+              <span class="num"> 03 </span>
+              <h2 id="title-overall-recycling-rate">Recycling rate</h2>
+            </div>
+            <span class="unit"> </span>
+          </div>
+          <div aria-label="Recycling rate filters" class="chart-controls controls"></div>
+          <div class="chart-content">
+            <div aria-live="polite" class="chart" id="overall-recycling-rate">
+              <p class="chart-status" role="status">Chart loading…</p>
+            </div>
+            <div class="tooltip chart-tooltip" hidden=""></div>
+          </div>
+        </article>
+        <div class="disclosure-trigger disclosure-trigger-3">
+          <button
+            aria-controls="recycling-disclosure"
+            aria-expanded="false"
+            class="disclosure-toggle"
+            data-disclosure="recycling-disclosure"
+            type="button"
+          >
+            <span aria-hidden="true" class="disclosure-chevron"> ▸ </span>
             03 · <span class="disclosure-label">Data &amp; methodology</span>
-</button>
-</div>
-<div aria-label="Figure 03 data &amp; methodology" class="disclosure-panel disclosure-panel-3" hidden="" id="recycling-disclosure" role="region">
-<div class="details-layout">
-<div class="method-copy">
-<p id="recycling-method">
-</p>
-</div>
-<div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
-<table id="recycling-table">
-<thead>
-</thead>
-<tbody>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<article aria-labelledby="title-daily-material-weights" class="module wide module--daily-material-weights" data-chart-id="daily-material-weights">
-<div class="module-header">
-<div class="heading">
-<span class="num">
-                04
-              </span>
-<h2 id="title-daily-material-weights">
-                Recording calendar
-              </h2>
-</div>
-<span class="unit">
-</span>
-</div>
-<div aria-label="Calendar chart filters" class="chart-controls controls">
-</div>
-<div class="chart-content">
-<div aria-live="polite" class="chart" id="daily-material-weights">
-<p class="chart-status" role="status">
-                Chart loading…
-              </p>
-</div>
-<div class="tooltip chart-tooltip" hidden="">
-</div>
-</div>
-</article>
-<div class="disclosure-trigger disclosure-trigger-4">
-<button aria-controls="calendar-disclosure" aria-expanded="false" class="disclosure-toggle" data-disclosure="calendar-disclosure" type="button">
-<span aria-hidden="true" class="disclosure-chevron">
-              ▸
-            </span>
+          </button>
+        </div>
+        <div
+          aria-label="Figure 03 data &amp; methodology"
+          class="disclosure-panel disclosure-panel-3"
+          hidden=""
+          id="recycling-disclosure"
+          role="region"
+        >
+          <div class="details-layout">
+            <div class="method-copy">
+              <p id="recycling-method"></p>
+            </div>
+            <div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
+              <table id="recycling-table">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <article
+          aria-labelledby="title-daily-material-weights"
+          class="module wide module--daily-material-weights"
+          data-chart-id="daily-material-weights"
+        >
+          <div class="module-header">
+            <div class="heading">
+              <span class="num"> 04 </span>
+              <h2 id="title-daily-material-weights">Recording calendar</h2>
+            </div>
+            <span class="unit"> </span>
+          </div>
+          <div aria-label="Calendar chart filters" class="chart-controls controls"></div>
+          <div class="chart-content">
+            <div aria-live="polite" class="chart" id="daily-material-weights">
+              <p class="chart-status" role="status">Chart loading…</p>
+            </div>
+            <div class="tooltip chart-tooltip" hidden=""></div>
+          </div>
+        </article>
+        <div class="disclosure-trigger disclosure-trigger-4">
+          <button
+            aria-controls="calendar-disclosure"
+            aria-expanded="false"
+            class="disclosure-toggle"
+            data-disclosure="calendar-disclosure"
+            type="button"
+          >
+            <span aria-hidden="true" class="disclosure-chevron"> ▸ </span>
             04 · <span class="disclosure-label">Data &amp; methodology</span>
-</button>
-</div>
-<div aria-label="Figure 04 data &amp; methodology" class="disclosure-panel disclosure-panel-4" hidden="" id="calendar-disclosure" role="region">
-<div class="details-layout">
-<div class="method-copy">
-<p id="calendar-method">
-</p>
-</div>
-<div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
-<table id="calendar-table">
-<thead>
-</thead>
-<tbody>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<footer class="foot">
-<div class="foot-left">
-<div>
-            Data &amp; Design
+          </button>
+        </div>
+        <div
+          aria-label="Figure 04 data &amp; methodology"
+          class="disclosure-panel disclosure-panel-4"
+          hidden=""
+          id="calendar-disclosure"
+          role="region"
+        >
+          <div class="details-layout">
+            <div class="method-copy">
+              <p id="calendar-method"></p>
+            </div>
+            <div aria-label="Scrollable data table" class="table-scroll" role="region" tabindex="0">
+              <table id="calendar-table">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
-<div>
-            Household Waste &amp; Recycling · #001
-          </div>
-</div>
-<div class="foot-right">
-<div>
+        </div>
+      </div>
+      <footer class="foot">
+        <div class="foot-left">
+          <div>Data &amp; Design</div>
+          <div>Household Waste &amp; Recycling · #001</div>
+        </div>
+        <div class="foot-right">
+          <div>
             Charts made with
             <a href="https://observablehq.com/plot/" rel="noopener noreferrer" target="_blank">
               Observable Plot
             </a>
             &amp;
-            <a href="https://d3js.org/" rel="noopener noreferrer" target="_blank">
-              D3.js
-            </a>
-</div>
-<div>
+            <a href="https://d3js.org/" rel="noopener noreferrer" target="_blank"> D3.js </a>
+          </div>
+          <div>
             by
-            <a class="profile-link" href="https://lukehall.co/" rel="noopener noreferrer" target="_blank">
+            <a
+              class="profile-link"
+              href="https://lukehall.co/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               Luke Hall
             </a>
-</div>
-</div>
-</footer>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/dist/plot.umd.min.js">
-</script>
-<script src="js/app.js" type="module">
-</script>
-</body>
+          </div>
+        </div>
+      </footer>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/dist/plot.umd.min.js"></script>
+    <script src="js/app.js" type="module"></script>
+  </body>
 </html>
