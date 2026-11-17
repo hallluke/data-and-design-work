@@ -469,7 +469,7 @@
     {
       "month": "2026-10",
       "group": "Soft plastics",
-      "kg": 0.12342857
+      "kg": 0.35251429
     },
     {
       "month": "2026-11",
@@ -479,7 +479,7 @@
     {
       "month": "2026-11",
       "group": "Food waste",
-      "kg": 1.475
+      "kg": 3.447
     },
     {
       "month": "2026-11",
@@ -489,7 +489,7 @@
     {
       "month": "2026-11",
       "group": "Soft plastics",
-      "kg": 0
+      "kg": 0.19291429
     }
   ],
   "recorded": [
@@ -1051,7 +1051,7 @@
     {
       "month": "2026-11",
       "group": "Food waste",
-      "kg": 2.99
+      "kg": 4.962
     },
     {
       "month": "2026-11",
@@ -1061,7 +1061,7 @@
     {
       "month": "2026-11",
       "group": "Soft plastics",
-      "kg": 0
+      "kg": 0.422
     },
     {
       "month": "2026-11",

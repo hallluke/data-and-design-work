@@ -1,20 +1,20 @@
 {
   "metadata": {
-    "comparisonCompleteThrough": "2026-09",
+    "comparisonCompleteThrough": "2026-10",
     "comparisonExcludedFromCutoff": [
       "Residual waste",
       "Batteries"
     ],
     "projectionMaterial": "Residual waste",
     "projectionLastCollection": "2026-08-16",
-    "projectionThrough": "2026-09-30",
-    "projectionDays": 45,
+    "projectionThrough": "2026-10-31",
+    "projectionDays": 76,
     "historicalIntervals": 5,
     "method": "historical daily accumulation rates; pooled central estimate and observed min/max scenarios; not probability intervals"
   },
   "projectedAdditionalKg": {
-    "low": 0.87939,
-    "central": 1.36061,
-    "high": 2.06757
+    "low": 1.48519,
+    "central": 2.29793,
+    "high": 3.49189
   }
 }

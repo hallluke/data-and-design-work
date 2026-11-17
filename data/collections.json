@@ -1303,5 +1303,15 @@
     "date": "2026-11-09",
     "type": "Food Waste",
     "kg": 0.869
+  },
+  {
+    "date": "2026-11-16",
+    "type": "Soft plastic",
+    "kg": 0.422
+  },
+  {
+    "date": "2026-11-16",
+    "type": "Food Waste",
+    "kg": 1.972
   }
 ]
